@@ -386,6 +386,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userSettings.hiddenLinks === undefined) userSettings.hiddenLinks = [];
     if (userSettings.rememberSearchMode === undefined) userSettings.rememberSearchMode = false;
     if (userSettings.lastSearchMode === undefined) userSettings.lastSearchMode = 'google';
+    if (userSettings.showVisualSearch === undefined) userSettings.showVisualSearch = true;
+    if (userSettings.showGoogleApps === undefined) userSettings.showGoogleApps = true;
 
     const applyLayoutSettings = () => {
         if (userSettings.containerWidth === 'contained') {
@@ -398,6 +400,27 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.setAttribute('data-tile-width', 'auto');
         } else {
             document.body.removeAttribute('data-tile-width');
+        }
+        
+        const fabContainer = document.querySelector('.fab-container');
+        const visualSearchBtn = document.getElementById('image-search-trigger');
+        const googleAppsBtn = document.querySelector('.google-apps-btn');
+        
+        if (visualSearchBtn) {
+            visualSearchBtn.style.display = userSettings.showVisualSearch ? 'flex' : 'none';
+        }
+        
+        if (googleAppsBtn) {
+            googleAppsBtn.style.display = userSettings.showGoogleApps ? 'flex' : 'none';
+        }
+
+        if (fabContainer) {
+            fabContainer.style.display = (userSettings.showVisualSearch || userSettings.showGoogleApps) ? 'flex' : 'none';
+        }
+        
+        const visualSearchPanel = document.getElementById('visual-search-panel');
+        if (!userSettings.showVisualSearch && visualSearchPanel) {
+            visualSearchPanel.classList.remove('active');
         }
     };
 
@@ -491,8 +514,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderBookmarks = (bookmarkTreeNodes) => {
         bookmarksContainer.innerHTML = ''; // Clear container
-        if (folderTogglesList) folderTogglesList.innerHTML = ''; // Clear settings list
-
+        
+        // Track open state of folders in settings before clearing
+        const openFolders = [];
+        if (folderTogglesList) {
+            folderTogglesList.querySelectorAll('details').forEach(details => {
+                if (details.open) {
+                    const titleEl = details.querySelector('.folder-name');
+                    if (titleEl) openFolders.push(titleEl.innerText);
+                }
+            });
+            folderTogglesList.innerHTML = ''; // Clear settings list
+        }
         if (!userSettings.showBookmarks) {
             bookmarksContainer.style.display = 'none';
             return;
@@ -512,8 +545,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Only process folders directly inside the bookmarks bar
-        const folders = mainFolder.children.filter(node => node.children);
+        const folders = [];
+        const extractFolders = (node, path = '') => {
+            const currentPath = path ? `${path} / ${node.title}` : node.title;
+            const links = node.children ? node.children.filter(child => child.url) : [];
+            const subFolders = node.children ? node.children.filter(child => child.children) : [];
+            
+            if (links.length > 0) {
+                folders.push({
+                    title: currentPath,
+                    children: links,
+                    isPseudo: false
+                });
+            }
+            
+            subFolders.forEach(sub => extractFolders(sub, currentPath));
+        };
+
+        mainFolder.children.forEach(child => {
+            if (child.children) {
+                extractFolders(child, '');
+            }
+        });
         
         // Find loose links
         const looseLinks = mainFolder.children.filter(node => node.url);
@@ -531,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         folders.forEach(folder => {
-            const folderLinks = folder.children.filter(node => node.url);
+            const folderLinks = folder.children;
             if (folderLinks.length === 0 && !folder.isPseudo) return;
 
             // Build the settings toggle for this folder
@@ -540,6 +593,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const details = document.createElement('details');
                 details.className = 'folder-settings';
+                if (openFolders.includes(folder.title)) {
+                    details.open = true;
+                }
                 
                 const summary = document.createElement('summary');
                 
@@ -732,4 +788,206 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault(); // Prevent default vertical scroll
         }
     }, { passive: false });
+
+    // FAB Buttons Settings Toggles
+    const toggleVisualSearch = document.getElementById('toggle-visual-search');
+    if (toggleVisualSearch) {
+        toggleVisualSearch.checked = userSettings.showVisualSearch;
+        toggleVisualSearch.addEventListener('change', (e) => {
+            userSettings.showVisualSearch = e.target.checked;
+            saveSettings();
+        });
+    }
+
+    const toggleGoogleApps = document.getElementById('toggle-google-apps');
+    if (toggleGoogleApps) {
+        toggleGoogleApps.checked = userSettings.showGoogleApps;
+        toggleGoogleApps.addEventListener('change', (e) => {
+            userSettings.showGoogleApps = e.target.checked;
+            saveSettings();
+        });
+    }
+
+    // Panels Logic
+    const imageSearchTrigger = document.getElementById('image-search-trigger');
+    const visualSearchPanel = document.getElementById('visual-search-panel');
+    const googleAppsTrigger = document.getElementById('google-apps-trigger');
+    const googleAppsPanel = document.getElementById('google-apps-panel');
+    const modalDragDrop = document.getElementById('modal-drag-drop');
+    const modalDragContent = document.getElementById('modal-drag-content');
+    const modalPreviewContainer = document.getElementById('modal-preview-container');
+    const modalImagePreview = document.getElementById('modal-image-preview');
+    const modalClearImageBtn = document.getElementById('modal-clear-image-btn');
+    const modalTextInput = document.getElementById('modal-text-input');
+    const providerBtns = document.querySelectorAll('.search-provider-btn');
+    // Note: imageSearchInput and lensForm are already defined earlier
+
+    if (imageSearchTrigger && visualSearchPanel) {
+        imageSearchTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            visualSearchPanel.classList.toggle('active');
+            imageSearchTrigger.classList.toggle('active');
+            if (googleAppsPanel) googleAppsPanel.classList.remove('active');
+            if (googleAppsTrigger) googleAppsTrigger.classList.remove('active');
+        });
+    }
+
+    if (googleAppsTrigger && googleAppsPanel) {
+        googleAppsTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            googleAppsPanel.classList.toggle('active');
+            googleAppsTrigger.classList.toggle('active');
+            if (visualSearchPanel) visualSearchPanel.classList.remove('active');
+            if (imageSearchTrigger) imageSearchTrigger.classList.remove('active');
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (visualSearchPanel && visualSearchPanel.classList.contains('active') && 
+            !visualSearchPanel.contains(e.target) && 
+            !(imageSearchTrigger && imageSearchTrigger.contains(e.target))) {
+            visualSearchPanel.classList.remove('active');
+            if (imageSearchTrigger) imageSearchTrigger.classList.remove('active');
+        }
+        if (googleAppsPanel && googleAppsPanel.classList.contains('active') && 
+            !googleAppsPanel.contains(e.target) && 
+            !(googleAppsTrigger && googleAppsTrigger.contains(e.target))) {
+            googleAppsPanel.classList.remove('active');
+            if (googleAppsTrigger) googleAppsTrigger.classList.remove('active');
+        }
+    });
+
+    if (modalDragDrop && imageSearchInput) {
+        modalDragDrop.addEventListener('click', (e) => {
+            if (e.target !== modalClearImageBtn && !modalClearImageBtn.contains(e.target)) {
+                imageSearchInput.click();
+            }
+        });
+
+        modalDragDrop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            modalDragDrop.classList.add('drag-over');
+        });
+
+        modalDragDrop.addEventListener('dragleave', () => {
+            modalDragDrop.classList.remove('drag-over');
+        });
+
+        modalDragDrop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            modalDragDrop.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.startsWith('image/')) {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    imageSearchInput.files = dt.files;
+                    imageSearchInput.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+
+        imageSearchInput.addEventListener('change', () => {
+            if (imageSearchInput.files.length > 0) {
+                const file = imageSearchInput.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (modalImagePreview) modalImagePreview.src = e.target.result;
+                    if (modalDragContent) modalDragContent.classList.add('hidden');
+                    if (modalPreviewContainer) modalPreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        if (modalClearImageBtn) {
+            modalClearImageBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                imageSearchInput.value = '';
+                if (modalImagePreview) modalImagePreview.src = '';
+                if (modalPreviewContainer) modalPreviewContainer.classList.add('hidden');
+                if (modalDragContent) modalDragContent.classList.remove('hidden');
+            });
+        }
+    }
+
+    const getBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    if (providerBtns && lensForm) {
+        providerBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const provider = btn.getAttribute('data-provider');
+                const hasImage = imageSearchInput.files.length > 0;
+                const textQuery = modalTextInput ? modalTextInput.value.trim() : '';
+                
+                if (!hasImage) {
+                    if (textQuery && typeof doSearch === 'function') doSearch(textQuery);
+                    return;
+                }
+
+                const file = imageSearchInput.files[0];
+                const oldHiddens = lensForm.querySelectorAll('input[type="hidden"]');
+                oldHiddens.forEach(el => el.remove());
+
+                if (provider === 'google') {
+                    lensForm.action = 'https://lens.google.com/upload';
+                    imageSearchInput.name = 'encoded_image';
+                    lensForm.submit();
+                } else if (provider === 'bing') {
+                    try {
+                        const base64DataUrl = await getBase64(file);
+                        const base64Str = base64DataUrl.split(',')[1];
+                        
+                        lensForm.action = 'https://www.bing.com/images/search?view=detailv2&iss=sbiupload';
+                        imageSearchInput.removeAttribute('name');
+                        
+                        const cbirInput = document.createElement('input');
+                        cbirInput.type = 'hidden';
+                        cbirInput.name = 'cbir';
+                        cbirInput.value = 'sbi';
+                        lensForm.appendChild(cbirInput);
+                        
+                        const imgBinInput = document.createElement('input');
+                        imgBinInput.type = 'hidden';
+                        imgBinInput.name = 'imageBin';
+                        imgBinInput.value = base64Str;
+                        lensForm.appendChild(imgBinInput);
+                        
+                        lensForm.submit();
+                    } catch (err) {
+                        console.error("Error processing image for Bing", err);
+                    }
+                } else if (provider === 'yandex') {
+                    try {
+                        const formData = new FormData();
+                        formData.append('upfile', file);
+                        
+                        const requestJson = JSON.stringify({blocks: [{block: "b-page_type_search-by-image__link"}]});
+                        const res = await fetch(`https://yandex.com/images/search?rpt=imageview&format=json&request=${encodeURIComponent(requestJson)}`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (res.ok) {
+                            const data = await res.json();
+                            const cbirId = data?.blocks?.[0]?.params?.cbirId;
+                            if (cbirId) {
+                                window.location.href = `https://yandex.com/images/search?rpt=imageview&cbir_id=${cbirId}`;
+                            } else {
+                                console.error("No cbirId returned from Yandex");
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Yandex upload error:", err);
+                    }
+                }
+            });
+        });
+    }
+
 });

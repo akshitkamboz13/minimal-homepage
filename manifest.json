@@ -17,9 +17,13 @@
   "permissions": [
     "bookmarks",
     "offscreen",
-    "search"
+    "search",
+    "declarativeNetRequest"
   ],
   "host_permissions": [
-    "*://suggestqueries.google.com/*"
+    "*://suggestqueries.google.com/*",
+    "*://*.yandex.com/*",
+    "*://*.yandex.ru/*",
+    "*://*.bing.com/*"
   ]
 }
