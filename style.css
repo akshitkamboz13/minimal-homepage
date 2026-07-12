@@ -1237,6 +1237,149 @@ body[data-theme="dark"] .app-item:hover {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#google-apps-trigger.active svg {
-    transform: rotate(90deg);
+/* Sticky Notes */
+.glass-note {
+    position: fixed;
+    width: 250px;
+    min-height: 250px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.1s;
 }
+
+body.dark-mode .glass-note {
+    background: rgba(30, 30, 30, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.glass-note.dragging {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    z-index: 1001;
+}
+
+.note-header {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: grab;
+    user-select: none;
+}
+
+.note-header:active {
+    cursor: grabbing;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.note-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    opacity: 0.6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+}
+
+.note-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.note-content {
+    flex: 1;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 16px;
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+}
+
+.note-content::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* Note Colors */
+.glass-note.color-yellow {
+    background: rgba(255, 235, 153, 0.2);
+    border-color: rgba(255, 235, 153, 0.4);
+}
+body.dark-mode .glass-note.color-yellow {
+    background: rgba(180, 160, 50, 0.2);
+    border-color: rgba(180, 160, 50, 0.4);
+}
+
+.glass-note.color-blue {
+    background: rgba(153, 204, 255, 0.2);
+    border-color: rgba(153, 204, 255, 0.4);
+}
+body.dark-mode .glass-note.color-blue {
+    background: rgba(50, 120, 180, 0.2);
+    border-color: rgba(50, 120, 180, 0.4);
+}
+
+.glass-note.color-green {
+    background: rgba(153, 255, 204, 0.2);
+    border-color: rgba(153, 255, 204, 0.4);
+}
+body.dark-mode .glass-note.color-green {
+    background: rgba(50, 180, 120, 0.2);
+    border-color: rgba(50, 180, 120, 0.4);
+}
+
+.glass-note.color-pink {
+    background: rgba(255, 153, 204, 0.2);
+    border-color: rgba(255, 153, 204, 0.4);
+}
+body.dark-mode .glass-note.color-pink {
+    background: rgba(180, 50, 120, 0.2);
+    border-color: rgba(180, 50, 120, 0.4);
+}
+
+/* Custom scrollbars for notes matching their color */
+.note-content::-webkit-scrollbar {
+    width: 6px;
+}
+.note-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+.note-content::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.glass-note.color-yellow .note-content::-webkit-scrollbar-thumb { background: rgba(255, 235, 153, 0.6); }
+.glass-note.color-blue .note-content::-webkit-scrollbar-thumb { background: rgba(153, 204, 255, 0.6); }
+.glass-note.color-green .note-content::-webkit-scrollbar-thumb { background: rgba(153, 255, 204, 0.6); }
+.glass-note.color-pink .note-content::-webkit-scrollbar-thumb { background: rgba(255, 153, 204, 0.6); }
+
+body.dark-mode .glass-note.color-yellow .note-content::-webkit-scrollbar-thumb { background: rgba(180, 160, 50, 0.6); }
+body.dark-mode .glass-note.color-blue .note-content::-webkit-scrollbar-thumb { background: rgba(50, 120, 180, 0.6); }
+body.dark-mode .glass-note.color-green .note-content::-webkit-scrollbar-thumb { background: rgba(50, 180, 120, 0.6); }
+body.dark-mode .glass-note.color-pink .note-content::-webkit-scrollbar-thumb { background: rgba(180, 50, 120, 0.6); }

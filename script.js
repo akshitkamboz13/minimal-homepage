@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Default settings
+    let userSettings = JSON.parse(localStorage.getItem('startpage_settings')) || {
+        showBookmarks: true,
+        containerWidth: 'full', // 'full' | 'contained'
+        tileWidth: 'fixed', // 'fixed' | 'auto'
+        hiddenFolders: [], // Array of folder titles that are hidden
+        hiddenLinks: [], // Array of link IDs that are hidden
+        rememberSearchMode: false,
+        lastSearchMode: 'google'
+    };
+
+    // Make sure we have defaults for new keys if user has old settings stored
+    if (userSettings.containerWidth === undefined) userSettings.containerWidth = 'full';
+    if (userSettings.tileWidth === undefined) userSettings.tileWidth = 'fixed';
+    if (userSettings.hiddenFolders === undefined) userSettings.hiddenFolders = [];
+    if (userSettings.hiddenLinks === undefined) userSettings.hiddenLinks = [];
+    if (userSettings.rememberSearchMode === undefined) userSettings.rememberSearchMode = false;
+    if (userSettings.lastSearchMode === undefined) userSettings.lastSearchMode = 'google';
+
+
     // Theme Toggling
     const themeToggleBtn = document.getElementById('theme-toggle');
     const sunIcon = document.getElementById('sun-icon');
@@ -90,7 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSearch(query);
         const searchMode = document.querySelector('input[name="search-mode"]:checked').value;
         if (searchMode === 'ai') {
-            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&udm=50&aep=1&ntc=1&csuir=1`;
+            const ai = userSettings.selectedAi;
+            const encodedQuery = encodeURIComponent(query);
+            if (ai === 'bing') {
+                window.location.href = `https://www.bing.com/copilotsearch?q=${encodedQuery}`;
+            } else if (ai === 'google') {
+                window.location.href = `https://www.google.com/search?q=${encodedQuery}&udm=50&aep=1&ntc=1&csuir=1`;
+            } else if (ai === 'chatgpt') {
+                window.location.href = `https://chatgpt.com/?prompt=${encodedQuery}`;
+            } else if (ai === 'grok') {
+                window.location.href = `https://grok.com/?q=${encodedQuery}`;
+            } else if (ai === 'claude') {
+                window.location.href = `https://claude.ai/new?q=${encodedQuery}`;
+            }
         } else {
             if (chrome && chrome.search && chrome.search.query) {
                 chrome.search.query({ text: query, disposition: 'CURRENT_TAB' });
@@ -246,34 +278,35 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // AI Options Handling
+    const aiLabel = document.querySelector('.ai-label');
+    const modeAiRadio = document.getElementById('mode-ai');
+    
+    const updateAiLabel = () => {
+        if (userSettings.selectedAi && userSettings.selectedAiName) {
+            aiLabel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> ${userSettings.selectedAiName}`;
+        }
+    };
+    updateAiLabel();
+
+    aiLabel.addEventListener('click', (e) => {
+        if (!userSettings.selectedAi) {
+            e.preventDefault();
+        }
+    });
+
     const aiOptions = document.querySelectorAll('.ai-option');
     aiOptions.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const aiType = e.target.getAttribute('data-ai');
-            const query = searchInput.value.trim();
-            let url = '';
+            const aiName = e.target.textContent;
             
-            const encodedQuery = encodeURIComponent(query);
+            userSettings.selectedAi = aiType;
+            userSettings.selectedAiName = aiName;
+            localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
             
-            switch(aiType) {
-                case 'chatgpt':
-                    url = query ? `https://chatgpt.com/?q=${encodedQuery}` : 'https://chatgpt.com/';
-                    break;
-                case 'gemini':
-                    url = query ? `https://gemini.google.com/app?q=${encodedQuery}` : 'https://gemini.google.com/';
-                    break;
-                case 'claude':
-                    url = query ? `https://claude.ai/new?q=${encodedQuery}` : 'https://claude.ai/new';
-                    break;
-                case 'grok':
-                    url = query ? `https://grok.com/?q=${encodedQuery}` : 'https://grok.com/';
-                    break;
-            }
-            
-            if (url) {
-                if (query) saveSearch(query);
-                window.location.href = url;
-            }
+            updateAiLabel();
+            modeAiRadio.checked = true;
+            searchInput.focus();
         });
     });
 
@@ -368,24 +401,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const folderTogglesList = document.getElementById('folder-toggles-list');
     const bookmarksContainer = document.getElementById('bookmarks-container');
 
-    // Default settings
-    let userSettings = JSON.parse(localStorage.getItem('startpage_settings')) || {
-        showBookmarks: true,
-        containerWidth: 'full', // 'full' | 'contained'
-        tileWidth: 'fixed', // 'fixed' | 'auto'
-        hiddenFolders: [], // Array of folder titles that are hidden
-        hiddenLinks: [], // Array of link IDs that are hidden
-        rememberSearchMode: false,
-        lastSearchMode: 'google'
-    };
+    // userSettings is defined at the top of the file
 
-    // Make sure we have defaults for new keys if user has old settings stored
-    if (userSettings.containerWidth === undefined) userSettings.containerWidth = 'full';
-    if (userSettings.tileWidth === undefined) userSettings.tileWidth = 'fixed';
-    if (userSettings.hiddenFolders === undefined) userSettings.hiddenFolders = [];
-    if (userSettings.hiddenLinks === undefined) userSettings.hiddenLinks = [];
-    if (userSettings.rememberSearchMode === undefined) userSettings.rememberSearchMode = false;
-    if (userSettings.lastSearchMode === undefined) userSettings.lastSearchMode = 'google';
     if (userSettings.showVisualSearch === undefined) userSettings.showVisualSearch = true;
     if (userSettings.showGoogleApps === undefined) userSettings.showGoogleApps = true;
 
@@ -1003,5 +1020,160 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // --- Sticky Notes Manager ---
+    class NoteManager {
+        constructor() {
+            this.notes = JSON.parse(localStorage.getItem('startpage_notes')) || [];
+            this.colors = ['color-yellow', 'color-blue', 'color-green', 'color-pink'];
+            this.container = document.body;
+            this.addBtn = document.getElementById('add-note-btn');
+            
+            this.init();
+        }
+
+        init() {
+            if (this.addBtn) {
+                this.addBtn.addEventListener('click', () => this.createNewNote());
+            }
+            this.notes.forEach(noteData => this.renderNote(noteData));
+        }
+
+        saveNotes() {
+            localStorage.setItem('startpage_notes', JSON.stringify(this.notes));
+        }
+
+        createNewNote() {
+            const id = Date.now().toString();
+            const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+            const x = Math.max(100, window.innerWidth / 2 - 125 + (Math.random() * 40 - 20));
+            const y = Math.max(100, window.innerHeight / 2 - 125 + (Math.random() * 40 - 20));
+            
+            const noteData = { id, text: '', color, x, y };
+            this.notes.push(noteData);
+            this.saveNotes();
+            this.renderNote(noteData);
+        }
+
+        renderNote(noteData) {
+            const noteEl = document.createElement('div');
+            noteEl.className = `glass-note ${noteData.color}`;
+            noteEl.style.left = `${noteData.x}px`;
+            noteEl.style.top = `${noteData.y}px`;
+            noteEl.dataset.id = noteData.id;
+
+            noteEl.innerHTML = `
+                <div class="note-header">
+                    <div class="note-drag-handle" style="flex:1; height:100%;"></div>
+                    <div class="note-actions">
+                        <button class="note-btn cycle-color-btn" aria-label="Change Color" title="Change Color">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        </button>
+                        <button class="note-btn delete-note-btn" aria-label="Delete Note" title="Delete Note">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                </div>
+                <textarea class="note-content" placeholder="Type a note here..." spellcheck="false">${noteData.text}</textarea>
+            `;
+
+            this.container.appendChild(noteEl);
+
+            const textarea = noteEl.querySelector('.note-content');
+            textarea.addEventListener('input', (e) => {
+                const note = this.notes.find(n => n.id === noteData.id);
+                if (note) {
+                    note.text = e.target.value;
+                    this.saveNotes();
+                }
+            });
+
+            textarea.addEventListener('mousedown', e => e.stopPropagation());
+
+            const deleteBtn = noteEl.querySelector('.delete-note-btn');
+            deleteBtn.addEventListener('click', () => {
+                noteEl.style.transform = 'scale(0.8)';
+                noteEl.style.opacity = '0';
+                noteEl.style.transition = 'all 0.2s';
+                setTimeout(() => {
+                    noteEl.remove();
+                    this.notes = this.notes.filter(n => n.id !== noteData.id);
+                    this.saveNotes();
+                }, 200);
+            });
+
+            const colorBtn = noteEl.querySelector('.cycle-color-btn');
+            colorBtn.addEventListener('click', () => {
+                const note = this.notes.find(n => n.id === noteData.id);
+                if (note) {
+                    const currentIndex = this.colors.indexOf(note.color);
+                    const nextIndex = (currentIndex + 1) % this.colors.length;
+                    
+                    noteEl.classList.remove(note.color);
+                    note.color = this.colors[nextIndex];
+                    noteEl.classList.add(note.color);
+                    this.saveNotes();
+                }
+            });
+
+            this.setupDrag(noteEl, noteEl.querySelector('.note-header'), noteData);
+        }
+
+        setupDrag(noteEl, headerEl, noteData) {
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = noteData.x;
+            let yOffset = noteData.y;
+
+            const dragStart = (e) => {
+                if (e.target.closest('button')) return;
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+                isDragging = true;
+                noteEl.classList.add('dragging');
+            };
+
+            const drag = (e) => {
+                if (isDragging) {
+                    e.preventDefault();
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                    
+                    currentX = Math.max(0, Math.min(currentX, window.innerWidth - noteEl.offsetWidth));
+                    currentY = Math.max(0, Math.min(currentY, window.innerHeight - noteEl.offsetHeight));
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    noteEl.style.left = `${currentX}px`;
+                    noteEl.style.top = `${currentY}px`;
+                }
+            };
+
+            const dragEnd = () => {
+                if (!isDragging) return;
+                initialX = currentX;
+                initialY = currentY;
+                isDragging = false;
+                noteEl.classList.remove('dragging');
+
+                const note = this.notes.find(n => n.id === noteData.id);
+                if (note) {
+                    note.x = currentX;
+                    note.y = currentY;
+                    this.saveNotes();
+                }
+            };
+
+            headerEl.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+        }
+    }
+
+    new NoteManager();
 
 });
