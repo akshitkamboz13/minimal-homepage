@@ -272,23 +272,19 @@ header {
 .mode-slider {
     position: absolute;
     top: 4px;
-    left: 4px;
+    left: 0;
     height: calc(100% - 8px);
-    width: 50%;
     background: var(--accent-color);
     border-radius: 99px;
     z-index: 1;
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
+#mode-google:checked ~ .mode-label[for="mode-google"],
 #mode-google:checked ~ .google-dropdown-wrapper .mode-label[for="mode-google"],
 #mode-ai:checked ~ .ai-dropdown-wrapper .mode-label[for="mode-ai"] {
     color: white;
-}
-
-#mode-ai:checked ~ .mode-slider {
-    transform: translateX(100%);
 }
 
 .ai-label svg, .google-label svg {

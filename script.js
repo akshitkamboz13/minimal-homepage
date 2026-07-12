@@ -288,6 +288,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     updateAiLabel();
 
+    const updateSlider = () => {
+        const slider = document.querySelector('.mode-slider');
+        const checkedRadio = document.querySelector('input[name="search-mode"]:checked');
+        if (!slider || !checkedRadio) return;
+        
+        const activeLabel = checkedRadio.value === 'google' 
+            ? document.querySelector('.google-label') 
+            : document.querySelector('.ai-dropdown-wrapper');
+            
+        if (activeLabel) {
+            slider.style.width = `${activeLabel.offsetWidth}px`;
+            slider.style.transform = `translateX(${activeLabel.offsetLeft}px)`;
+        }
+    };
+    window.addEventListener('resize', updateSlider);
+    setTimeout(updateSlider, 50);
+
     aiLabel.addEventListener('click', (e) => {
         if (!userSettings.selectedAi) {
             e.preventDefault();
@@ -306,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             updateAiLabel();
             modeAiRadio.checked = true;
+            updateSlider();
             searchInput.focus();
         });
     });
@@ -514,6 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchModeRadios = document.querySelectorAll('input[name="search-mode"]');
     searchModeRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
+            updateSlider();
             if (userSettings.rememberSearchMode) {
                 userSettings.lastSearchMode = e.target.value;
                 saveSettings();
