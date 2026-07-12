@@ -16,7 +16,8 @@
   },
   "permissions": [
     "bookmarks",
-    "offscreen"
+    "offscreen",
+    "search"
   ],
   "host_permissions": [
     "*://suggestqueries.google.com/*"

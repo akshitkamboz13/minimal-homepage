@@ -92,7 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchMode === 'ai') {
             window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&udm=50&aep=1&ntc=1&csuir=1`;
         } else {
-            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            if (chrome && chrome.search && chrome.search.query) {
+                chrome.search.query({ text: query, disposition: 'CURRENT_TAB' });
+            } else {
+                window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            }
         }
     };
 
