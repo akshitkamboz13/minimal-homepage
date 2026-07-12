@@ -705,8 +705,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         domain = new URL(link.url).hostname;
                     } catch (e) {}
 
+                    const defaultFavicon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+
+                    const urlObj = new URL(chrome.runtime.getURL("/_favicon/"));
+                    urlObj.searchParams.set("pageUrl", link.url);
+                    urlObj.searchParams.set("size", "64");
+                    
                     const img = document.createElement('img');
-                    img.src = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : '';
+                    img.src = urlObj.toString();
+                    img.onerror = () => { img.src = defaultFavicon; };
                     img.alt = link.title;
                     img.className = 'favicon';
 
@@ -735,8 +742,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         domain = new URL(link.url).hostname;
                     } catch (e) {}
 
+                    const defaultFavicon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+
+                    const urlObj = new URL(chrome.runtime.getURL("/_favicon/"));
+                    urlObj.searchParams.set("pageUrl", link.url);
+                    urlObj.searchParams.set("size", "64");
+                    
                     const img = document.createElement('img');
-                    img.src = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : '';
+                    img.src = urlObj.toString();
+                    img.onerror = () => { img.src = defaultFavicon; };
                     img.className = 'favicon';
 
                     a.appendChild(img);

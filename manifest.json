@@ -18,7 +18,8 @@
     "bookmarks",
     "offscreen",
     "search",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "favicon"
   ],
   "host_permissions": [
     "*://suggestqueries.google.com/*",

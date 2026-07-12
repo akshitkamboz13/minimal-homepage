@@ -531,13 +531,15 @@ body[data-container-width="contained"] .bookmarks-container {
 .bookmark-group {
     padding: 1.5rem;
     transition: var(--transition-smooth);
-    flex: 0 0 240px; /* Fixed narrower width for tiles */
+    width: 260px; /* ~6.8cm */
+    flex: 0 0 260px; 
 }
 
 /* Bookmark Tiles Auto Width Override */
 body[data-tile-width="auto"] .bookmark-group {
     flex: 0 0 auto;
-    min-width: 240px;
+    width: auto;
+    min-width: 260px;
     max-width: 400px; /* Sensible max width so they don't stretch indefinitely */
 }
 
