@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userSettings.hiddenLinks === undefined) userSettings.hiddenLinks = [];
     if (userSettings.rememberSearchMode === undefined) userSettings.rememberSearchMode = false;
     if (userSettings.lastSearchMode === undefined) userSettings.lastSearchMode = 'google';
+    
+    if (!userSettings.rememberSearchMode) {
+        userSettings.selectedAi = null;
+        userSettings.selectedAiName = null;
+    }
 
 
     // Theme Toggling
@@ -518,8 +523,17 @@ document.addEventListener('DOMContentLoaded', () => {
             userSettings.rememberSearchMode = e.target.checked;
             if (!userSettings.rememberSearchMode) {
                 userSettings.lastSearchMode = 'google'; // Reset to google
+                userSettings.selectedAi = null;
+                userSettings.selectedAiName = null;
+                
                 const googleMode = document.getElementById('mode-google');
                 if (googleMode) googleMode.checked = true;
+                
+                const aiLabel = document.querySelector('.ai-label');
+                if (aiLabel) {
+                    aiLabel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> AI`;
+                }
+                updateSlider();
             } else {
                 const checkedMode = document.querySelector('input[name="search-mode"]:checked');
                 if (checkedMode) userSettings.lastSearchMode = checkedMode.value;
