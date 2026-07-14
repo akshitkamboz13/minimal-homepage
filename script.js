@@ -840,9 +840,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if user is scrolling inside a vertical scroll container (like the bookmark links)
         const isInsideBookmarkLinks = e.target.closest('.bookmark-links');
         const isInsideSettingsModal = e.target.closest('.modal-content');
+        const isInsideGoogleApps = e.target.closest('.google-apps-panel');
         
         // If inside a vertical scrolling area, don't hijack the scroll
-        if (isInsideBookmarkLinks || isInsideSettingsModal) {
+        if (isInsideBookmarkLinks || isInsideSettingsModal || isInsideGoogleApps) {
             return;
         }
 
@@ -1208,5 +1209,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     new NoteManager();
+
+    // Add title attributes to Google Apps items for tooltip on hover
+    document.querySelectorAll('.google-apps-panel .app-item').forEach(item => {
+        const span = item.querySelector('span');
+        if (span && span.textContent) {
+            item.title = span.textContent.trim();
+        }
+    });
 
 });
