@@ -241,6 +241,41 @@ header {
     opacity: 0.7;
 }
 
+.search-submit-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 4px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.6;
+    transform: scale(1);
+    flex-shrink: 0;
+}
+
+.search-submit-btn.hidden {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+    width: 0;
+    margin-right: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+}
+
+.search-submit-btn:hover {
+    transform: scale(1.1);
+    opacity: 1;
+    color: var(--accent-color);
+}
+
 /* Custom Search Mode Toggle */
 .search-mode-wrapper {
     display: flex;
@@ -942,7 +977,7 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    z-index: 999;
+    z-index: 1001;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
     transition: var(--transition-smooth);
@@ -1163,11 +1198,11 @@ body[data-theme="dark"] .search-provider-btn:hover {
 /* Google Apps Panel */
 .google-apps-panel {
     position: fixed;
-    bottom: 6.5rem;
+    bottom: 10.5rem;
     right: 2rem;
     width: 320px;
     padding: 1.5rem;
-    z-index: 999;
+    z-index: 1001;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
     transition: var(--transition-smooth);

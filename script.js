@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search Handling & Autocomplete
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
+    const searchSubmitBtn = document.getElementById('search-submit-btn');
     const suggestionsBox = document.getElementById('search-suggestions');
     
     // Auto-focus search on global type
@@ -197,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let debounceTimer;
     searchInput.addEventListener('input', (e) => {
         const val = e.target.value.trim();
+        searchSubmitBtn.classList.toggle('hidden', val.length === 0);
         clearTimeout(debounceTimer);
 
         if (!val) {
