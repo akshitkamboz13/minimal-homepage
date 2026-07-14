@@ -1002,7 +1002,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 oldHiddens.forEach(el => el.remove());
 
                 if (provider === 'google') {
-                    lensForm.action = 'https://lens.google.com/upload';
+                    let actionUrl = 'https://lens.google.com/upload';
+                    if (textQuery) {
+                        actionUrl += `?q=${encodeURIComponent(textQuery)}`;
+                    }
+                    lensForm.action = actionUrl;
                     imageSearchInput.name = 'encoded_image';
                     lensForm.submit();
                 } else if (provider === 'bing') {
@@ -1010,7 +1014,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         const base64DataUrl = await getBase64(file);
                         const base64Str = base64DataUrl.split(',')[1];
                         
-                        lensForm.action = 'https://www.bing.com/images/search?view=detailv2&iss=sbiupload';
+                        let actionUrl = 'https://www.bing.com/images/search?view=detailv2&iss=sbiupload';
+                        if (textQuery) {
+                            actionUrl += `&q=${encodeURIComponent(textQuery)}`;
+                            const qInput = document.createElement('input');
+                            qInput.type = 'hidden';
+                            qInput.name = 'q';
+                            qInput.value = textQuery;
+                            lensForm.appendChild(qInput);
+                        }
+                        lensForm.action = actionUrl;
                         imageSearchInput.removeAttribute('name');
                         
                         const cbirInput = document.createElement('input');
@@ -1044,7 +1057,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             const data = await res.json();
                             const cbirId = data?.blocks?.[0]?.params?.cbirId;
                             if (cbirId) {
-                                window.location.href = `https://yandex.com/images/search?rpt=imageview&cbir_id=${cbirId}`;
+                                let targetUrl = `https://yandex.com/images/search?rpt=imageview&cbir_id=${cbirId}`;
+                                if (textQuery) {
+                                    targetUrl += `&text=${encodeURIComponent(textQuery)}`;
+                                }
+                                window.location.href = targetUrl;
                             } else {
                                 console.error("No cbirId returned from Yandex");
                             }
