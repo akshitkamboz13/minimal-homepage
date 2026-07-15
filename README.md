@@ -53,11 +53,11 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 
 | ☀️ Light Mode Theme | 🌙 Dark Mode Theme |
 | --- | --- |
-| ![Light Mode](screenshots/Ss1.png) | ![Dark Mode](screenshots/Ss2.png) |
+| ![Light Mode](screenshots/Ss1.png) | ![Dark Mode](screenshots/Ss3.png) |
 
-| ⚙️ Interactive Settings Modal | 🔍 Real-time Search Suggestions |
+| 📑 Bookmarks |  ⚙️ Interactive Settings Modal |
 | --- | --- |
-| ![Settings](screenshots/Ss3.png) | ![Suggestions](screenshots/Ss4.png) |
+| ![Bookmarks](screenshots/Ss2.png) | ![Settings](screenshots/Ss5.png) |
 
 ---
 
@@ -66,9 +66,9 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 ```text
 minimal-startpage/
 ├── manifest.json        # Extension Manifest V3 (metadata, overrides, permissions)
-├── background.js        # Service Worker (offscreen document launcher & message router)
-├── offscreen.js         # Offscreen controller (Web Speech API interface)
 ├── src/                 # Core source files
+│   ├── background.js    # Service Worker (offscreen document launcher & message router)
+│   ├── offscreen.js     # Offscreen controller (Web Speech API interface)
 │   ├── index.html       # Core HTML layout, SVG assets, and Settings Modal
 │   ├── offscreen.html   # Offscreen document bridge
 │   ├── css/             # Modular CSS architecture
