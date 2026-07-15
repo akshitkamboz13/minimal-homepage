@@ -1,0 +1,167 @@
+/* Bookmarks Container Defaults (Full Bleed) */
+.bookmarks-container {
+    display: flex;
+    justify-content: safe center;
+    gap: 1.5rem;
+    
+    /* Make container full bleed width out of max-width container */
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    overflow-x: auto;
+    padding: 2rem 5vw; /* Lots of padding for shadows and edge spacing */
+    
+    /* Fade out the left and right edges */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    
+    /* Hide scrollbar for a cleaner look */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Bookmarks Container Contained Override */
+body[data-container-width="contained"] .bookmarks-container {
+    width: 100%;
+    position: static;
+    left: auto;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 2rem 1rem;
+    -webkit-mask-image: none;
+    mask-image: none;
+    justify-content: safe center;
+}
+
+.bookmarks-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Bookmark Tiles Defaults (Fixed Width) */
+.bookmark-group {
+    padding: 1.5rem;
+    transition: var(--transition-smooth);
+    width: 260px; /* ~6.8cm */
+    flex: 0 0 260px; 
+}
+
+/* Bookmark Tiles Auto Width Override */
+body[data-tile-width="auto"] .bookmark-group {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 260px;
+    max-width: 400px; /* Sensible max width so they don't stretch indefinitely */
+}
+
+.bookmark-group:hover {
+    transform: translateY(-4px);
+    background: var(--glass-highlight);
+}
+
+.bookmark-group h3 {
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+.bookmark-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    /* Show only 3 items max (3 * 44px + 2 * 0.75rem) */
+    max-height: calc(132px + 1.5rem);
+    overflow-y: auto;
+    padding-right: 4px; /* Space for custom scrollbar */
+}
+
+/* Custom mini scrollbar for vertical scroll */
+.bookmark-links::-webkit-scrollbar {
+    width: 4px;
+}
+.bookmark-links::-webkit-scrollbar-thumb {
+    background-color: var(--glass-border);
+    border-radius: 4px;
+}
+
+.bookmark-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    background: transparent;
+    height: 44px; /* Fixed height for consistent calculation */
+    flex-shrink: 0;
+}
+
+.bookmark-link span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+/* Icon-Only Grid Layout */
+.bookmark-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.bookmark-icon-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: transparent;
+    transition: var(--transition-smooth);
+    height: 52px;
+    cursor: pointer;
+}
+
+.bookmark-icon-only:hover {
+    background: var(--glass-highlight);
+}
+
+.bookmark-icon-only .favicon {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+}
+
+body[data-tile-width="auto"] .bookmark-link span {
+    white-space: normal;
+    overflow: visible;
+}
+
+.bookmark-link:hover {
+    background: var(--glass-bg);
+    transform: translateX(4px);
+}
+
+.favicon {
+    width: 20px;
+    height: 20px;
+    margin-right: 1rem;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .bookmarks-container {
+        grid-template-columns: 1fr;
+    }
+}
