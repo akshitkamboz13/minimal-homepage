@@ -1,4 +1,4 @@
-import { userSettings, onSettingsChanged } from '../state/settings.js';
+import { userSettings, onSettingsChanged } from '../state/Settings.js';
 import { renderBookmarksSettings } from './BookmarksSettings.js';
 import { renderBookmarksGrid } from './BookmarksGrid.js';
 import { initBookmarksScroll } from './BookmarksScroll.js';
