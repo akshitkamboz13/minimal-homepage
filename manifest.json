@@ -4,12 +4,12 @@
   "version": "1.0",
   "description": "A beautiful startpage that integrates your real bookmarks.",
   "icons": {
-    "16": "logo/icon16.png",
-    "48": "logo/icon48.png",
-    "128": "logo/icon128.png"
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
   },
   "chrome_url_overrides": {
-    "newtab": "html/index.html"
+    "newtab": "src/index.html"
   },
   "background": {
     "service_worker": "background.js"

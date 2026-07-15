@@ -68,48 +68,45 @@ minimal-startpage/
 ├── manifest.json        # Extension Manifest V3 (metadata, overrides, permissions)
 ├── background.js        # Service Worker (offscreen document launcher & message router)
 ├── offscreen.js         # Offscreen controller (Web Speech API interface)
-├── html/
+├── src/                 # Core source files
 │   ├── index.html       # Core HTML layout, SVG assets, and Settings Modal
-│   └── offscreen.html   # Offscreen document bridge (DOM placeholder for Speech Recognition)
-├── css/                 # Modular CSS architecture
-│   ├── base.css              # Reset, typography, utility classes, animations
-│   ├── main.css              # Central hub natively importing all modules
-│   ├── theme/Theme.css       # CSS Variables (Light/Dark mode)
-│   ├── clock/Clock.css       # Greeting and clock typography
-│   ├── search/Search.css     # Search bar, dropdowns, AI toggles, Suggestions
-│   ├── bookmarks/Bookmarks.css # Grid layout, custom scrollbars, link formatting
-│   ├── notes/Notes.css       # Sticky note styling, colors, drag handlers
-│   └── ui/
-│       ├── TopPanel.css      # Settings modal overlay and switches
-│       └── RightPanel.css    # FAB buttons, Google Apps popup, Visual search
-├── js/                  # ES Module architecture
-│   ├── main.js          # Primary entry point (invokes app.js)
-│   ├── app.js           # Assembles and initializes all features
-│   ├── state/
-│   │   └── Settings.js      # Global state management
-│   ├── theme/
-│   │   └── Theme.js         # Dark/light mode
-│   ├── clock/
-│   │   └── Clock.js         # Real-time clock updating
-│   ├── notes/
-│   │   └── Notes.js         # Sticky notes logic
-│   ├── bookmarks/
-│   │   └── index.js         # Bookmarks orchestrator (Grid, Settings, Scroll)
-│   ├── search/
-│   │   ├── core/
-│   │   │   └── index.js     # Search router and autocomplete
-│   │   ├── voice/
-│   │   │   └── Voice.js     # Voice recognition trigger
-│   │   └── visual/
-│   │       └── Visual.js    # Visual search upload and routing
-│   └── ui/
-│       └── index.js         # Orchestrator for TopPanel, RightPanel, BottomPanel
-├── logo/
-│   ├── icon.svg         # Vector vector icon file
-│   ├── icon16.png       # 16x16 icon resource
-│   ├── icon48.png       # 48x48 icon resource
-│   └── icon128.png      # 128x128 icon resource
-├── build/               # Directory containing the compiled extension for distribution
+│   ├── offscreen.html   # Offscreen document bridge
+│   ├── css/             # Modular CSS architecture
+│   │   ├── base.css              
+│   │   ├── main.css              
+│   │   ├── theme/theme.css       
+│   │   ├── clock/clock.css       
+│   │   ├── search/search.css     
+│   │   ├── bookmarks/bookmarks.css 
+│   │   ├── notes/notes.css       
+│   │   └── ui/panels/                   
+│   │       ├── top-panel.css      
+│   │       └── right-panel.css    
+│   └── js/              # ES Module architecture
+│       ├── main.js          
+│       ├── app.js           
+│       ├── state/settings.js
+│       ├── theme/theme.js   
+│       ├── clock/clock.js   
+│       ├── notes/notes.js   
+│       ├── bookmarks/index.js
+│       ├── search/          
+│       │   ├── core/index.js
+│       │   ├── voice/voice.js
+│       │   └── visual/visual.js
+│       └── ui/
+│           ├── index.js     # Panel orchestrator
+│           └── panels/      # Individual UI panel modules
+│               ├── top-panel.js
+│               ├── right-panel.js
+│               └── bottom-panel.js
+├── assets/
+│   └── icons/
+│       ├── icon.svg         # Vector icon file
+│       ├── icon16.png       # 16x16 icon resource
+│       ├── icon48.png       # 48x48 icon resource
+│       └── icon128.png      # 128x128 icon resource
+├── build/               # Compiled extension for distribution
 └── screenshots/         # Asset gallery for store visualization
 ```
 
@@ -119,10 +116,10 @@ minimal-startpage/
 
 ### Voice Search via Offscreen Document
 Chrome Extensions manifest V3 background scripts execute inside service workers, which lack DOM API accessibility and `navigator.mediaDevices` microphone streams. To implement speech-to-text, "Home" leverages a manifest permission rule for `offscreen` documents:
-1. When the microphone button is clicked, `js/search/voice/Voice.js` fires a message to `background.js`.
+1. When the microphone button is clicked, `src/js/search/voice/voice.js` fires a message to `background.js`.
 2. `background.js` verifies and instantiates `offscreen.html` (with `USER_MEDIA` justifications).
 3. The offscreen document runs the browser's native webkitSpeechRecognition engine.
-4. Voice transcriptions are passed back dynamically to `Voice.js` via `chrome.runtime.sendMessage` broadcasts, populating the input field in real-time.
+4. Voice transcriptions are passed back dynamically to `voice.js` via `chrome.runtime.sendMessage` broadcasts, populating the input field in real-time.
 
 ### Google Lens Upload Protocol
 Image search triggers file selection. When chosen, the image is loaded into a visual canvas preview. Upon submit, it compiles into a standard multipart payload posted directly to Lens:
@@ -171,6 +168,24 @@ git push -u origin main
 
 ## Development & Customization
 
-- **Styling modifications:** Update the design tokens, color combinations, or layout grids in the [css/](file:///home/siakshit/Startups/Homepages/minimal-startpage/css) directory. The central hub is `main.css`.
-- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors across the ES Modules in the [js/](file:///home/siakshit/Startups/Homepages/minimal-startpage/js) directory. The central hub is `main.js`.
+- **Styling modifications:** Update the design tokens, color combinations, or layout grids in the [src/css/](file:///home/siakshit/Startups/Homepages/minimal-startpage/src/css) directory. The central hub is `main.css`.
+- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors across the ES Modules in the [src/js/](file:///home/siakshit/Startups/Homepages/minimal-startpage/src/js) directory. The central hub is `main.js`.
 - **Extension scope/permissions:** Check or add host origins and extensions configurations in [manifest.json](file:///home/siakshit/Startups/Homepages/minimal-startpage/manifest.json).
+
+---
+
+## Contributing
+
+We welcome community contributions to make "Home" even better! 
+
+### How to Contribute
+1. **Fork the Repository:** Create a fork of the `minimal-homepage` repository to your GitHub account.
+2. **Create a Branch:** Start a new feature or bugfix branch (`git checkout -b feature/your-feature-name`).
+3. **Make Changes:** Add your UI improvements, bug fixes, or entirely new modules. Ensure you stick to the ES6 module architecture and separate your CSS!
+4. **Test Locally:** Load your unpacked extension in Chrome and verify functionality.
+5. **Submit a Pull Request:** Push your changes to your fork and submit a PR to the main repository.
+
+### Code Style Guidelines
+- **HTML:** Use semantic tags (`<header>`, `<main>`, `<section>`) over generic `<div>` tags whenever possible.
+- **CSS:** Keep styles modular. Variables go in `theme.css`, new components get their own files in the `src/css/` directory and are imported in `main.css`. Avoid `!important`.
+- **JavaScript:** Use lowercase kebab-case for filenames (e.g. `right-panel.js`). Always use ES Modules (`export default`). Do not pollute the global window object.
