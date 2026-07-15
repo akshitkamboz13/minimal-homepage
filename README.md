@@ -63,17 +63,37 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 ## Project Structure
 
 ```
-minimal-homepage/
+minimal-startpage/
 ├── manifest.json        # Extension Manifest V3 (metadata, overrides, permissions)
+├── background.js        # Service Worker (offscreen document launcher & message router)
+├── offscreen.js         # Offscreen controller (Web Speech API interface)
 ├── html/
 │   ├── index.html       # Core HTML layout, SVG assets, and Settings Modal
 │   └── offscreen.html   # Offscreen document bridge (DOM placeholder for Speech Recognition)
 ├── css/
 │   └── style.css        # Stylesheets: variables, mesh blobs, layouts, responsive design
 ├── js/
-│   ├── script.js        # Main script (theme toggle, clock, suggestions, search, bookmark render)
-│   ├── background.js    # Service Worker (offscreen document launcher & message router)
-│   └── offscreen.js     # Offscreen controller (Web Speech API interface)
+│   ├── main.js          # Primary entry point (invokes initApp)
+│   ├── app.js           # Assembles and initializes all features
+│   ├── state/
+│   │   └── Settings.js      # Global state management
+│   ├── theme/
+│   │   └── Theme.js         # Dark/light mode
+│   ├── clock/
+│   │   └── Clock.js         # Real-time clock updating
+│   ├── notes/
+│   │   └── Notes.js         # Sticky notes logic
+│   ├── bookmarks/
+│   │   └── index.js         # Bookmarks orchestrator (Grid, Settings, Scroll)
+│   ├── search/
+│   │   ├── core/
+│   │   │   └── index.js     # Search router and autocomplete
+│   │   ├── voice/
+│   │   │   └── Voice.js     # Voice recognition trigger
+│   │   └── visual/
+│   │       └── Visual.js    # Visual search upload and routing
+│   └── ui/
+│       └── index.js         # Orchestrator for TopPanel, RightPanel, BottomPanel
 ├── logo/
 │   ├── icon.svg         # Vector vector icon file
 │   ├── icon16.png       # 16x16 icon resource
