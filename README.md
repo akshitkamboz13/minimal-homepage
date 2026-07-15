@@ -19,6 +19,7 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
   - **Google Mode:** Direct Google search query execution.
   - **AI Mode:** Directs queries using custom Google search parameters designed to display AI Overviews and structured web results.
 - **Direct LLM Deep-links:** Accessible dropdown buttons mapping the search term directly into **ChatGPT**, **Gemini**, **Claude**, or **Grok** search query pages.
+- **Interactive Search Input:** An elegant, dynamically animated submit arrow seamlessly appears as you type, matching the minimal aesthetic.
 - **Google-Powered Autocomplete:** Real-time search predictions retrieved via JSON suggestions from Google's autocomplete endpoint.
 - **Smart History Suggestions:** Recalls your last 5 searched queries. Displays history suggestions first with a clock icon for swift re-access.
 - **Global Keypress Focus:** Start typing immediately on opening a new tab to autofocus the search input automatically.
@@ -26,7 +27,12 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 
 ### 🎙️ Speech & Visual Search Integration
 - **Web Speech API Voice Search:** Speak queries naturally via chrome's audio input. Since Chrome extension service workers do not support microphone access directly, a modern **Offscreen Document** bridge is initialized to securely process voice recognition.
-- **Google Lens Image Search:** Drag and drop or upload an image to query Google Lens results. Uses a hidden `multipart/form-data` submission to transition images directly to Lens.
+- **Multimodal Visual Search:** Drag and drop or upload an image to query visually across **Google Lens**, **Bing**, or **Yandex**. You can optionally add text context to your image searches which is seamlessly parsed and appended to the search engine requests.
+
+### 📱 Google Apps Launcher
+- **Quick Access Grid:** A sleek 3x3 popup grid to launch your favorite Google apps and services instantly.
+- **Usage-Based Priority:** Apps are intelligently ordered with the most universally used tools (Account, Search, Gmail, Drive, YouTube) prioritized at the top.
+- **Clean Typography:** Single-line application names with smooth ellipsis truncation and full-name hover tooltips.
 
 ### 🔖 Native Bookmarks Integration
 - **Direct Chrome Bookmarks Sync:** Reads bookmarks directly from the Chrome "Bookmarks Bar" tree structure dynamically.
@@ -59,16 +65,21 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 ```
 minimal-homepage/
 ├── manifest.json        # Extension Manifest V3 (metadata, overrides, permissions)
-├── index.html           # Core HTML layout, SVG assets, and Settings Modal
-├── style.css            # Stylesheets: variables, mesh blobs, layouts, responsive design
-├── script.js            # Main script (theme toggle, clock, suggestions, search, bookmark render)
-├── background.js        # Service Worker (offscreen document launcher & message router)
-├── offscreen.html       # Offscreen document bridge (DOM placeholder for Speech Recognition)
-├── offscreen.js         # Offscreen controller (Web Speech API interface)
-├── icon.svg             # Vector vector icon file
-├── icon16.png           # 16x16 icon resource
-├── icon48.png           # 48x48 icon resource
-├── icon128.png          # 128x128 icon resource
+├── html/
+│   ├── index.html       # Core HTML layout, SVG assets, and Settings Modal
+│   └── offscreen.html   # Offscreen document bridge (DOM placeholder for Speech Recognition)
+├── css/
+│   └── style.css        # Stylesheets: variables, mesh blobs, layouts, responsive design
+├── js/
+│   ├── script.js        # Main script (theme toggle, clock, suggestions, search, bookmark render)
+│   ├── background.js    # Service Worker (offscreen document launcher & message router)
+│   └── offscreen.js     # Offscreen controller (Web Speech API interface)
+├── logo/
+│   ├── icon.svg         # Vector vector icon file
+│   ├── icon16.png       # 16x16 icon resource
+│   ├── icon48.png       # 48x48 icon resource
+│   └── icon128.png      # 128x128 icon resource
+├── build/               # Directory containing the compiled extension for distribution
 └── screenshots/         # Asset gallery for store visualization
 ```
 
@@ -130,6 +141,6 @@ git push -u origin main
 
 ## Development & Customization
 
-- **Styling modifications:** Update the design tokens, color combinations, or layout grids in [style.css](file:///home/siakshit/Projects/Homepages/minimal-startpage/style.css).
-- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors in [script.js](file:///home/siakshit/Projects/Homepages/minimal-startpage/script.js).
-- **Extension scope/permissions:** Check or add host origins and extensions configurations in [manifest.json](file:///home/siakshit/Projects/Homepages/minimal-startpage/manifest.json).
+- **Styling modifications:** Update the design tokens, color combinations, or layout grids in [css/style.css](file:///home/siakshit/Startups/Homepages/minimal-startpage/css/style.css).
+- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors in [js/script.js](file:///home/siakshit/Startups/Homepages/minimal-startpage/js/script.js).
+- **Extension scope/permissions:** Check or add host origins and extensions configurations in [manifest.json](file:///home/siakshit/Startups/Homepages/minimal-startpage/manifest.json).

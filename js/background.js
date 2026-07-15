@@ -33,7 +33,7 @@ async function ensureOffscreen() {
         await creating;
     } else {
         creating = chrome.offscreen.createDocument({
-            url: 'offscreen.html',
+            url: 'html/offscreen.html',
             reasons: ['USER_MEDIA'],
             justification: 'Speech recognition requires a document context'
         });
