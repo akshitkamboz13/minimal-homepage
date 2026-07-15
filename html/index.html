@@ -11,13 +11,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="background-mesh">
+    <!-- ===================================== -->
+    <!-- Background -->
+    <!-- ===================================== -->
+    <div class="background-mesh" aria-hidden="true">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
     
     <div class="container fade-in">
+        <!-- ===================================== -->
+        <!-- Header -->
+        <!-- ===================================== -->
         <header>
             <button id="add-note-btn" class="glass-btn" aria-label="Add Sticky Note" style="margin-right: 1rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -32,12 +38,18 @@
         </header>
         
         <main>
-            <div class="hero-section">
-                <div class="clock" id="clock">00:00</div>
+            <!-- ===================================== -->
+            <!-- Clock & Greeting -->
+            <!-- ===================================== -->
+            <section class="hero-section">
+                <time class="clock" id="clock">00:00</time>
                 <h1 class="greeting" id="greeting">Hello.</h1>
-            </div>
+            </section>
             
-            <form id="search-form" class="search-container glass-panel">
+            <!-- ===================================== -->
+            <!-- Search -->
+            <!-- ===================================== -->
+            <form id="search-form" class="search-container glass-panel" role="search">
                 <div class="search-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     
@@ -50,11 +62,12 @@
 
                     <input type="text" id="search-input" placeholder="What are you looking for?" autocomplete="off" autofocus>
                     
-                    <button type="submit" id="search-submit-btn" class="search-submit-btn hidden" aria-label="Search">
+                    <button type="submit" id="search-submit-btn" class="search-submit-btn hidden" aria-label="Submit Search">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
                     </button>
 
-                    <div class="search-mode-wrapper">
+                    <fieldset class="search-mode-wrapper">
+                        <legend class="hidden">Search Mode</legend>
                         <input type="radio" id="mode-google" name="search-mode" value="google" checked>
                         <label for="mode-google" class="mode-label google-label">Search</label>
                         
@@ -64,37 +77,43 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                                 AI
                             </label>
-                            <div class="ai-dropdown glass-panel">
+                            <nav class="ai-dropdown glass-panel" aria-label="AI Providers">
                                 <button type="button" class="ai-option" data-ai="chatgpt">ChatGPT</button>
                                 <button type="button" class="ai-option" data-ai="google">Google AI</button>
                                 <button type="button" class="ai-option" data-ai="bing">Bing AI</button>
                                 <button type="button" class="ai-option" data-ai="claude">Claude</button>
                                 <button type="button" class="ai-option" data-ai="grok">Grok</button>
-                            </div>
+                            </nav>
                         </div>
-                        <div class="mode-slider"></div>
-                    </div>
+                        <div class="mode-slider" aria-hidden="true"></div>
+                    </fieldset>
                 </div>
-                <div id="search-suggestions" class="search-suggestions hidden"></div>
+                <div id="search-suggestions" class="search-suggestions hidden" role="listbox"></div>
             </form>
 
-
-
-            <div class="bookmarks-container" id="bookmarks-container">
+            <!-- ===================================== -->
+            <!-- Bookmarks -->
+            <!-- ===================================== -->
+            <section class="bookmarks-container" id="bookmarks-container" aria-label="Bookmarks">
                 <!-- Bookmarks will be injected here dynamically by script.js -->
-            </div>
+            </section>
         </main>
     </div>
-    <div id="settings-modal" class="modal-overlay hidden">
-        <div class="modal-content glass-panel">
-            <div class="modal-header">
+
+    <!-- ===================================== -->
+    <!-- Settings Modal -->
+    <!-- ===================================== -->
+    <aside id="settings-modal" class="modal-overlay hidden" aria-modal="true" role="dialog">
+        <section class="modal-content glass-panel">
+            <header class="modal-header">
                 <h2>Settings</h2>
-                <button id="close-settings" class="icon-btn">
+                <button id="close-settings" class="icon-btn" aria-label="Close Settings">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
-            </div>
+            </header>
             
-            <div class="settings-group">
+            <fieldset class="settings-group">
+                <legend class="hidden">General Preferences</legend>
                 <div class="setting-item">
                     <span>Show Bookmarks Section</span>
                     <label class="switch">
@@ -137,19 +156,21 @@
                         <span class="slider round"></span>
                     </label>
                 </div>
-            </div>
+            </fieldset>
 
-            <div class="settings-group" id="folder-toggles-container">
-                <h3>Visible Folders</h3>
+            <fieldset class="settings-group" id="folder-toggles-container">
+                <legend>Visible Folders</legend>
                 <div id="folder-toggles-list">
                     <!-- Folder toggles injected here -->
                 </div>
-            </div>
-        </div>
-    </div>
+            </fieldset>
+        </section>
+    </aside>
 
+    <!-- ===================================== -->
     <!-- Floating Action Buttons -->
-    <div class="fab-container">
+    <!-- ===================================== -->
+    <aside class="fab-container" aria-label="Quick Actions">
         <button id="google-apps-trigger" class="floating-action-btn google-apps-btn" aria-label="Google Apps">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="4" cy="4" r="2"/>
@@ -166,10 +187,12 @@
         <button id="image-search-trigger" class="floating-action-btn" aria-label="Visual Search">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </button>
-    </div>
+    </aside>
     
-    <!-- Floating Visual Search Panel -->
-    <div id="visual-search-panel" class="visual-search-panel glass-panel">
+    <!-- ===================================== -->
+    <!-- Visual Search Panel -->
+    <!-- ===================================== -->
+    <section id="visual-search-panel" class="visual-search-panel glass-panel" aria-label="Visual Search Panel">
         <h2>Visual Search</h2>
         <div class="drag-drop-area" id="modal-drag-drop">
             <div class="drag-drop-content" id="modal-drag-content">
@@ -186,21 +209,23 @@
         <div class="panel-input-wrapper">
             <input type="text" id="modal-text-input" class="panel-text-input" placeholder="Add context (optional)" autocomplete="off">
         </div>
-        <div class="panel-footer">
+        <footer class="panel-footer">
             <span class="panel-footer-title">Search with</span>
             <div class="search-options-row">
                 <button type="button" class="search-provider-btn" data-provider="google">Google</button>
                 <button type="button" class="search-provider-btn" data-provider="bing">Bing</button>
                 <button type="button" class="search-provider-btn" data-provider="yandex">Yandex</button>
             </div>
-        </div>
+        </footer>
         <form id="lens-form" method="POST" enctype="multipart/form-data" style="display: none;">
             <input type="file" id="image-search-input" accept="image/*">
         </form>
-    </div>
+    </section>
 
-    <!-- Floating Google Apps Panel -->
-    <div id="google-apps-panel" class="google-apps-panel glass-panel">
+    <!-- ===================================== -->
+    <!-- Google Apps Panel -->
+    <!-- ===================================== -->
+    <nav id="google-apps-panel" class="google-apps-panel glass-panel" aria-label="Google Apps List">
         <div class="apps-grid">
             <a href="https://myaccount.google.com/" class="app-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -375,8 +400,11 @@
                 <span>Books</span>
             </a>
         </div>
-    </div>
-    <!-- Main Script -->
+    </nav>
+    
+    <!-- ===================================== -->
+    <!-- Scripts -->
+    <!-- ===================================== -->
     <script type="module" src="../js/main.js"></script>
 </body>
 </html>
