@@ -13,6 +13,7 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 - **Glassmorphic Panels:** UI components styled with high-blur backdrop-filters, subtle inner borders, and soft shadows that work on any background.
 - **Full Theme Customization:** Native support for both **Light** and **Dark** themes, automatically syncing with your operating system preferences or toggleable with a single click.
 - **Responsive Layout:** Automatically scales across multiple screen widths, supporting both ultra-wide and constrained display alignments.
+- **Semantic HTML:** Codebase built with standard semantic HTML tags (`<header>`, `<main>`, `<section>`, `<nav>`, `<aside>`) for superior accessibility and readability.
 
 ### 🔍 Advanced Search Engine Capabilities
 - **Google & AI Dual Search Modes:** 
@@ -62,7 +63,7 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 
 ## Project Structure
 
-```
+```text
 minimal-startpage/
 ├── manifest.json        # Extension Manifest V3 (metadata, overrides, permissions)
 ├── background.js        # Service Worker (offscreen document launcher & message router)
@@ -70,10 +71,19 @@ minimal-startpage/
 ├── html/
 │   ├── index.html       # Core HTML layout, SVG assets, and Settings Modal
 │   └── offscreen.html   # Offscreen document bridge (DOM placeholder for Speech Recognition)
-├── css/
-│   └── style.css        # Stylesheets: variables, mesh blobs, layouts, responsive design
-├── js/
-│   ├── main.js          # Primary entry point (invokes initApp)
+├── css/                 # Modular CSS architecture
+│   ├── base.css              # Reset, typography, utility classes, animations
+│   ├── main.css              # Central hub natively importing all modules
+│   ├── theme/Theme.css       # CSS Variables (Light/Dark mode)
+│   ├── clock/Clock.css       # Greeting and clock typography
+│   ├── search/Search.css     # Search bar, dropdowns, AI toggles, Suggestions
+│   ├── bookmarks/Bookmarks.css # Grid layout, custom scrollbars, link formatting
+│   ├── notes/Notes.css       # Sticky note styling, colors, drag handlers
+│   └── ui/
+│       ├── TopPanel.css      # Settings modal overlay and switches
+│       └── RightPanel.css    # FAB buttons, Google Apps popup, Visual search
+├── js/                  # ES Module architecture
+│   ├── main.js          # Primary entry point (invokes app.js)
 │   ├── app.js           # Assembles and initializes all features
 │   ├── state/
 │   │   └── Settings.js      # Global state management
@@ -109,10 +119,10 @@ minimal-startpage/
 
 ### Voice Search via Offscreen Document
 Chrome Extensions manifest V3 background scripts execute inside service workers, which lack DOM API accessibility and `navigator.mediaDevices` microphone streams. To implement speech-to-text, "Home" leverages a manifest permission rule for `offscreen` documents:
-1. When the microphone button is clicked, `script.js` fires a message to `background.js`.
+1. When the microphone button is clicked, `js/search/voice/Voice.js` fires a message to `background.js`.
 2. `background.js` verifies and instantiates `offscreen.html` (with `USER_MEDIA` justifications).
 3. The offscreen document runs the browser's native webkitSpeechRecognition engine.
-4. Voice transcriptions are passed back dynamically to `script.js` via `chrome.runtime.sendMessage` broadcasts, populating the input field in real-time.
+4. Voice transcriptions are passed back dynamically to `Voice.js` via `chrome.runtime.sendMessage` broadcasts, populating the input field in real-time.
 
 ### Google Lens Upload Protocol
 Image search triggers file selection. When chosen, the image is loaded into a visual canvas preview. Upon submit, it compiles into a standard multipart payload posted directly to Lens:
@@ -161,6 +171,6 @@ git push -u origin main
 
 ## Development & Customization
 
-- **Styling modifications:** Update the design tokens, color combinations, or layout grids in [css/style.css](file:///home/siakshit/Startups/Homepages/minimal-startpage/css/style.css).
-- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors in [js/script.js](file:///home/siakshit/Startups/Homepages/minimal-startpage/js/script.js).
+- **Styling modifications:** Update the design tokens, color combinations, or layout grids in the [css/](file:///home/siakshit/Startups/Homepages/minimal-startpage/css) directory. The central hub is `main.css`.
+- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors across the ES Modules in the [js/](file:///home/siakshit/Startups/Homepages/minimal-startpage/js) directory. The central hub is `main.js`.
 - **Extension scope/permissions:** Check or add host origins and extensions configurations in [manifest.json](file:///home/siakshit/Startups/Homepages/minimal-startpage/manifest.json).
