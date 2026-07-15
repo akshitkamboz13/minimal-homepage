@@ -12,7 +12,7 @@
     "newtab": "html/index.html"
   },
   "background": {
-    "service_worker": "js/background.js"
+    "service_worker": "background.js"
   },
   "permissions": [
     "bookmarks",
