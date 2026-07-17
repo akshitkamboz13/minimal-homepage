@@ -48,6 +48,7 @@ body {
     align-items: center;
     overflow: hidden;
     transition: background-color 0.5s ease, color 0.5s ease;
+    isolation: isolate; /* Create new stacking context on body for negative z-index background layers */
 }
 
 /* Dynamic Animated Mesh Background */
@@ -102,7 +103,6 @@ body {
 .blob {
     position: absolute;
     border-radius: 50%;
-    animation: float 20s infinite ease-in-out alternate;
     mix-blend-mode: multiply;
 }
 
@@ -116,16 +116,16 @@ body {
     background-color: var(--blob-1);
     top: -100px;
     left: -100px;
-    animation-delay: 0s;
+    animation: float-1 25s infinite ease-in-out alternate;
 }
 
 .blob-2 {
     width: 500px;
     height: 500px;
     background-color: var(--blob-2);
-    top: 40%;
+    top: 30%;
     right: -100px;
-    animation-delay: -5s;
+    animation: float-2 20s infinite ease-in-out alternate;
 }
 
 .blob-3 {
@@ -133,15 +133,26 @@ body {
     height: 700px;
     background-color: var(--blob-3);
     bottom: -200px;
-    left: 20%;
-    animation-delay: -10s;
+    left: 15%;
+    animation: float-3 30s infinite ease-in-out alternate;
 }
 
-@keyframes float {
+@keyframes float-1 {
     0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
+    50% { transform: translate(30vw, 15vh) scale(1.15); }
     100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes float-2 {
+    0% { transform: translate(0, 0) scale(1.1); }
+    50% { transform: translate(-25vw, -30vh) scale(0.85); }
+    100% { transform: translate(0, 0) scale(1.1); }
+}
+
+@keyframes float-3 {
+    0% { transform: translate(0, 0) scale(0.9); }
+    50% { transform: translate(20vw, -20vh) scale(1.2); }
+    100% { transform: translate(0, 0) scale(0.9); }
 }
 
 /* Container & Layout */
