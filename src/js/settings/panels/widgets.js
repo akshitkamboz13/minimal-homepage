@@ -1,14 +1,14 @@
 import { userSettings, saveSettings } from '../settings-state.js';
 import { applyLayoutSettings } from '../../ui/panels/top-panel.js';
+import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function initWidgets(modal) {
-    const selectClockFormat = document.getElementById('setting-clock-format');
-    if (selectClockFormat) {
-        selectClockFormat.value = userSettings.clockFormat;
-        selectClockFormat.addEventListener('change', (e) => {
-            userSettings.clockFormat = e.target.value;
-            saveSettings();
-        });
+    const dropdownClockFormat = initCustomDropdown('clock-format', (val) => {
+        userSettings.clockFormat = val;
+        saveSettings();
+    });
+    if (dropdownClockFormat) {
+        dropdownClockFormat.setValue(userSettings.clockFormat);
     }
 
     const toggleClockSeconds = document.getElementById('toggle-clock-seconds');

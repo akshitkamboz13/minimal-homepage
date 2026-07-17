@@ -1,4 +1,6 @@
 import { userSettings, saveSettings } from '../settings-state.js';
+import { applyLayoutSettings } from '../../ui/panels/top-panel.js';
+import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function initBookmarksSettings(modal) {
     const toggleBookmarks = document.getElementById('toggle-all-bookmarks');
@@ -10,12 +12,22 @@ export function initBookmarksSettings(modal) {
         });
     }
 
-    const selectBookmarkTarget = document.getElementById('setting-bookmark-target');
-    if (selectBookmarkTarget) {
-        selectBookmarkTarget.value = userSettings.bookmarkTarget;
-        selectBookmarkTarget.addEventListener('change', (e) => {
-            userSettings.bookmarkTarget = e.target.value;
+    const dropdownBookmarkTarget = initCustomDropdown('bookmark-target', (val) => {
+        userSettings.bookmarkTarget = val;
+        saveSettings();
+    });
+    if (dropdownBookmarkTarget) {
+        dropdownBookmarkTarget.setValue(userSettings.bookmarkTarget);
+    }
+
+    const toggleTileWidth = document.getElementById('toggle-tile-width');
+    if (toggleTileWidth) {
+        toggleTileWidth.checked = userSettings.tileWidth === 'auto';
+        toggleTileWidth.addEventListener('change', (e) => {
+            userSettings.tileWidth = e.target.checked ? 'auto' : 'fixed';
             saveSettings();
+            applyLayoutSettings();
         });
     }
 }
+

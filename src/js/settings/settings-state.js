@@ -34,7 +34,16 @@ const defaults = {
     kbdEscClear: true,
     historyCount: 5,
     autocompleteSuggestions: true,
-    reduceMotion: false
+    reduceMotion: false,
+    backgroundType: 'mesh-default',
+    customBackgroundUrl: '',
+    customAccentColor: '#3b82f6',
+    customMeshBlob1Light: '#ffb6ff',
+    customMeshBlob2Light: '#b3c5ff',
+    customMeshBlob3Light: '#ffd4b3',
+    customMeshBlob1Dark: '#4c1d95',
+    customMeshBlob2Dark: '#1e3a8a',
+    customMeshBlob3Dark: '#831843'
 };
 
 // Merge loaded settings with defaults to guarantee all keys exist

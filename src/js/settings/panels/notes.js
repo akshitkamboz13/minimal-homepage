@@ -1,4 +1,5 @@
 import { userSettings, saveSettings } from '../settings-state.js';
+import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function applyNotesVisuals() {
     const fontVal = userSettings.notesFont;
@@ -11,14 +12,13 @@ export function applyNotesVisuals() {
 }
 
 export function initNotesSettings(modal) {
-    const selectNotesFont = document.getElementById('setting-notes-font');
-    if (selectNotesFont) {
-        selectNotesFont.value = userSettings.notesFont;
-        selectNotesFont.addEventListener('change', (e) => {
-            userSettings.notesFont = e.target.value;
-            saveSettings();
-            applyNotesVisuals();
-        });
+    const dropdownNotesFont = initCustomDropdown('notes-font', (val) => {
+        userSettings.notesFont = val;
+        saveSettings();
+        applyNotesVisuals();
+    });
+    if (dropdownNotesFont) {
+        dropdownNotesFont.setValue(userSettings.notesFont);
     }
 
     const sliderNotesAutosave = document.getElementById('setting-notes-autosave');

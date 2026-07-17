@@ -1,5 +1,6 @@
 import { userSettings, saveSettings } from '../settings-state.js';
 import { applyLayoutSettings } from '../../ui/panels/top-panel.js';
+import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function initVisual(modal) {
     const toggleVisualSearch = document.getElementById('toggle-visual-search');
@@ -12,12 +13,11 @@ export function initVisual(modal) {
         });
     }
 
-    const selectVisualProvider = document.getElementById('setting-visual-provider');
-    if (selectVisualProvider) {
-        selectVisualProvider.value = userSettings.visualProvider;
-        selectVisualProvider.addEventListener('change', (e) => {
-            userSettings.visualProvider = e.target.value;
-            saveSettings();
-        });
+    const dropdownVisualProvider = initCustomDropdown('visual-provider', (val) => {
+        userSettings.visualProvider = val;
+        saveSettings();
+    });
+    if (dropdownVisualProvider) {
+        dropdownVisualProvider.setValue(userSettings.visualProvider);
     }
 }

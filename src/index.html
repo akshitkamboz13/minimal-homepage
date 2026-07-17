@@ -19,6 +19,8 @@
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
+    <div id="background-image-layer" class="background-image-layer" aria-hidden="true"></div>
+    
     
     <div class="container fade-in">
         <!-- ===================================== -->
@@ -145,15 +147,21 @@
                         <h3>Appearance</h3>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-theme">Theme Mode</label>
+                                <label>Theme Mode</label>
                                 <span class="setting-desc">Set default background theme style.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-theme" class="custom-select">
-                                    <option value="system">Follow System</option>
-                                    <option value="light">Light Theme</option>
-                                    <option value="dark">Dark Theme</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-theme">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">Follow System</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="system" role="option">Follow System</li>
+                                        <li class="dropdown-item" data-value="light" role="option">Light Theme</li>
+                                        <li class="dropdown-item" data-value="dark" role="option">Dark Theme</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -172,30 +180,135 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="toggle-tile-width">Dynamic Tile Widths</label>
-                                <span class="setting-desc">Auto-scale bookmark directory tiles.</span>
-                            </div>
-                            <div class="setting-control">
-                                <label class="switch">
-                                    <input type="checkbox" id="toggle-tile-width">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="setting-row">
-                            <div class="setting-info">
                                 <label>Accent Color</label>
                                 <span class="setting-desc">Select primary colors highlight.</span>
                             </div>
                             <div class="setting-control">
-                                <div class="color-presets">
+                                <div class="color-presets" style="display: flex; align-items: center; gap: 0.5rem;">
                                     <button type="button" class="color-dot" data-color="blue" style="background: #3b82f6;" title="Blue"></button>
                                     <button type="button" class="color-dot" data-color="purple" style="background: #a855f7;" title="Purple"></button>
                                     <button type="button" class="color-dot" data-color="emerald" style="background: #10b981;" title="Emerald"></button>
                                     <button type="button" class="color-dot" data-color="amber" style="background: #f59e0b;" title="Amber"></button>
                                     <button type="button" class="color-dot" data-color="rose" style="background: #f43f5e;" title="Rose"></button>
+                                    <div class="color-picker-wrapper" id="custom-accent-wrapper" title="Custom Accent Color">
+                                        <input type="color" id="setting-accent-custom" value="#3b82f6">
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group-section" id="background-presets-container" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                            <h4 class="section-title">Background Theme</h4>
+                            
+                            <h5 class="section-subtitle">Animated Gradient Mesh</h5>
+                            <div class="bg-presets-grid animated-meshes">
+                                <button type="button" class="bg-preset-card active" data-bg="mesh-default" title="Default Mesh">
+                                    <div class="bg-preview mesh-default-preview"></div>
+                                    <span class="bg-label">Default Mesh</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="mesh-aurora" title="Aurora Mesh">
+                                    <div class="bg-preview mesh-aurora-preview"></div>
+                                    <span class="bg-label">Aurora Mesh</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="mesh-sunset" title="Sunset Mesh">
+                                    <div class="bg-preview mesh-sunset-preview"></div>
+                                    <span class="bg-label">Sunset Mesh</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="mesh-midnight" title="Midnight Mesh">
+                                    <div class="bg-preview mesh-midnight-preview"></div>
+                                    <span class="bg-label">Midnight Mesh</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="mesh-custom" title="Custom Mesh">
+                                    <div class="bg-preview mesh-custom-preview"></div>
+                                    <span class="bg-label">Custom Mesh</span>
+                                </button>
+                            </div>
+
+                            <div class="custom-mesh-controls hidden" id="custom-mesh-controls">
+                                <div class="mesh-color-group">
+                                    <h6>Light Mode Gradient</h6>
+                                    <div class="mesh-color-row">
+                                        <span>Blob 1</span>
+                                        <div class="mesh-color-input-wrapper">
+                                            <input type="color" id="mesh-light-blob-1" value="#ffb6ff">
+                                        </div>
+                                    </div>
+                                    <div class="mesh-color-row">
+                                        <span>Blob 2</span>
+                                        <div class="mesh-color-input-wrapper">
+                                            <input type="color" id="mesh-light-blob-2" value="#b3c5ff">
+                                        </div>
+                                    </div>
+                                    <div class="mesh-color-row">
+                                        <span>Blob 3</span>
+                                        <div class="mesh-color-input-wrapper">
+                                            <input type="color" id="mesh-light-blob-3" value="#ffd4b3">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mesh-color-group" style="margin-top: 0.5rem;">
+                                    <h6>Dark Mode Gradient</h6>
+                                    <div class="mesh-color-row">
+                                        <span>Blob 1</span>
+                                        <div class="mesh-color-input-wrapper">
+                                            <input type="color" id="mesh-dark-blob-1" value="#4c1d95">
+                                        </div>
+                                    </div>
+                                    <div class="mesh-color-row">
+                                        <span>Blob 2</span>
+                                        <div class="mesh-color-input-wrapper">
+                                            <input type="color" id="mesh-dark-blob-2" value="#1e3a8a">
+                                        </div>
+                                    </div>
+                                    <div class="mesh-color-row">
+                                        <span>Blob 3</span>
+                                        <div class="mesh-color-input-wrapper">
+                                            <input type="color" id="mesh-dark-blob-3" value="#831843">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="section-subtitle" style="margin-top: 1rem;">Premium Wallpapers</h5>
+                            <div class="bg-presets-grid static-wallpapers">
+                                <button type="button" class="bg-preset-card" data-bg="aurora" title="Aurora Landscape">
+                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/aurora.png')"></div>
+                                    <span class="bg-label">Aurora</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="cyberpunk" title="Cyberpunk City">
+                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/cyberpunk.png')"></div>
+                                    <span class="bg-label">Cyberpunk</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="mountains" title="Sunset Mountains">
+                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/mountains.png')"></div>
+                                    <span class="bg-label">Mountains</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="abstract" title="Abstract Silk">
+                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/abstract.png')"></div>
+                                    <span class="bg-label">Abstract</span>
+                                </button>
+                                <button type="button" class="bg-preset-card" data-bg="custom" title="Custom Image" id="bg-custom-card">
+                                    <div class="bg-preview custom-preview">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                    </div>
+                                    <span class="bg-label">Custom Image</span>
+                                </button>
+                            </div>
+                            
+                            <div class="custom-bg-controls hidden" id="custom-bg-controls">
+                                <div class="custom-bg-row">
+                                    <input type="text" id="custom-bg-url" placeholder="Paste image URL (https://...)" class="custom-input" style="flex: 1; width: auto;">
+                                    <button type="button" class="action-btn" id="btn-apply-bg-url">Apply URL</button>
+                                </div>
+                                <div class="custom-bg-divider">or</div>
+                                <div class="custom-bg-row">
+                                    <label class="action-btn upload-label" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex: 1; cursor: pointer;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        Upload Image File
+                                        <input type="file" id="custom-bg-file" accept="image/*" style="display: none;">
+                                    </label>
+                                </div>
+                                <span class="setting-desc" style="margin-top: 0.25rem;">Images are saved locally inside your browser storage.</span>
                             </div>
                         </div>
                     </section>
@@ -205,15 +318,21 @@
                         <h3>Notes Settings</h3>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-notes-font">Notes Font Family</label>
+                                <label>Notes Font Family</label>
                                 <span class="setting-desc">Choose font typography style.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-notes-font" class="custom-select">
-                                    <option value="sans">System Sans-Serif</option>
-                                    <option value="serif">Classic Serif</option>
-                                    <option value="mono">Developer Monospace</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-notes-font">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">System Sans-Serif</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="sans" role="option">System Sans-Serif</li>
+                                        <li class="dropdown-item" data-value="serif" role="option">Classic Serif</li>
+                                        <li class="dropdown-item" data-value="mono" role="option">Developer Monospace</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -257,16 +376,36 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-bookmark-target">Open Bookmarks In</label>
+                                <label>Open Bookmarks In</label>
                                 <span class="setting-desc">Target frame window path.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-bookmark-target" class="custom-select">
-                                    <option value="_blank">New Tab</option>
-                                    <option value="_self">Current Tab</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-bookmark-target">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">New Tab</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="_blank" role="option">New Tab</li>
+                                        <li class="dropdown-item" data-value="_self" role="option">Current Tab</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-tile-width">Dynamic Tile Widths</label>
+                                <span class="setting-desc">Auto-scale bookmark directory tiles.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-tile-width">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
 
                         <div class="setting-group-section" id="folder-toggles-container">
                             <h4 class="section-title">Visible Folders & Links</h4>
@@ -309,14 +448,20 @@
                         <h3>Widgets Settings</h3>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-clock-format">Clock format</label>
+                                <label>Clock format</label>
                                 <span class="setting-desc">Format the primary time display.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-clock-format" class="custom-select">
-                                    <option value="12">12-Hour (AM/PM)</option>
-                                    <option value="24">24-Hour</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-clock-format">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">12-Hour (AM/PM)</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="12" role="option">12-Hour (AM/PM)</li>
+                                        <li class="dropdown-item" data-value="24" role="option">24-Hour</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -365,16 +510,22 @@
                         <h3>AI Options</h3>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-ai-provider">Default AI Engine</label>
+                                <label>Default AI Engine</label>
                                 <span class="setting-desc">Primary assistant model shortcut.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-ai-provider" class="custom-select">
-                                    <option value="gemini">Google Gemini</option>
-                                    <option value="chatgpt">ChatGPT</option>
-                                    <option value="claude">Claude</option>
-                                    <option value="grok">Grok</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-ai-provider">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">Google Gemini</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="gemini" role="option">Google Gemini</li>
+                                        <li class="dropdown-item" data-value="chatgpt" role="option">ChatGPT</li>
+                                        <li class="dropdown-item" data-value="claude" role="option">Claude</li>
+                                        <li class="dropdown-item" data-value="grok" role="option">Grok</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -407,18 +558,24 @@
                         <h3>Voice Settings</h3>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-voice-lang">Speech Language</label>
+                                <label>Speech Language</label>
                                 <span class="setting-desc">Target language for voice recognition.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-voice-lang" class="custom-select">
-                                    <option value="en-US">English (US)</option>
-                                    <option value="es-ES">Spanish (Spain)</option>
-                                    <option value="fr-FR">French (France)</option>
-                                    <option value="de-DE">German (Germany)</option>
-                                    <option value="hi-IN">Hindi (India)</option>
-                                    <option value="ja-JP">Japanese (Japan)</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-voice-lang">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">English (US)</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="en-US" role="option">English (US)</li>
+                                        <li class="dropdown-item" data-value="es-ES" role="option">Spanish (Spain)</li>
+                                        <li class="dropdown-item" data-value="fr-FR" role="option">French (France)</li>
+                                        <li class="dropdown-item" data-value="de-DE" role="option">German (Germany)</li>
+                                        <li class="dropdown-item" data-value="hi-IN" role="option">Hindi (India)</li>
+                                        <li class="dropdown-item" data-value="ja-JP" role="option">Japanese (Japan)</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -454,15 +611,21 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-visual-provider">Default Lens Engine</label>
+                                <label>Default Lens Engine</label>
                                 <span class="setting-desc">Engine provider for visual query uploads.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-visual-provider" class="custom-select">
-                                    <option value="google">Google Lens</option>
-                                    <option value="bing">Bing Visual</option>
-                                    <option value="yandex">Yandex Visual</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-visual-provider">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">Google Lens</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="google" role="option">Google Lens</li>
+                                        <li class="dropdown-item" data-value="bing" role="option">Bing Visual</li>
+                                        <li class="dropdown-item" data-value="yandex" role="option">Yandex Visual</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -533,15 +696,21 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="setting-history-count">Search Suggestions Limit</label>
+                                <label>Search Suggestions Limit</label>
                                 <span class="setting-desc">Max count of query history matches display.</span>
                             </div>
                             <div class="setting-control">
-                                <select id="setting-history-count" class="custom-select">
-                                    <option value="3">3 items</option>
-                                    <option value="5">5 items</option>
-                                    <option value="10">10 items</option>
-                                </select>
+                                <div class="custom-dropdown" id="dropdown-history-count">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">5 items</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item" data-value="3" role="option">3 items</li>
+                                        <li class="dropdown-item active" data-value="5" role="option">5 items</li>
+                                        <li class="dropdown-item" data-value="10" role="option">10 items</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 

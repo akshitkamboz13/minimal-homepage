@@ -1,13 +1,13 @@
 import { userSettings, saveSettings } from '../settings-state.js';
+import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function initVoice(modal) {
-    const selectVoiceLang = document.getElementById('setting-voice-lang');
-    if (selectVoiceLang) {
-        selectVoiceLang.value = userSettings.voiceLang;
-        selectVoiceLang.addEventListener('change', (e) => {
-            userSettings.voiceLang = e.target.value;
-            saveSettings();
-        });
+    const dropdownVoiceLang = initCustomDropdown('voice-lang', (val) => {
+        userSettings.voiceLang = val;
+        saveSettings();
+    });
+    if (dropdownVoiceLang) {
+        dropdownVoiceLang.setValue(userSettings.voiceLang);
     }
 
     const toggleVoiceSubmit = document.getElementById('toggle-voice-auto-submit');

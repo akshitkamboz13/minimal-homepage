@@ -1,4 +1,5 @@
 import { userSettings, saveSettings, onSettingsChanged } from '../settings/index.js';
+import { applyBackgroundVisuals } from '../settings/panels/appearance.js';
 
 export function initTheme() {
     const themeToggleBtn = document.getElementById('theme-toggle');
@@ -20,18 +21,32 @@ export function initTheme() {
             if (moonIcon) moonIcon.style.display = 'block';
         }
         localStorage.setItem('theme', resolvedTheme);
+        
+        // Refresh background visuals (especially if in custom mesh mode)
+        applyBackgroundVisuals();
     };
 
     // Apply initial theme from settings
     applyTheme(userSettings.theme);
 
-    // Watch for settings changes (e.g. from settings panel dropdown)
+    // Watch for settings changes (e.g. from settings panel dropdown or toggle button)
     onSettingsChanged((settings) => {
         applyTheme(settings.theme);
         
-        // Update setting dropdown element if visible in modal
-        const selectTheme = document.getElementById('setting-theme');
-        if (selectTheme) selectTheme.value = settings.theme;
+        // Update custom theme dropdown UI if visible
+        const dropdownThemeEl = document.getElementById('dropdown-theme');
+        if (dropdownThemeEl) {
+            const items = dropdownThemeEl.querySelectorAll('.dropdown-item');
+            const label = dropdownThemeEl.querySelector('.dropdown-selected-label');
+            items.forEach(item => {
+                if (item.getAttribute('data-value') === settings.theme) {
+                    item.classList.add('active');
+                    if (label) label.textContent = item.textContent;
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
     });
 
     // Toggle button handler updates settings

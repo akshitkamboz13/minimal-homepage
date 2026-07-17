@@ -1,4 +1,5 @@
 import { userSettings, saveSettings } from '../settings-state.js';
+import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function initPrivacy(modal) {
     const toggleRememberSearch = document.getElementById('toggle-remember-search');
@@ -10,13 +11,12 @@ export function initPrivacy(modal) {
         });
     }
 
-    const selectHistoryCount = document.getElementById('setting-history-count');
-    if (selectHistoryCount) {
-        selectHistoryCount.value = userSettings.historyCount;
-        selectHistoryCount.addEventListener('change', (e) => {
-            userSettings.historyCount = parseInt(e.target.value);
-            saveSettings();
-        });
+    const dropdownHistoryCount = initCustomDropdown('history-count', (val) => {
+        userSettings.historyCount = parseInt(val);
+        saveSettings();
+    });
+    if (dropdownHistoryCount) {
+        dropdownHistoryCount.setValue(userSettings.historyCount);
     }
 
     const toggleAutocomplete = document.getElementById('toggle-autocomplete-suggestions');
