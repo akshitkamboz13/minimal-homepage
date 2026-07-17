@@ -1,4 +1,4 @@
-import { userSettings, saveSettings } from '../../state/settings.js';
+import { userSettings, saveSettings } from '../../settings/index.js';
 
 export function applyLayoutSettings() {
     if (userSettings.containerWidth === 'contained') {
@@ -39,13 +39,6 @@ export function initTopPanel() {
     const settingsBtn = document.getElementById('settings-toggle');
     const closeSettingsBtn = document.getElementById('close-settings');
     const settingsModal = document.getElementById('settings-modal');
-    
-    const toggleAllBookmarks = document.getElementById('toggle-all-bookmarks');
-    const toggleContainerWidth = document.getElementById('toggle-container-width');
-    const toggleTileWidth = document.getElementById('toggle-tile-width');
-    const toggleRememberSearch = document.getElementById('toggle-remember-search');
-    const toggleVisualSearch = document.getElementById('toggle-visual-search');
-    const toggleGoogleApps = document.getElementById('toggle-google-apps');
 
     // Apply initial layout settings
     applyLayoutSettings();
@@ -53,12 +46,12 @@ export function initTopPanel() {
     // Settings Modal Togglers
     if (settingsBtn) {
         settingsBtn.addEventListener('click', () => {
-            settingsModal.classList.remove('hidden');
+            if (settingsModal) settingsModal.classList.remove('hidden');
         });
     }
     if (closeSettingsBtn) {
         closeSettingsBtn.addEventListener('click', () => {
-            settingsModal.classList.add('hidden');
+            if (settingsModal) settingsModal.classList.add('hidden');
         });
     }
     if (settingsModal) {
@@ -66,80 +59,6 @@ export function initTopPanel() {
             if (e.target === settingsModal) {
                 settingsModal.classList.add('hidden');
             }
-        });
-    }
-
-    // Master Toggle Event
-    if (toggleAllBookmarks) {
-        toggleAllBookmarks.checked = userSettings.showBookmarks;
-        toggleAllBookmarks.addEventListener('change', (e) => {
-            userSettings.showBookmarks = e.target.checked;
-            saveSettings();
-        });
-    }
-
-    // Container Width Toggle Event
-    if (toggleContainerWidth) {
-        toggleContainerWidth.checked = userSettings.containerWidth === 'full';
-        toggleContainerWidth.addEventListener('change', (e) => {
-            userSettings.containerWidth = e.target.checked ? 'full' : 'contained';
-            saveSettings();
-            applyLayoutSettings();
-        });
-    }
-
-    // Tile Width Toggle Event
-    if (toggleTileWidth) {
-        toggleTileWidth.checked = userSettings.tileWidth === 'auto';
-        toggleTileWidth.addEventListener('change', (e) => {
-            userSettings.tileWidth = e.target.checked ? 'auto' : 'fixed';
-            saveSettings();
-            applyLayoutSettings();
-        });
-    }
-
-    // Remember Search Mode Toggle Event
-    if (toggleRememberSearch) {
-        toggleRememberSearch.checked = userSettings.rememberSearchMode;
-        toggleRememberSearch.addEventListener('change', (e) => {
-            userSettings.rememberSearchMode = e.target.checked;
-            if (!userSettings.rememberSearchMode) {
-                userSettings.lastSearchMode = 'google'; 
-                userSettings.selectedAi = null;
-                userSettings.selectedAiName = null;
-                
-                const googleMode = document.getElementById('mode-google');
-                if (googleMode) googleMode.checked = true;
-                
-                const aiLabel = document.querySelector('.ai-label');
-                if (aiLabel) {
-                    aiLabel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> AI`;
-                }
-                window.dispatchEvent(new Event('resize'));
-            } else {
-                const checkedMode = document.querySelector('input[name="search-mode"]:checked');
-                if (checkedMode) userSettings.lastSearchMode = checkedMode.value;
-            }
-            saveSettings();
-        });
-    }
-
-    // FAB Display Toggles
-    if (toggleVisualSearch) {
-        toggleVisualSearch.checked = userSettings.showVisualSearch;
-        toggleVisualSearch.addEventListener('change', (e) => {
-            userSettings.showVisualSearch = e.target.checked;
-            saveSettings();
-            applyLayoutSettings();
-        });
-    }
-
-    if (toggleGoogleApps) {
-        toggleGoogleApps.checked = userSettings.showGoogleApps;
-        toggleGoogleApps.addEventListener('change', (e) => {
-            userSettings.showGoogleApps = e.target.checked;
-            saveSettings();
-            applyLayoutSettings();
         });
     }
 }

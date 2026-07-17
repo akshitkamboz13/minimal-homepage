@@ -74,7 +74,7 @@ body.dark-mode .glass-note {
     border: none;
     padding: 16px;
     color: var(--text-color);
-    font-family: inherit;
+    font-family: var(--notes-font-family, inherit);
     font-size: 0.95rem;
     resize: none;
     outline: none;

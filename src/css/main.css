@@ -4,5 +4,6 @@
 @import url('./search/search.css');
 @import url('./bookmarks/bookmarks.css');
 @import url('./ui/panels/top-panel.css');
+@import url('./settings/settings.css');
 @import url('./ui/panels/right-panel.css');
 @import url('./notes/notes.css');

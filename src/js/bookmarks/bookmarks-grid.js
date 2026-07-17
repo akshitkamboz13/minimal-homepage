@@ -1,4 +1,4 @@
-import { userSettings } from '../state/settings.js';
+import { userSettings } from '../settings/index.js';
 
 export function renderBookmarksGrid(folders, bookmarksContainer) {
     folders.forEach(folder => {

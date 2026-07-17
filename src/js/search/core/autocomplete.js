@@ -1,4 +1,5 @@
 import { getSearchHistory, doSearch } from './search-engine.js';
+import { userSettings } from '../../settings/index.js';
 
 export function initAutocomplete() {
     const searchInput = document.getElementById('search-input');
@@ -10,9 +11,20 @@ export function initAutocomplete() {
 
     // Auto-focus search on global type
     document.addEventListener('keydown', (e) => {
+        if (!userSettings.kbdAutofocus) return;
         if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
         if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) return;
         if (searchInput) searchInput.focus();
+    });
+
+    // Escape key clears input if configured
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && userSettings.kbdEscClear) {
+            if (searchInput && document.activeElement === searchInput) {
+                searchInput.value = '';
+                if (suggestionsBox) suggestionsBox.classList.add('hidden');
+            }
+        }
     });
 
     const clockIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
@@ -66,7 +78,7 @@ export function initAutocomplete() {
             if (searchSubmitBtn) searchSubmitBtn.classList.toggle('hidden', val.length === 0);
             clearTimeout(debounceTimer);
 
-            const searchHistory = getSearchHistory();
+            const searchHistory = getSearchHistory().slice(0, userSettings.historyCount);
 
             if (!val) {
                 if (searchHistory.length > 0) {
@@ -74,6 +86,14 @@ export function initAutocomplete() {
                 } else if (suggestionsBox) {
                     suggestionsBox.classList.add('hidden');
                 }
+                return;
+            }
+
+            if (!userSettings.autocompleteSuggestions) {
+                const historyMatches = searchHistory
+                    .filter(q => q.toLowerCase().includes(val.toLowerCase()))
+                    .map(q => ({ text: q, isHistory: true }));
+                renderSuggestions(historyMatches);
                 return;
             }
 

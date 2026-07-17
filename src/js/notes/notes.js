@@ -1,3 +1,5 @@
+import { userSettings, onSettingsChanged } from '../settings/index.js';
+
 export function initNotes() {
     class NoteManager {
         constructor() {
@@ -5,6 +7,7 @@ export function initNotes() {
             this.colors = ['color-yellow', 'color-blue', 'color-green', 'color-pink'];
             this.container = document.body;
             this.addBtn = document.getElementById('add-note-btn');
+            this.saveTimeouts = {};
             
             this.init();
         }
@@ -14,6 +17,13 @@ export function initNotes() {
                 this.addBtn.addEventListener('click', () => this.createNewNote());
             }
             this.notes.forEach(noteData => this.renderNote(noteData));
+
+            onSettingsChanged(() => {
+                const textareas = document.querySelectorAll('.glass-note textarea');
+                textareas.forEach(ta => {
+                    ta.placeholder = userSettings.notesPlaceholder;
+                });
+            });
         }
 
         saveNotes() {
@@ -39,6 +49,7 @@ export function initNotes() {
             noteEl.style.top = `${noteData.y}px`;
             noteEl.dataset.id = noteData.id;
 
+            const placeholderText = userSettings.notesPlaceholder;
             noteEl.innerHTML = `
                 <div class="note-header">
                     <div class="note-drag-handle" style="flex:1; height:100%;"></div>
@@ -51,7 +62,7 @@ export function initNotes() {
                         </button>
                     </div>
                 </div>
-                <textarea class="note-content" placeholder="Type a note here..." spellcheck="false">${noteData.text}</textarea>
+                <textarea class="note-content" placeholder="${placeholderText}" spellcheck="false">${noteData.text}</textarea>
             `;
 
             this.container.appendChild(noteEl);
@@ -61,7 +72,12 @@ export function initNotes() {
                 const note = this.notes.find(n => n.id === noteData.id);
                 if (note) {
                     note.text = e.target.value;
-                    this.saveNotes();
+                    
+                    // Debounce saving using userSettings.notesAutosave seconds
+                    clearTimeout(this.saveTimeouts[noteData.id]);
+                    this.saveTimeouts[noteData.id] = setTimeout(() => {
+                        this.saveNotes();
+                    }, userSettings.notesAutosave * 1000);
                 }
             });
 

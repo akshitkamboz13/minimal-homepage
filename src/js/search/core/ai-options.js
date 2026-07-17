@@ -1,4 +1,4 @@
-import { userSettings, saveSettings } from '../../state/settings.js';
+import { userSettings, saveSettings } from '../../settings/index.js';
 
 export function updateSlider() {
     const slider = document.querySelector('.mode-slider');

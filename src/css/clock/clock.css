@@ -34,3 +34,11 @@ header {
         font-size: 3rem;
     }
 }
+
+.date-display {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    letter-spacing: 0.02em;
+}

@@ -1,4 +1,4 @@
-import { userSettings } from '../../state/settings.js';
+import { userSettings } from '../../settings/index.js';
 
 let searchHistory = JSON.parse(localStorage.getItem('startpage_search_history')) || [];
 

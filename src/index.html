@@ -106,64 +106,540 @@
     <aside id="settings-modal" class="modal-overlay hidden" aria-modal="true" role="dialog">
         <section class="modal-content glass-panel">
             <header class="modal-header">
-                <h2>Settings</h2>
+                <div class="header-title-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-header-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <h2>System Settings</h2>
+                </div>
                 <button id="close-settings" class="icon-btn" aria-label="Close Settings">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </header>
-            
-            <fieldset class="settings-group">
-                <legend class="hidden">General Preferences</legend>
-                <div class="setting-item">
-                    <span>Show Bookmarks Section</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-all-bookmarks" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="setting-item">
-                    <span>Full Screen Width</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-container-width" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="setting-item">
-                    <span>Dynamic Tile Widths</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-tile-width">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="setting-item">
-                    <span>Remember Search Mode</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-remember-search">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="setting-item">
-                    <span>Show Visual Search Button</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-visual-search" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="setting-item">
-                    <span>Show Google Apps Button</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-google-apps" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </fieldset>
 
-            <fieldset class="settings-group" id="folder-toggles-container">
-                <legend>Visible Folders</legend>
-                <div id="folder-toggles-list">
-                    <!-- Folder toggles injected here -->
-                </div>
-            </fieldset>
+            <div class="settings-layout">
+                <!-- Sidebar -->
+                <nav class="settings-sidebar" aria-label="Settings Categories">
+                    <div class="sidebar-search">
+                        <input type="text" id="settings-search" placeholder="Search settings..." autocomplete="off">
+                    </div>
+                    <ul class="settings-menu">
+                        <li class="menu-item active" data-tab="appearance">🎨 Appearance</li>
+                        <li class="menu-item" data-tab="notes">📝 Notes</li>
+                        <li class="menu-item" data-tab="bookmarks">📚 Bookmarks</li>
+                        <li class="menu-item" data-tab="windows">🪟 Windows</li>
+                        <li class="menu-item" data-tab="widgets">🧩 Widgets</li>
+                        <li class="menu-item" data-tab="ai">🤖 AI</li>
+                        <li class="menu-item" data-tab="voice">🎙 Voice Search</li>
+                        <li class="menu-item" data-tab="visual">📷 Visual Search</li>
+                        <li class="menu-item" data-tab="keyboard">⌨ Keyboard</li>
+                        <li class="menu-item" data-tab="privacy">🔒 Privacy</li>
+                        <li class="menu-item" data-tab="performance">⚡ Performance</li>
+                        <li class="menu-item" data-tab="developer">👨‍💻 Developer</li>
+                        <li class="menu-item" data-tab="about">ℹ About</li>
+                    </ul>
+                </nav>
+
+                <!-- Content Area -->
+                <main class="settings-body">
+                    <!-- 🎨 Appearance -->
+                    <section id="tab-appearance" class="settings-pane active">
+                        <h3>Appearance</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-theme">Theme Mode</label>
+                                <span class="setting-desc">Set default background theme style.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-theme" class="custom-select">
+                                    <option value="system">Follow System</option>
+                                    <option value="light">Light Theme</option>
+                                    <option value="dark">Dark Theme</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-container-width">Full Screen Width</label>
+                                <span class="setting-desc">Span main content across full window size.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-container-width" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-tile-width">Dynamic Tile Widths</label>
+                                <span class="setting-desc">Auto-scale bookmark directory tiles.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-tile-width">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Accent Color</label>
+                                <span class="setting-desc">Select primary colors highlight.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="color-presets">
+                                    <button type="button" class="color-dot" data-color="blue" style="background: #3b82f6;" title="Blue"></button>
+                                    <button type="button" class="color-dot" data-color="purple" style="background: #a855f7;" title="Purple"></button>
+                                    <button type="button" class="color-dot" data-color="emerald" style="background: #10b981;" title="Emerald"></button>
+                                    <button type="button" class="color-dot" data-color="amber" style="background: #f59e0b;" title="Amber"></button>
+                                    <button type="button" class="color-dot" data-color="rose" style="background: #f43f5e;" title="Rose"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 📝 Notes -->
+                    <section id="tab-notes" class="settings-pane">
+                        <h3>Notes Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-notes-font">Notes Font Family</label>
+                                <span class="setting-desc">Choose font typography style.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-notes-font" class="custom-select">
+                                    <option value="sans">System Sans-Serif</option>
+                                    <option value="serif">Classic Serif</option>
+                                    <option value="mono">Developer Monospace</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-notes-autosave">Auto-save Delay</label>
+                                <span class="setting-desc">Notes saving delay limit (seconds).</span>
+                            </div>
+                            <div class="setting-control range-wrapper">
+                                <input type="range" id="setting-notes-autosave" min="1" max="5" value="2" step="1">
+                                <span class="range-value" id="autosave-val">2s</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-notes-placeholder">Note Placeholder Text</label>
+                                <span class="setting-desc">Default content text for blank notes.</span>
+                            </div>
+                            <div class="setting-control">
+                                <input type="text" id="setting-notes-placeholder" placeholder="Type a note here..." class="custom-input">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 📚 Bookmarks -->
+                    <section id="tab-bookmarks" class="settings-pane">
+                        <h3>Bookmarks Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-all-bookmarks">Show Bookmarks Section</label>
+                                <span class="setting-desc">Toggle bookmarks visibility.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-all-bookmarks" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-bookmark-target">Open Bookmarks In</label>
+                                <span class="setting-desc">Target frame window path.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-bookmark-target" class="custom-select">
+                                    <option value="_blank">New Tab</option>
+                                    <option value="_self">Current Tab</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-group-section" id="folder-toggles-container">
+                            <h4 class="section-title">Visible Folders & Links</h4>
+                            <div id="folder-toggles-list" class="folder-list-container">
+                                <!-- Folder toggles injected here -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 🪟 Windows -->
+                    <section id="tab-windows" class="settings-pane">
+                        <h3>Windows & Navigation</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-window-scale">Interface Scaling</label>
+                                <span class="setting-desc">Adjust UI elements zoom level scale.</span>
+                            </div>
+                            <div class="setting-control range-wrapper">
+                                <input type="range" id="setting-window-scale" min="80" max="120" value="100" step="5">
+                                <span class="range-value" id="scale-val">100%</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-sidebar-hover">Hover to Open Panels</label>
+                                <span class="setting-desc">Trigger panel hover auto-expand.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-sidebar-hover">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 🧩 Widgets -->
+                    <section id="tab-widgets" class="settings-pane">
+                        <h3>Widgets Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-clock-format">Clock format</label>
+                                <span class="setting-desc">Format the primary time display.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-clock-format" class="custom-select">
+                                    <option value="12">12-Hour (AM/PM)</option>
+                                    <option value="24">24-Hour</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-clock-seconds">Show Seconds</label>
+                                <span class="setting-desc">Toggle seconds timer on main clock.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-clock-seconds" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-clock-date">Show Date Panel</label>
+                                <span class="setting-desc">Display current day of week and month.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-clock-date" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-google-apps">Google Apps Grid Trigger</label>
+                                <span class="setting-desc">Display grid app launcher in floats.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-google-apps" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 🤖 AI -->
+                    <section id="tab-ai" class="settings-pane">
+                        <h3>AI Options</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-ai-provider">Default AI Engine</label>
+                                <span class="setting-desc">Primary assistant model shortcut.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-ai-provider" class="custom-select">
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="chatgpt">ChatGPT</option>
+                                    <option value="claude">Claude</option>
+                                    <option value="grok">Grok</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-ai-direct">Direct Deep-linking Mode</label>
+                                <span class="setting-desc">Instantly open query results page on AI site.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-ai-direct">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-ai-custom-prompt">AI Context Suffix</label>
+                                <span class="setting-desc">Automatically append context to AI queries.</span>
+                            </div>
+                            <div class="setting-control">
+                                <input type="text" id="setting-ai-custom-prompt" placeholder="e.g., explain briefly" class="custom-input">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 🎙 Voice Search -->
+                    <section id="tab-voice" class="settings-pane">
+                        <h3>Voice Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-voice-lang">Speech Language</label>
+                                <span class="setting-desc">Target language for voice recognition.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-voice-lang" class="custom-select">
+                                    <option value="en-US">English (US)</option>
+                                    <option value="es-ES">Spanish (Spain)</option>
+                                    <option value="fr-FR">French (France)</option>
+                                    <option value="de-DE">German (Germany)</option>
+                                    <option value="hi-IN">Hindi (India)</option>
+                                    <option value="ja-JP">Japanese (Japan)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-voice-auto-submit">Auto-submit voice search</label>
+                                <span class="setting-desc">Submit queries instantly after speech ends.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-voice-auto-submit" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 📷 Visual Search -->
+                    <section id="tab-visual" class="settings-pane">
+                        <h3>Visual Search Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-visual-search">Show Visual Search Button</label>
+                                <span class="setting-desc">Toggle camera float action trigger.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-visual-search" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-visual-provider">Default Lens Engine</label>
+                                <span class="setting-desc">Engine provider for visual query uploads.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-visual-provider" class="custom-select">
+                                    <option value="google">Google Lens</option>
+                                    <option value="bing">Bing Visual</option>
+                                    <option value="yandex">Yandex Visual</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ⌨ Keyboard -->
+                    <section id="tab-keyboard" class="settings-pane">
+                        <h3>Keyboard Shortcuts</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-kbd-autofocus">Focus Search Input on Load</label>
+                                <span class="setting-desc">Focus the search field automatically on load.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-kbd-autofocus" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-kbd-esc-clear">Escape Key Clears Input</label>
+                                <span class="setting-desc">Clear search queries automatically on Esc.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-kbd-esc-clear" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="keyboard-shortcuts-section">
+                            <h4 class="section-title">Shortcut Guide</h4>
+                            <div class="shortcut-list">
+                                <div class="shortcut-row">
+                                    <span>Open System Settings</span>
+                                    <kbd>Alt + S</kbd>
+                                </div>
+                                <div class="shortcut-row">
+                                    <span>Focus Search Bar</span>
+                                    <kbd>Any character</kbd>
+                                </div>
+                                <div class="shortcut-row">
+                                    <span>Close Modals / Panels</span>
+                                    <kbd>Escape</kbd>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 🔒 Privacy -->
+                    <section id="tab-privacy" class="settings-pane">
+                        <h3>Privacy & History</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-remember-search">Remember Search Mode</label>
+                                <span class="setting-desc">Preserve last chosen search engine mode.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-remember-search">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-history-count">Search Suggestions Limit</label>
+                                <span class="setting-desc">Max count of query history matches display.</span>
+                            </div>
+                            <div class="setting-control">
+                                <select id="setting-history-count" class="custom-select">
+                                    <option value="3">3 items</option>
+                                    <option value="5">5 items</option>
+                                    <option value="10">10 items</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-autocomplete-suggestions">Fetch Google Suggestions</label>
+                                <span class="setting-desc">Connect autocomplete prediction queries.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-autocomplete-suggestions" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row border-top">
+                            <div class="setting-info">
+                                <label>Clear Search History</label>
+                                <span class="setting-desc">Remove all cached history queries.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-clear-history" class="action-btn danger">Clear History</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ⚡ Performance -->
+                    <section id="tab-performance" class="settings-pane">
+                        <h3>Performance & Motion</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-performance-motion">Reduce Motion</label>
+                                <span class="setting-desc">Deactivate background mesh float animations.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-performance-motion">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 👨‍💻 Developer -->
+                    <section id="tab-developer" class="settings-pane">
+                        <h3>Developer & Debug</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Export Configurations</label>
+                                <span class="setting-desc">Download current settings as JSON file.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-export-settings" class="action-btn">Export Configuration</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Import Configurations</label>
+                                <span class="setting-desc">Restore settings from JSON file.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-import-settings" class="action-btn">Import Configuration</button>
+                                <input type="file" id="file-import-settings" accept=".json" style="display:none;">
+                            </div>
+                        </div>
+
+                        <div class="setting-row border-top">
+                            <div class="setting-info" style="color: var(--accent-color);">
+                                <label>Restore Factory Reset</label>
+                                <span class="setting-desc">Wipe all local settings cache to default.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-reset-settings" class="action-btn danger">Factory Reset</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ℹ About -->
+                    <section id="tab-about" class="settings-pane">
+                        <h3>About Startpage</h3>
+                        <div class="about-card">
+                            <div class="about-app-icon">H</div>
+                            <h4 class="about-app-title">Home Startup page</h4>
+                            <span class="about-app-version">v1.2.0</span>
+                            <p class="about-app-desc">A beautiful, high-performance, and feature-rich new tab override extension for Google Chrome.</p>
+                            
+                            <div class="about-links-wrapper">
+                                <a href="https://github.com/akshitkamboz13/minimal-homepage" target="_blank" class="about-link-button">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="about-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                    GitHub Project Repository
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
         </section>
     </aside>
 
