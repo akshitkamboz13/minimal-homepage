@@ -102,6 +102,9 @@
 }
 
 .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.6rem 0.8rem;
     border-radius: 8px;
     cursor: pointer;
@@ -110,6 +113,18 @@
     transition: var(--transition-smooth);
     white-space: nowrap;
     user-select: none;
+}
+
+.sidebar-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    transition: transform 0.2s ease;
+}
+
+.menu-item:hover .sidebar-icon {
+    transform: scale(1.05);
 }
 
 .menu-item:hover {
