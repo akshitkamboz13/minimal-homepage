@@ -10,6 +10,18 @@ const defaults = {
     lastSearchMode: 'google',
     showVisualSearch: true,
     showGoogleApps: true,
+    showVerticalPanel: true,
+    verticalPanelPosition: 'right', // 'right' | 'left'
+    verticalIconSize: 20, // 16 | 20 | 24 | 28
+    showHorizontalPanel: true,
+    horizontalPanelPosition: 'top', // 'top' | 'bottom'
+    horizontalIconSize: 20, // 16 | 20 | 24 | 28
+    showHeaderNote: true,
+    showHeaderSettings: true,
+    showHeaderTheme: true,
+    showDock: false,
+    dockPosition: 'bottom', // 'bottom' | 'top'
+    dockAutohide: false,
 
     // New configuration settings
     theme: 'system', // 'system' | 'light' | 'dark'

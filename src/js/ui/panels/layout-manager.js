@@ -207,6 +207,7 @@ export function enableRearrangeMode(enable) {
         if (toolbar) toolbar.classList.add('hidden');
         toggleGridOverlay(false);
         teardownDragHandlers();
+        applyLayoutPositions();
     }
 }
 
@@ -290,8 +291,14 @@ function setupDragHandlers() {
         let initialY;
 
         const dragStart = (e) => {
-            if (e.target.closest('input, textarea')) return;
-            if (e.target.closest('button') && !e.target.closest('.layout-drag-badge')) return;
+            if (e.target.closest('input, textarea, select')) return;
+            const isInteractive = e.target.closest('a, button');
+            const isBadge = e.target.closest('.layout-drag-badge');
+            if (isInteractive && !isBadge) return;
+
+            const liveRect = el.getBoundingClientRect();
+            xOffset = liveRect.left;
+            yOffset = liveRect.top;
 
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
@@ -385,8 +392,6 @@ function setupDragHandlers() {
 
         const dragEnd = () => {
             if (!isDragging) return;
-            initialX   = currentX;
-            initialY   = currentY;
             isDragging = false;
             el.classList.remove('is-dragging');
             el.style.zIndex = '90';
@@ -394,18 +399,20 @@ function setupDragHandlers() {
             // Clear line snapped highlights
             gridOverlay?.querySelectorAll('.grid-line').forEach(l => l.classList.remove('snapped'));
 
-            // Resolve overlaps on drop — push siblings apart without blocking drag
-            const resolved = resolveCollisions(el, xOffset, yOffset);
-            xOffset  = resolved.x;
-            yOffset  = resolved.y;
-            currentX = resolved.x;
-            currentY = resolved.y;
-            el.style.left = `${resolved.x}px`;
-            el.style.top  = `${resolved.y}px`;
+            // Pin element visually at exact dropped coordinates
+            el.style.left = `${currentX}px`;
+            el.style.top  = `${currentY}px`;
 
-            // Persist per-drop so Save&Lock just hides toolbar
+            // Persist per-drop so elements stay visually in place
             if (!userSettings.layoutPositions) userSettings.layoutPositions = {};
-            userSettings.layoutPositions[id] = { x: Math.round(xOffset), y: Math.round(yOffset) };
+            const existing = userSettings.layoutPositions[id] || {};
+            userSettings.layoutPositions[id] = {
+                x: Math.round(currentX),
+                y: Math.round(currentY),
+                w: existing.w,
+                h: existing.h
+            };
+            userSettings.freeformLayout = true;
             saveSettings();
         };
 

@@ -12,6 +12,7 @@ import { initPrivacy } from './panels/privacy.js';
 import { initPerformance, applyPerformanceVisuals } from './panels/performance.js';
 import { initDeveloper } from './panels/developer.js';
 import { initAbout } from './panels/about.js';
+import { initPanelsSettings, applyPanelsVisuals } from './panels/panels.js';
 
 const CATEGORY_CONFIG = {
     'personalization': {
@@ -19,12 +20,12 @@ const CATEGORY_CONFIG = {
         tabs: ['appearance', 'windows']
     },
     'widgets': {
-        title: 'Widgets',
-        tabs: ['widgets', 'notes', 'bookmarks']
+        title: 'Widgets & Panels',
+        tabs: ['panels', 'widgets', 'notes', 'bookmarks']
     },
     'search-ai': {
         title: 'Search & AI',
-        tabs: ['ai', 'voice', 'visual']
+        tabs: ['core-search', 'ai', 'voice', 'visual']
     },
     'system': {
         title: 'System & Controls',
@@ -41,6 +42,7 @@ export function applySettingsVisuals() {
     applyNotesVisuals();
     applyWindowsVisuals();
     applyPerformanceVisuals();
+    applyPanelsVisuals();
 }
 
 export function initSettingsPanel() {
@@ -245,6 +247,7 @@ export function initSettingsPanel() {
     initBookmarksSettings(modal);
     initWindows(modal);
     initWidgets(modal);
+    initPanelsSettings(modal);
     initAi(modal);
     initVoice(modal);
     initVisual(modal);
