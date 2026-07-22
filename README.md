@@ -15,20 +15,22 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 - **Responsive Layout:** Automatically scales across multiple screen widths, supporting both ultra-wide and constrained display alignments.
 - **Semantic HTML:** Codebase built with standard semantic HTML tags (`<header>`, `<main>`, `<section>`, `<nav>`, `<aside>`) for superior accessibility and readability.
 
-### 🔍 Advanced Search Engine Capabilities
-- **Google & AI Dual Search Modes:** 
-  - **Google Mode:** Direct Google search query execution.
-  - **AI Mode:** Directs queries using custom Google search parameters designed to display AI Overviews and structured web results.
-- **Direct LLM Deep-links:** Accessible dropdown buttons mapping the search term directly into **ChatGPT**, **Gemini**, **Claude**, or **Grok** search query pages.
-- **Interactive Search Input:** An elegant, dynamically animated submit arrow seamlessly appears as you type, matching the minimal aesthetic.
-- **Google-Powered Autocomplete:** Real-time search predictions retrieved via JSON suggestions from Google's autocomplete endpoint.
-- **Smart History Suggestions:** Recalls your last 5 searched queries. Displays history suggestions first with a clock icon for swift re-access.
-- **Global Keypress Focus:** Start typing immediately on opening a new tab to autofocus the search input automatically.
-- **Full Keyboard Navigation:** Browse suggestions using `ArrowUp` / `ArrowDown` and submit queries with `Enter`.
+### 🎛️ Panels & Bars Configuration
+- **Vertical Panel (Right Panel / FABs):**
+  - **Screen Edge Placement:** Position floating action buttons cleanly on either the **Right Edge** or **Left Edge**.
+  - **Action Icon Sizing:** Adjust floating icon sizes dynamically (`Small 16px`, `Medium 20px`, `Large 24px`, `Extra Large 28px`).
+  - **Individual Icon Toggles:** Selectively show or hide individual floating action buttons (**Google Apps Grid `:::`**, **Visual Search Camera 📷**).
+- **Horizontal Panel (Top Action Header):**
+  - **Fixed Screen Edge Placement:** Fixed positioning at either the **Top Screen Edge** or **Bottom Screen Edge**.
+  - **Header Icon Sizing:** Adjust top header icon sizes dynamically (`Small 16px`, `Medium 20px`, `Large 24px`, `Extra Large 28px`).
+  - **Individual Icon Toggles:** Selectively show or hide individual top action triggers (**Add Sticky Note ➕**, **Settings Gear ⚙️**, **Theme Switcher ☀️/🌙**).
+- **Application Dock:** Floating application dock controls preview (tagged with Coming Soon / Under Development).
 
-### 🎙️ Speech & Visual Search Integration
-- **Web Speech API Voice Search:** Speak queries naturally via chrome's audio input. Since Chrome extension service workers do not support microphone access directly, a modern **Offscreen Document** bridge is initialized to securely process voice recognition.
-- **Multimodal Visual Search:** Drag and drop or upload an image to query visually across **Google Lens**, **Bing**, or **Yandex**. You can optionally add text context to your image searches which is seamlessly parsed and appended to the search engine requests.
+### 🔍 Search & AI Options
+- **Core Search Settings:** Configure **Remember Search Mode**, **Search History Limit**, **Live Suggestions Limit**, and **Fetch Google Suggestions**.
+- **AI Options:** Select primary assistant shortcut (**Google AI**, **ChatGPT**, **Claude**, **Bing AI**, **Grok**) or register custom LLM search query endpoints.
+- **Voice Search:** Web Speech API audio language configuration and auto-submit voice search toggles.
+- **Visual Search:** Multimodal image search supporting **Google Lens**, **Bing**, and **Yandex** visual search engines with optional context suffix support.
 
 ### 📱 Google Apps Launcher
 - **Quick Access Grid:** A sleek 3x3 popup grid to launch your favorite Google apps and services instantly.
@@ -38,14 +40,9 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 ### 🔖 Native Bookmarks Integration
 - **Direct Chrome Bookmarks Sync:** Reads bookmarks directly from the Chrome "Bookmarks Bar" tree structure dynamically.
 - **Auto-categorization:** Groups bookmarks into glassmorphic tiles representing their respective directories.
-- **Untitled Links Grid:** Smartly parses bookmarks without titles and displays them in a compact icon grid, preserving vertical real estate.
-- **Loose Link Support:** Any bookmarks sitting at the root level of your bookmarks bar are neatly grouped under a pseudo-folder titled "Other Bookmarks."
-- **Horizontal Smooth Scrolling:** Map vertical scroll wheel inputs to pan bookmarks horizontally, allowing rapid sidebar navigation.
-
-### ⚙️ Customizable Settings Modal
-- **Layout Toggles:** Toggle bookmarks section visibility, adjust full screen vs. constrained widths, or enable dynamic tile width scaling.
-- **Search Memory:** Option to remember the last used search mode configuration.
-- **Folder and Link Filter:** Expandable list views of folders and nested links, allowing you to selectively hide or show folders and links on the main page.
+- **1D Row vs 2D Grid Layouts:** Switch seamlessly between 1D row array and auto-tiling 2D grid array layouts.
+- **Dual-Axis & Mouse Wheel Scrollability:** Natural vertical mouse wheel scrolling (`scrollTop`) and horizontal scrolling over bookmark folders.
+- **Document-Body Handles Overlay:** Unclipped floating resize handles overlay allowing easy widget resizing up to full screen width.
 
 ---
 
@@ -55,9 +52,9 @@ A beautiful, high-performance, and feature-rich new tab override extension for G
 | --- | --- |
 | ![Light Mode](screenshots/Ss1.png) | ![Dark Mode](screenshots/Ss3.png) |
 
-| 📑 Bookmarks |  ⚙️ Interactive Settings Modal |
+| 📑 Bookmarks | ⚙️ Interactive Settings Modal |
 | --- | --- |
-| ![Bookmarks](screenshots/Ss2.png) | ![Settings](screenshots/Ss5.png) |
+| ![Bookmarks](screenshots/Ss2.png) | ![Settings](screenshots/Ss6.png) |
 
 ---
 
@@ -106,31 +103,9 @@ minimal-startpage/
 │       ├── icon16.png       # 16x16 icon resource
 │       ├── icon48.png       # 48x48 icon resource
 │       └── icon128.png      # 128x128 icon resource
-├── build/               # Compiled extension for distribution
+├── build/               # Compiled extension release zip builds (v1.2.0)
 └── screenshots/         # Asset gallery for store visualization
 ```
-
----
-
-## Technical Details
-
-### Voice Search via Offscreen Document
-Chrome Extensions manifest V3 background scripts execute inside service workers, which lack DOM API accessibility and `navigator.mediaDevices` microphone streams. To implement speech-to-text, "Home" leverages a manifest permission rule for `offscreen` documents:
-1. When the microphone button is clicked, `src/js/search/voice/voice.js` fires a message to `background.js`.
-2. `background.js` verifies and instantiates `offscreen.html` (with `USER_MEDIA` justifications).
-3. The offscreen document runs the browser's native webkitSpeechRecognition engine.
-4. Voice transcriptions are passed back dynamically to `voice.js` via `chrome.runtime.sendMessage` broadcasts, populating the input field in real-time.
-
-### Google Lens Upload Protocol
-Image search triggers file selection. When chosen, the image is loaded into a visual canvas preview. Upon submit, it compiles into a standard multipart payload posted directly to Lens:
-```html
-<form id="lens-form" action="https://lens.google.com/upload" method="POST" enctype="multipart/form-data" style="display: none;">
-    <input type="file" id="image-search-input" name="encoded_image" accept="image/*">
-</form>
-```
-
-### Layout Customization Serialization
-All client choices (hidden folder keys, layout orientations, theme selections, query histories, hidden bookmark ids) are serialized and persisted locally utilizing `window.localStorage` blocks. This ensures quick startup times when opening new tabs.
 
 ---
 
@@ -166,26 +141,6 @@ git push -u origin main
 
 ---
 
-## Development & Customization
+## License & Author
 
-- **Styling modifications:** Update the design tokens, color combinations, or layout grids in the [src/css/](file:///home/siakshit/Startups/Homepages/minimal-startpage/src/css) directory. The central hub is `main.css`.
-- **Core interaction edits:** Modify logic for search routing, suggestions, or bookmark behaviors across the ES Modules in the [src/js/](file:///home/siakshit/Startups/Homepages/minimal-startpage/src/js) directory. The central hub is `main.js`.
-- **Extension scope/permissions:** Check or add host origins and extensions configurations in [manifest.json](file:///home/siakshit/Startups/Homepages/minimal-startpage/manifest.json).
-
----
-
-## Contributing
-
-We welcome community contributions to make "Home" even better! 
-
-### How to Contribute
-1. **Fork the Repository:** Create a fork of the `minimal-homepage` repository to your GitHub account.
-2. **Create a Branch:** Start a new feature or bugfix branch (`git checkout -b feature/your-feature-name`).
-3. **Make Changes:** Add your UI improvements, bug fixes, or entirely new modules. Ensure you stick to the ES6 module architecture and separate your CSS!
-4. **Test Locally:** Load your unpacked extension in Chrome and verify functionality.
-5. **Submit a Pull Request:** Push your changes to your fork and submit a PR to the main repository.
-
-### Code Style Guidelines
-- **HTML:** Use semantic tags (`<header>`, `<main>`, `<section>`) over generic `<div>` tags whenever possible.
-- **CSS:** Keep styles modular. Variables go in `theme.css`, new components get their own files in the `src/css/` directory and are imported in `main.css`. Avoid `!important`.
-- **JavaScript:** Use lowercase kebab-case for filenames (e.g. `right-panel.js`). Always use ES Modules (`export default`). Do not pollute the global window object.
+Open-source minimalist startpage created with passion by **Akshit Kamboz (si4k)**. Free to use, adapt, and build upon.
