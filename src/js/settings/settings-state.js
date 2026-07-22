@@ -17,12 +17,21 @@ const defaults = {
     notesFont: 'sans', // 'sans' | 'serif' | 'mono'
     notesAutosave: 2,
     notesPlaceholder: 'Type a note here...',
+    defaultNoteWidth: 250,
+    defaultNoteHeight: 250,
     bookmarkTarget: '_blank', // '_blank' | '_self'
     windowScale: 100, // percentage 80-120
     sidebarHover: false,
     clockFormat: '12', // '12' | '24'
     clockShowSeconds: true,
     clockShowDate: true,
+    clockAlignment: 'center', // 'center' | 'left' | 'right'
+    greetingMode: 'default', // 'default' | 'time_custom' | 'custom_text'
+    greetingMorning: 'Good morning.',
+    greetingAfternoon: 'Good afternoon.',
+    greetingEvening: 'Good evening.',
+    greetingNight: 'Good night.',
+    customGreetingText: 'Welcome back.',
     selectedAi: 'gemini',
     selectedAiName: 'Google AI',
     showAiToggle: true,
@@ -33,6 +42,7 @@ const defaults = {
     kbdAutofocus: true,
     kbdEscClear: true,
     historyCount: 5,
+    suggestionsLimit: 5,
     autocompleteSuggestions: true,
     reduceMotion: false,
     backgroundType: 'mesh-default',

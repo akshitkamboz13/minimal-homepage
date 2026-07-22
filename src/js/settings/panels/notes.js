@@ -41,4 +41,40 @@ export function initNotesSettings(modal) {
             saveSettings();
         });
     }
+
+    // 1. Default Note Width Slider
+    const sliderNotesWidth = document.getElementById('setting-notes-width');
+    const labelNotesWidth = document.getElementById('notes-width-val');
+    if (sliderNotesWidth) {
+        sliderNotesWidth.value = userSettings.defaultNoteWidth || 250;
+        if (labelNotesWidth) labelNotesWidth.textContent = `${userSettings.defaultNoteWidth || 250}px`;
+        sliderNotesWidth.addEventListener('input', (e) => {
+            userSettings.defaultNoteWidth = parseInt(e.target.value);
+            if (labelNotesWidth) labelNotesWidth.textContent = `${userSettings.defaultNoteWidth}px`;
+            saveSettings();
+        });
+    }
+
+    // 2. Default Note Height Slider
+    const sliderNotesHeight = document.getElementById('setting-notes-height');
+    const labelNotesHeight = document.getElementById('notes-height-val');
+    if (sliderNotesHeight) {
+        sliderNotesHeight.value = userSettings.defaultNoteHeight || 250;
+        if (labelNotesHeight) labelNotesHeight.textContent = `${userSettings.defaultNoteHeight || 250}px`;
+        sliderNotesHeight.addEventListener('input', (e) => {
+            userSettings.defaultNoteHeight = parseInt(e.target.value);
+            if (labelNotesHeight) labelNotesHeight.textContent = `${userSettings.defaultNoteHeight}px`;
+            saveSettings();
+        });
+    }
+
+    // 3. Close All Sticky Notes
+    const btnCloseAllNotes = document.getElementById('btn-close-all-notes');
+    if (btnCloseAllNotes) {
+        btnCloseAllNotes.addEventListener('click', () => {
+            if (confirm('Are you sure you want to close and delete all open sticky notes?')) {
+                window.dispatchEvent(new CustomEvent('clear-all-notes'));
+            }
+        });
+    }
 }

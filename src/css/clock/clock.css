@@ -5,10 +5,22 @@ header {
     margin-bottom: 2rem;
 }
 
-/* Hero Section (Greeting & Clock) */
 .hero-section {
     text-align: center;
     margin-bottom: 3rem;
+    transition: text-align 0.3s ease;
+}
+
+.hero-section.align-left {
+    text-align: left;
+}
+
+.hero-section.align-center {
+    text-align: center;
+}
+
+.hero-section.align-right {
+    text-align: right;
 }
 
 .clock {

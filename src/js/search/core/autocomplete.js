@@ -78,14 +78,15 @@ export function initAutocomplete() {
             if (searchSubmitBtn) searchSubmitBtn.classList.toggle('hidden', val.length === 0);
             clearTimeout(debounceTimer);
 
-            const limit = userSettings.historyCount || 5;
+            const historyLimit = userSettings.historyCount || 5;
+            const suggestionsLimit = userSettings.suggestionsLimit || 5;
             const searchHistory = getSearchHistory();
 
             if (!val) {
-                // No query typed — show recent history up to limit
+                // No query typed — show recent history up to historyLimit
                 if (searchHistory.length > 0) {
                     renderSuggestions(
-                        searchHistory.slice(0, limit).map(q => ({ text: q, isHistory: true }))
+                        searchHistory.slice(0, historyLimit).map(q => ({ text: q, isHistory: true }))
                     );
                 } else if (suggestionsBox) {
                     suggestionsBox.classList.add('hidden');
@@ -99,8 +100,8 @@ export function initAutocomplete() {
                 .map(q => ({ text: q, isHistory: true }));
 
             if (!userSettings.autocompleteSuggestions) {
-                // Only history, capped to limit
-                renderSuggestions(historyMatches.slice(0, limit));
+                // Only history, capped to historyLimit
+                renderSuggestions(historyMatches.slice(0, historyLimit));
                 return;
             }
 
@@ -111,29 +112,28 @@ export function initAutocomplete() {
                         const results = data[1] || [];
 
                         // Deduplicate history from API results; fill remaining slots with API items
-                        const cappedHistory = historyMatches.slice(0, limit);
-                        const remainingSlots = limit - cappedHistory.length;
+                        const cappedHistory = historyMatches.slice(0, historyLimit);
 
                         const apiMatches = results
                             .filter(q => !cappedHistory.some(h => h.text === q))
-                            .slice(0, remainingSlots)
+                            .slice(0, suggestionsLimit)
                             .map(q => ({ text: q, isHistory: false }));
 
                         renderSuggestions([...cappedHistory, ...apiMatches]);
                     })
                     .catch(() => {
-                        renderSuggestions(historyMatches.slice(0, limit));
+                        renderSuggestions(historyMatches.slice(0, historyLimit));
                     });
             }, 150);
         });
 
         searchInput.addEventListener('focus', () => {
             const val = searchInput.value.trim();
-            const limit = userSettings.historyCount || 5;
+            const historyLimit = userSettings.historyCount || 5;
             const searchHistory = getSearchHistory();
             if (!val && searchHistory.length > 0) {
                 renderSuggestions(
-                    searchHistory.slice(0, limit).map(q => ({ text: q, isHistory: true }))
+                    searchHistory.slice(0, historyLimit).map(q => ({ text: q, isHistory: true }))
                 );
             } else if (val) {
                 searchInput.dispatchEvent(new Event('input'));

@@ -24,6 +24,18 @@ export function initNotes() {
                     ta.placeholder = userSettings.notesPlaceholder;
                 });
             });
+
+            window.addEventListener('clear-all-notes', () => {
+                this.notes = [];
+                this.saveNotes();
+                const allNotes = document.querySelectorAll('.glass-note');
+                allNotes.forEach(noteEl => {
+                    noteEl.style.transform = 'scale(0.8)';
+                    noteEl.style.opacity = '0';
+                    noteEl.style.transition = 'all 0.2s';
+                    setTimeout(() => noteEl.remove(), 200);
+                });
+            });
         }
 
         saveNotes() {
@@ -33,10 +45,12 @@ export function initNotes() {
         createNewNote() {
             const id = Date.now().toString();
             const color = this.colors[Math.floor(Math.random() * this.colors.length)];
-            const x = Math.max(100, window.innerWidth / 2 - 125 + (Math.random() * 40 - 20));
-            const y = Math.max(100, window.innerHeight / 2 - 125 + (Math.random() * 40 - 20));
+            const defaultW = userSettings.defaultNoteWidth || 250;
+            const defaultH = userSettings.defaultNoteHeight || 250;
+            const x = Math.max(100, window.innerWidth / 2 - defaultW / 2 + (Math.random() * 40 - 20));
+            const y = Math.max(100, window.innerHeight / 2 - defaultH / 2 + (Math.random() * 40 - 20));
             
-            const noteData = { id, text: '', color, x, y, w: 250, h: 250 };
+            const noteData = { id, text: '', color, x, y, w: defaultW, h: defaultH };
             this.notes.push(noteData);
             this.saveNotes();
             this.renderNote(noteData);

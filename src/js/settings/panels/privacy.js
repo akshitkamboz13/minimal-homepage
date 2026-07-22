@@ -19,6 +19,14 @@ export function initPrivacy(modal) {
         dropdownHistoryCount.setValue(userSettings.historyCount);
     }
 
+    const dropdownSuggestionsLimit = initCustomDropdown('suggestions-limit', (val) => {
+        userSettings.suggestionsLimit = parseInt(val);
+        saveSettings();
+    });
+    if (dropdownSuggestionsLimit) {
+        dropdownSuggestionsLimit.setValue(userSettings.suggestionsLimit || 5);
+    }
+
     const toggleAutocomplete = document.getElementById('toggle-autocomplete-suggestions');
     if (toggleAutocomplete) {
         toggleAutocomplete.checked = userSettings.autocompleteSuggestions;

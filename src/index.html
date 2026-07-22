@@ -495,6 +495,38 @@
                                 <input type="text" id="setting-notes-placeholder" placeholder="Type a note here..." class="custom-input">
                             </div>
                         </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-notes-width">Default Opening Width</label>
+                                <span class="setting-desc">Initial width for newly created sticky notes.</span>
+                            </div>
+                            <div class="setting-control range-wrapper">
+                                <input type="range" id="setting-notes-width" min="180" max="500" value="250" step="10">
+                                <span class="range-value" id="notes-width-val">250px</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-notes-height">Default Opening Height</label>
+                                <span class="setting-desc">Initial height for newly created sticky notes.</span>
+                            </div>
+                            <div class="setting-control range-wrapper">
+                                <input type="range" id="setting-notes-height" min="180" max="500" value="250" step="10">
+                                <span class="range-value" id="notes-height-val">250px</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row border-top">
+                            <div class="setting-info">
+                                <label>Close All Sticky Notes</label>
+                                <span class="setting-desc">Remove all open sticky notes from your workspace.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-close-all-notes" class="action-btn danger">Close All Notes</button>
+                            </div>
+                        </div>
                     </section>
 
                     <!-- 📚 Bookmarks -->
@@ -627,6 +659,85 @@
                                     <input type="checkbox" id="toggle-clock-date" checked>
                                     <span class="slider round"></span>
                                 </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Clock Block Alignment</label>
+                                <span class="setting-desc">Align time, greeting, and date displays (Left, Center, Right).</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="custom-dropdown" id="dropdown-clock-align">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">Center</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="center" role="option">Center</li>
+                                        <li class="dropdown-item" data-value="left" role="option">Left</li>
+                                        <li class="dropdown-item" data-value="right" role="option">Right</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Greeting Style & Logic</label>
+                                <span class="setting-desc">Customize greeting mode or time-based text.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="custom-dropdown" id="dropdown-greeting-mode">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">Default (Time-Based)</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="default" role="option">Default (Time-Based)</li>
+                                        <li class="dropdown-item" data-value="time_custom" role="option">Custom Time Greetings</li>
+                                        <li class="dropdown-item" data-value="custom_text" role="option">Fixed Custom Message</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group-section hidden" id="custom-time-greetings-container" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                            <h4 class="section-title">Time-Based Greeting Texts</h4>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                                <div class="setting-row" style="padding: 0.25rem 0;">
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Morning (05:00 - 11:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-morning" placeholder="Good morning." class="custom-input"></div>
+                                </div>
+                                <div class="setting-row" style="padding: 0.25rem 0;">
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Afternoon (12:00 - 17:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-afternoon" placeholder="Good afternoon." class="custom-input"></div>
+                                </div>
+                                <div class="setting-row" style="padding: 0.25rem 0;">
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Evening (18:00 - 22:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-evening" placeholder="Good evening." class="custom-input"></div>
+                                </div>
+                                <div class="setting-row" style="padding: 0.25rem 0;">
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Night (23:00 - 04:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-night" placeholder="Good night." class="custom-input"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group-section hidden" id="custom-text-greeting-container" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                            <h4 class="section-title">Fixed Greeting Text</h4>
+                            <div style="margin-top: 0.5rem;">
+                                <input type="text" id="setting-greeting-text" placeholder="Welcome back." class="custom-input" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="setting-row border-top">
+                            <div class="setting-info">
+                                <label>Restore Default Greeting</label>
+                                <span class="setting-desc">Reset greeting mode and texts back to factory default.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-reset-greeting" class="action-btn">Restore Default</button>
                             </div>
                         </div>
 
@@ -849,7 +960,7 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label>Search Suggestions Limit</label>
+                                <label>Search History Limit</label>
                                 <span class="setting-desc">Max count of query history matches display.</span>
                             </div>
                             <div class="setting-control">
@@ -861,6 +972,27 @@
                                     <ul class="dropdown-menu" role="listbox">
                                         <li class="dropdown-item" data-value="3" role="option">3 items</li>
                                         <li class="dropdown-item active" data-value="5" role="option">5 items</li>
+                                        <li class="dropdown-item" data-value="10" role="option">10 items</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Live Suggestions Limit</label>
+                                <span class="setting-desc">Max count of live search suggestions display.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="custom-dropdown" id="dropdown-suggestions-limit">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="dropdown-selected-label">5 items</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item" data-value="3" role="option">3 items</li>
+                                        <li class="dropdown-item active" data-value="5" role="option">5 items</li>
+                                        <li class="dropdown-item" data-value="8" role="option">8 items</li>
                                         <li class="dropdown-item" data-value="10" role="option">10 items</li>
                                     </ul>
                                 </div>

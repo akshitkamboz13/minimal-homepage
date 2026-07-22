@@ -11,6 +11,13 @@ export function initClock() {
     const updateTimeAndGreeting = () => {
         if (!clockElement || !greetingElement) return;
 
+        // Apply Alignment
+        const align = userSettings.clockAlignment || 'center';
+        if (heroSection) {
+            heroSection.classList.remove('align-left', 'align-center', 'align-right');
+            heroSection.classList.add(`align-${align}`);
+        }
+
         const now = new Date();
         const actualHour = now.getHours();
         
@@ -39,10 +46,30 @@ export function initClock() {
 
         // 2. Greeting calculation
         let greeting = 'Good evening.';
-        if (actualHour >= 5 && actualHour < 12) {
-            greeting = 'Good morning.';
-        } else if (actualHour >= 12 && actualHour < 18) {
-            greeting = 'Good afternoon.';
+        const mode = userSettings.greetingMode || 'default';
+
+        if (mode === 'custom_text') {
+            greeting = userSettings.customGreetingText || 'Welcome back.';
+        } else if (mode === 'time_custom') {
+            if (actualHour >= 5 && actualHour < 12) {
+                greeting = userSettings.greetingMorning || 'Good morning.';
+            } else if (actualHour >= 12 && actualHour < 18) {
+                greeting = userSettings.greetingAfternoon || 'Good afternoon.';
+            } else if (actualHour >= 18 && actualHour < 23) {
+                greeting = userSettings.greetingEvening || 'Good evening.';
+            } else {
+                greeting = userSettings.greetingNight || 'Good night.';
+            }
+        } else {
+            if (actualHour >= 5 && actualHour < 12) {
+                greeting = 'Good morning.';
+            } else if (actualHour >= 12 && actualHour < 18) {
+                greeting = 'Good afternoon.';
+            } else if (actualHour >= 18 && actualHour < 23) {
+                greeting = 'Good evening.';
+            } else {
+                greeting = 'Good night.';
+            }
         }
         greetingElement.textContent = greeting;
 
