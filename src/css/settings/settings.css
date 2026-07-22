@@ -1,11 +1,20 @@
 /* Settings Dialog Dimensions & Grid Override */
 .modal-overlay .modal-content {
-    max-width: 820px;
+    width: 820px;
     height: 580px;
+    min-width: 520px;
+    min-height: 400px;
+    max-width: 95vw;
+    max-height: 95vh;
     padding: 1.5rem;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    resize: both;
+}
+
+.modal-overlay .modal-content::-webkit-resizable-corner {
+    background: transparent;
 }
 
 @media (max-width: 768px) {
@@ -101,6 +110,20 @@
     }
 }
 
+.sidebar-main-menu,
+.sidebar-sub-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.sidebar-main-menu.hidden,
+.sidebar-sub-menu.hidden {
+    display: none !important;
+}
+
+.category-menu-item,
 .menu-item {
     display: flex;
     align-items: center;
@@ -123,19 +146,145 @@
     transition: transform 0.2s ease;
 }
 
+.category-menu-item:hover .sidebar-icon,
 .menu-item:hover .sidebar-icon {
     transform: scale(1.05);
 }
 
+.category-menu-item:hover,
 .menu-item:hover {
     background: var(--glass-highlight);
     color: var(--text-color);
 }
 
+.category-menu-item.active,
 .menu-item.active {
     background: var(--accent-color);
     color: #ffffff !important;
     font-weight: 500;
+}
+
+.back-to-categories-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.65rem;
+    background: var(--glass-highlight);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    width: fit-content;
+    margin-bottom: 0.25rem;
+    outline: none;
+}
+
+.back-to-categories-btn:hover {
+    background: var(--accent-color);
+    color: #ffffff;
+    border-color: var(--accent-color);
+}
+
+.current-category-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-left: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Overview Dashboard & Category Cards Grid */
+.settings-dashboard-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.settings-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.85rem;
+    margin-top: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.category-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+    background: var(--glass-highlight);
+    border-color: var(--accent-color);
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
+}
+
+.category-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--accent-color);
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+.category-card:hover .category-card-icon {
+    transform: scale(1.1);
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+.category-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.category-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.category-card-desc {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    margin: 0;
+}
+
+.category-card-tags {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--accent-color);
+    margin-top: 0.35rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Content Area */

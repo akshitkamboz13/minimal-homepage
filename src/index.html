@@ -81,10 +81,11 @@
                             </label>
                             <nav class="ai-dropdown glass-panel" aria-label="AI Providers">
                                 <button type="button" class="ai-option" data-ai="chatgpt">ChatGPT</button>
-                                <button type="button" class="ai-option" data-ai="google">Google AI</button>
+                                <button type="button" class="ai-option" data-ai="gemini">Google AI</button>
                                 <button type="button" class="ai-option" data-ai="bing">Bing AI</button>
                                 <button type="button" class="ai-option" data-ai="claude">Claude</button>
                                 <button type="button" class="ai-option" data-ai="grok">Grok</button>
+                                <button type="button" class="ai-option" data-ai="custom" id="search-ai-custom-btn">Custom AI</button>
                             </nav>
                         </div>
                         <div class="mode-slider" aria-hidden="true"></div>
@@ -123,66 +124,165 @@
                     <div class="sidebar-search">
                         <input type="text" id="settings-search" placeholder="Search settings..." autocomplete="off">
                     </div>
-                    <ul class="settings-menu">
-                        <li class="menu-item active" data-tab="appearance">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
-                            Appearance
-                        </li>
-                        <li class="menu-item" data-tab="notes">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-                            Notes
-                        </li>
-                        <li class="menu-item" data-tab="bookmarks">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                            Bookmarks
-                        </li>
-                        <li class="menu-item" data-tab="windows">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
-                            Windows
-                        </li>
-                        <li class="menu-item" data-tab="widgets">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-                            Widgets
-                        </li>
-                        <li class="menu-item" data-tab="ai">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
-                            AI
-                        </li>
-                        <li class="menu-item" data-tab="voice">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-                            Voice Search
-                        </li>
-                        <li class="menu-item" data-tab="visual">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                            Visual Search
-                        </li>
-                        <li class="menu-item" data-tab="keyboard">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                            Keyboard
-                        </li>
-                        <li class="menu-item" data-tab="privacy">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                            Privacy
-                        </li>
-                        <li class="menu-item" data-tab="performance">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            Performance
-                        </li>
-                        <li class="menu-item" data-tab="developer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                            Developer
-                        </li>
-                        <li class="menu-item" data-tab="about">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            About
-                        </li>
-                    </ul>
+                    
+                    <!-- Level 1: Main Categories -->
+                    <div class="sidebar-main-menu" id="sidebar-main-menu">
+                        <ul class="settings-menu main-categories-menu">
+                            <li class="category-menu-item" data-category="personalization">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+                                Personalization
+                            </li>
+                            <li class="category-menu-item" data-category="widgets">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                Widgets
+                            </li>
+                            <li class="category-menu-item" data-category="search-ai">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                Search & AI
+                            </li>
+                            <li class="category-menu-item" data-category="system">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                System & Controls
+                            </li>
+                            <li class="category-menu-item" data-category="about">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                About
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Level 2: Sub-menu Items -->
+                    <div class="sidebar-sub-menu hidden" id="sidebar-sub-menu">
+                        <button type="button" class="back-to-categories-btn" id="btn-back-categories">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            <span>Back to Main</span>
+                        </button>
+                        <div class="current-category-title" id="current-category-title">Category</div>
+                        <ul class="settings-menu sub-categories-menu">
+                            <li class="menu-item" data-tab="appearance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+                                Appearance
+                            </li>
+                            <li class="menu-item" data-tab="windows">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                                Windows
+                            </li>
+                            <li class="menu-item" data-tab="widgets">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                Clock & Apps
+                            </li>
+                            <li class="menu-item" data-tab="notes">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                                Notes Widget
+                            </li>
+                            <li class="menu-item" data-tab="bookmarks">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                Bookmarks Widget
+                            </li>
+                            <li class="menu-item" data-tab="ai">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                AI Options
+                            </li>
+                            <li class="menu-item" data-tab="voice">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                                Voice Search
+                            </li>
+                            <li class="menu-item" data-tab="visual">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                Visual Search
+                            </li>
+                            <li class="menu-item" data-tab="keyboard">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                                Keyboard
+                            </li>
+                            <li class="menu-item" data-tab="privacy">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                Privacy
+                            </li>
+                            <li class="menu-item" data-tab="performance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                Performance
+                            </li>
+                            <li class="menu-item" data-tab="developer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                Developer
+                            </li>
+                            <li class="menu-item" data-tab="about">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                About
+                            </li>
+                        </ul>
+                    </div>
                 </nav>
 
                 <!-- Content Area -->
                 <main class="settings-body">
+                    <!-- 🎛 Overview (Level 1 Dashboard) -->
+                    <section id="tab-overview" class="settings-pane active">
+                        <div class="settings-dashboard-header">
+                            <h3>Settings Overview</h3>
+                            <span class="setting-desc" style="display: block; margin-top: 0.25rem; margin-bottom: 1rem;">Select a category to customize your homepage preferences.</span>
+                        </div>
+                        <div class="settings-categories-grid">
+                            <div class="category-card" data-category="personalization">
+                                <div class="category-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+                                </div>
+                                <div class="category-card-info">
+                                    <h4 class="category-card-title">Personalization</h4>
+                                    <p class="category-card-desc">Themes, accent colors, wallpaper meshes, and window scaling.</p>
+                                    <span class="category-card-tags">Appearance • Windows</span>
+                                </div>
+                            </div>
+
+                            <div class="category-card" data-category="widgets">
+                                <div class="category-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                </div>
+                                <div class="category-card-info">
+                                    <h4 class="category-card-title">Widgets</h4>
+                                    <p class="category-card-desc">Manage clock format, notes autosave, and bookmarks directory tiles.</p>
+                                    <span class="category-card-tags">Clock & Apps • Notes • Bookmarks</span>
+                                </div>
+                            </div>
+
+                            <div class="category-card" data-category="search-ai">
+                                <div class="category-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                </div>
+                                <div class="category-card-info">
+                                    <h4 class="category-card-title">Search & AI</h4>
+                                    <p class="category-card-desc">Select default AI engines, voice speech language, and lens search provider.</p>
+                                    <span class="category-card-tags">AI Options • Voice • Visual Search</span>
+                                </div>
+                            </div>
+
+                            <div class="category-card" data-category="system">
+                                <div class="category-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                </div>
+                                <div class="category-card-info">
+                                    <h4 class="category-card-title">System & Controls</h4>
+                                    <p class="category-card-desc">Keyboard hotkeys, privacy search history, animations, and dev configs.</p>
+                                    <span class="category-card-tags">Keyboard • Privacy • Performance • Developer</span>
+                                </div>
+                            </div>
+
+                            <div class="category-card" data-category="about">
+                                <div class="category-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                </div>
+                                <div class="category-card-info">
+                                    <h4 class="category-card-title">About</h4>
+                                    <p class="category-card-desc">Application details, version specifications, and project links.</p>
+                                    <span class="category-card-tags">About Startpage</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- 🎨 Appearance -->
-                    <section id="tab-appearance" class="settings-pane active">
+                    <section id="tab-appearance" class="settings-pane">
                         <h3>Appearance</h3>
                         <div class="setting-row">
                             <div class="setting-info">
@@ -555,27 +655,41 @@
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-ai-provider">
                                     <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                                        <span class="dropdown-selected-label">Google Gemini</span>
+                                        <span class="dropdown-selected-label">Google AI</span>
                                         <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="gemini" role="option">Google Gemini</li>
-                                        <li class="dropdown-item" data-value="chatgpt" role="option">ChatGPT</li>
-                                        <li class="dropdown-item" data-value="claude" role="option">Claude</li>
-                                        <li class="dropdown-item" data-value="grok" role="option">Grok</li>
+                                        <!-- Injected dynamically in ai.js -->
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
+                        <div class="setting-group-section" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                            <h4 class="section-title">Manage AI Engines</h4>
+                            <span class="setting-desc" style="display: block; margin-bottom: 0.75rem;">Enable engines to show on main page AI selector.</span>
+                            <div class="ai-engines-list" id="ai-engines-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 180px; overflow-y: auto; padding-right: 0.25rem; margin-bottom: 1rem;">
+                                <!-- Injected dynamically in ai.js -->
+                            </div>
+                            
+                            <h5 class="section-subtitle">Add Custom AI</h5>
+                            <div class="add-ai-form" style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(255, 255, 255, 0.03); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                                <div class="form-row" style="display: flex; gap: 0.5rem;">
+                                    <input type="text" id="add-ai-name" placeholder="AI Name (e.g. DeepSeek)" class="custom-input" style="flex: 1; min-width: 0;">
+                                    <input type="text" id="add-ai-url" placeholder="Query URL (use {query} placeholder)" class="custom-input" style="flex: 2; min-width: 0;">
+                                </div>
+                                <button type="button" id="btn-add-custom-ai" class="action-btn" style="width: 100%; justify-content: center; padding: 0.6rem;">Add AI Engine</button>
+                            </div>
+                        </div>
+
                         <div class="setting-row">
                             <div class="setting-info">
-                                <label for="toggle-ai-direct">Direct Deep-linking Mode</label>
-                                <span class="setting-desc">Instantly open query results page on AI site.</span>
+                                <label for="toggle-show-ai">Show AI Toggle on Search Bar</label>
+                                <span class="setting-desc">Display the AI mode selector on the homepage search bar.</span>
                             </div>
                             <div class="setting-control">
                                 <label class="switch">
-                                    <input type="checkbox" id="toggle-ai-direct">
+                                    <input type="checkbox" id="toggle-show-ai" checked>
                                     <span class="slider round"></span>
                                 </label>
                             </div>

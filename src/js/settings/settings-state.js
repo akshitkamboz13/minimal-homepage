@@ -23,9 +23,9 @@ const defaults = {
     clockFormat: '12', // '12' | '24'
     clockShowSeconds: true,
     clockShowDate: true,
-    selectedAi: null,
-    selectedAiName: null,
-    aiDirect: false,
+    selectedAi: 'gemini',
+    selectedAiName: 'Google AI',
+    showAiToggle: true,
     aiCustomPrompt: '',
     voiceLang: 'en-US',
     voiceAutoSubmit: true,
@@ -37,6 +37,13 @@ const defaults = {
     reduceMotion: false,
     backgroundType: 'mesh-default',
     customBackgroundUrl: '',
+    aiEngines: [
+        { id: 'gemini', name: 'Google AI', url: 'https://www.google.com/search?q={query}&udm=50&aep=1&ntc=1&csuir=1', enabled: true, isCustom: false },
+        { id: 'chatgpt', name: 'ChatGPT', url: 'https://chatgpt.com/?prompt={query}', enabled: true, isCustom: false },
+        { id: 'bing', name: 'Bing AI', url: 'https://www.bing.com/copilotsearch?q={query}', enabled: true, isCustom: false },
+        { id: 'claude', name: 'Claude', url: 'https://claude.ai/new?q={query}', enabled: true, isCustom: false },
+        { id: 'grok', name: 'Grok', url: 'https://grok.com/?q={query}', enabled: true, isCustom: false }
+    ],
     customAccentColor: '#3b82f6',
     customMeshBlob1Light: '#ffb6ff',
     customMeshBlob2Light: '#b3c5ff',
@@ -49,10 +56,19 @@ const defaults = {
 // Merge loaded settings with defaults to guarantee all keys exist
 userSettings = { ...defaults, ...userSettings };
 
-if (!userSettings.rememberSearchMode) {
-    userSettings.selectedAi = null;
-    userSettings.selectedAiName = null;
+// Migrate Google Gemini to Google AI in existing user settings
+if (userSettings.aiEngines) {
+    const geminiEngine = userSettings.aiEngines.find(e => e.id === 'gemini');
+    if (geminiEngine && (geminiEngine.name === 'Google Gemini' || geminiEngine.url.includes('gemini.google.com'))) {
+        geminiEngine.name = 'Google AI';
+        geminiEngine.url = 'https://www.google.com/search?q={query}&udm=50&aep=1&ntc=1&csuir=1';
+        if (userSettings.selectedAi === 'gemini') {
+            userSettings.selectedAiName = 'Google AI';
+        }
+        localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
+    }
 }
+
 
 const changeCallbacks = [];
 

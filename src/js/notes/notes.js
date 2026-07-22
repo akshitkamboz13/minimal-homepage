@@ -36,7 +36,7 @@ export function initNotes() {
             const x = Math.max(100, window.innerWidth / 2 - 125 + (Math.random() * 40 - 20));
             const y = Math.max(100, window.innerHeight / 2 - 125 + (Math.random() * 40 - 20));
             
-            const noteData = { id, text: '', color, x, y };
+            const noteData = { id, text: '', color, x, y, w: 250, h: 250 };
             this.notes.push(noteData);
             this.saveNotes();
             this.renderNote(noteData);
@@ -47,6 +47,8 @@ export function initNotes() {
             noteEl.className = `glass-note ${noteData.color}`;
             noteEl.style.left = `${noteData.x}px`;
             noteEl.style.top = `${noteData.y}px`;
+            if (noteData.w) noteEl.style.width = `${noteData.w}px`;
+            if (noteData.h) noteEl.style.height = `${noteData.h}px`;
             noteEl.dataset.id = noteData.id;
 
             const placeholderText = userSettings.notesPlaceholder;
@@ -110,6 +112,22 @@ export function initNotes() {
             });
 
             this.setupDrag(noteEl, noteEl.querySelector('.note-header'), noteData);
+
+            if (window.ResizeObserver) {
+                const resizeObserver = new ResizeObserver(() => {
+                    const note = this.notes.find(n => n.id === noteData.id);
+                    if (note) {
+                        const newW = noteEl.offsetWidth;
+                        const newH = noteEl.offsetHeight;
+                        if (newW && newH && (note.w !== newW || note.h !== newH)) {
+                            note.w = newW;
+                            note.h = newH;
+                            this.saveNotes();
+                        }
+                    }
+                });
+                resizeObserver.observe(noteEl);
+            }
         }
 
         setupDrag(noteEl, headerEl, noteData) {

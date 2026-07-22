@@ -27,18 +27,30 @@ export function doSearch(query) {
     const searchMode = searchModeRadio ? searchModeRadio.value : 'google';
     
     if (searchMode === 'ai') {
-        const ai = userSettings.selectedAi;
-        const encodedQuery = encodeURIComponent(query);
-        if (ai === 'bing') {
-            window.location.href = `https://www.bing.com/copilotsearch?q=${encodedQuery}`;
-        } else if (ai === 'google') {
-            window.location.href = `https://www.google.com/search?q=${encodedQuery}&udm=50&aep=1&ntc=1&csuir=1`;
-        } else if (ai === 'chatgpt') {
-            window.location.href = `https://chatgpt.com/?prompt=${encodedQuery}`;
-        } else if (ai === 'grok') {
-            window.location.href = `https://grok.com/?q=${encodedQuery}`;
-        } else if (ai === 'claude') {
-            window.location.href = `https://claude.ai/new?q=${encodedQuery}`;
+        const selectedId = userSettings.selectedAi || 'gemini';
+        const engine = userSettings.aiEngines.find(e => e.id === selectedId);
+
+        // Apply custom prompt suffix if set
+        let finalQuery = query;
+        if (userSettings.aiCustomPrompt && userSettings.aiCustomPrompt.trim() !== '') {
+            finalQuery = `${finalQuery} ${userSettings.aiCustomPrompt.trim()}`;
+        }
+        const encodedQuery = encodeURIComponent(finalQuery);
+
+        if (engine && engine.url) {
+            let targetUrl = engine.url;
+            if (targetUrl.includes('{query}')) {
+                targetUrl = targetUrl.replace('{query}', encodedQuery);
+            } else if (targetUrl.includes('{q}')) {
+                targetUrl = targetUrl.replace('{q}', encodedQuery);
+            } else {
+                const separator = targetUrl.includes('?') ? '&' : '?';
+                targetUrl = `${targetUrl}${separator}q=${encodedQuery}`;
+            }
+            window.location.href = targetUrl;
+        } else {
+            // fallback
+            window.location.href = `https://www.google.com/search?q=${encodedQuery}&udm=50`;
         }
     } else {
         if (window.chrome && chrome.search && chrome.search.query) {
@@ -68,6 +80,30 @@ export function initSearchEngine() {
                 if (lensForm) lensForm.submit();
             } else if (query) {
                 doSearch(query);
+            }
+        });
+    }
+
+    // Click the already-selected mode toggle → trigger search (like pressing Enter)
+    const googleLabel = document.querySelector('.google-label');
+    const aiLabel = document.querySelector('.ai-label');
+    const modeGoogleRadio = document.getElementById('mode-google');
+    const modeAiRadio = document.getElementById('mode-ai');
+
+    if (googleLabel) {
+        googleLabel.addEventListener('click', () => {
+            if (modeGoogleRadio && modeGoogleRadio.checked) {
+                const query = searchInput ? searchInput.value.trim() : '';
+                if (query) doSearch(query);
+            }
+        });
+    }
+
+    if (aiLabel) {
+        aiLabel.addEventListener('click', () => {
+            if (modeAiRadio && modeAiRadio.checked) {
+                const query = searchInput ? searchInput.value.trim() : '';
+                if (query) doSearch(query);
             }
         });
     }

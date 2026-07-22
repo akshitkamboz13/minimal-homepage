@@ -1,4 +1,5 @@
-import { userSettings, saveSettings } from '../../settings/index.js';
+import { userSettings, saveSettings, onSettingsChanged } from '../../settings/index.js';
+import { getAiIcon } from '../../settings/panels/ai.js';
 
 export function updateSlider() {
     const slider = document.querySelector('.mode-slider');
@@ -15,17 +16,76 @@ export function updateSlider() {
     }
 }
 
+export function renderAiDropdown() {
+    const dropdown = document.querySelector('.ai-dropdown');
+    if (!dropdown) return;
+    dropdown.innerHTML = '';
+
+    const enabledEngines = userSettings.aiEngines.filter(e => e.enabled);
+    enabledEngines.forEach(engine => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ai-option';
+        btn.setAttribute('data-ai', engine.id);
+        btn.textContent = engine.name;
+        dropdown.appendChild(btn);
+    });
+
+    // Re-bind listeners for these buttons
+    const modeAiRadio = document.getElementById('mode-ai');
+    const searchInput = document.getElementById('search-input');
+    const aiLabel = document.querySelector('.ai-label');
+
+    const updateAiLabel = () => {
+        const activeEngine = userSettings.aiEngines.find(e => e.id === userSettings.selectedAi);
+        if (activeEngine && aiLabel) {
+            aiLabel.innerHTML = `${getAiIcon(userSettings.selectedAi)} ${activeEngine.name}`;
+        }
+    };
+
+    dropdown.querySelectorAll('.ai-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const aiId = btn.getAttribute('data-ai');
+            const targetEngine = userSettings.aiEngines.find(x => x.id === aiId);
+            if (targetEngine) {
+                userSettings.selectedAi = targetEngine.id;
+                userSettings.selectedAiName = targetEngine.name;
+                saveSettings();
+                updateAiLabel();
+                if (modeAiRadio) modeAiRadio.checked = true;
+                updateSlider();
+                if (searchInput) searchInput.focus();
+            }
+        });
+    });
+}
+
 export function initAiOptions() {
     const aiLabel = document.querySelector('.ai-label');
     const modeAiRadio = document.getElementById('mode-ai');
     const searchInput = document.getElementById('search-input');
     
     const updateAiLabel = () => {
-        if (userSettings.selectedAi && userSettings.selectedAiName && aiLabel) {
-            aiLabel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> ${userSettings.selectedAiName}`;
+        const activeEngine = userSettings.aiEngines.find(e => e.id === userSettings.selectedAi);
+        if (activeEngine && aiLabel) {
+            aiLabel.innerHTML = `${getAiIcon(userSettings.selectedAi)} ${activeEngine.name}`;
         }
     };
+
+    renderAiDropdown();
     updateAiLabel();
+
+    // Apply persisted AI search bar visibility
+    const aiDropdownWrapper = document.querySelector('.ai-dropdown-wrapper');
+    const applyAiToggleVisibility = (show) => {
+        if (aiDropdownWrapper) aiDropdownWrapper.style.display = show ? '' : 'none';
+        if (modeAiRadio) modeAiRadio.style.display = show ? '' : 'none';
+        if (!show) {
+            const modeGoogleRadio = document.getElementById('mode-google');
+            if (modeGoogleRadio) modeGoogleRadio.checked = true;
+        }
+    };
+    applyAiToggleVisibility(userSettings.showAiToggle !== false);
 
     window.addEventListener('resize', updateSlider);
     setTimeout(updateSlider, 50);
@@ -37,23 +97,6 @@ export function initAiOptions() {
             }
         });
     }
-
-    const aiOptions = document.querySelectorAll('.ai-option');
-    aiOptions.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const aiType = e.target.getAttribute('data-ai');
-            const aiName = e.target.textContent;
-            
-            userSettings.selectedAi = aiType;
-            userSettings.selectedAiName = aiName;
-            saveSettings();
-            
-            updateAiLabel();
-            if (modeAiRadio) modeAiRadio.checked = true;
-            updateSlider();
-            if (searchInput) searchInput.focus();
-        });
-    });
 
     // Listen for search mode changes to save if remember is true
     const searchModeRadios = document.querySelectorAll('input[name="search-mode"]');
@@ -74,4 +117,11 @@ export function initAiOptions() {
             targetRadio.checked = true;
         }
     }
+
+    // Subscribe to settings changes to refresh dropdown items and selected engine labels in real-time
+    onSettingsChanged(() => {
+        renderAiDropdown();
+        updateAiLabel();
+        updateSlider();
+    });
 }

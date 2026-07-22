@@ -13,6 +13,29 @@ import { initPerformance, applyPerformanceVisuals } from './panels/performance.j
 import { initDeveloper } from './panels/developer.js';
 import { initAbout } from './panels/about.js';
 
+const CATEGORY_CONFIG = {
+    'personalization': {
+        title: 'Personalization',
+        tabs: ['appearance', 'windows']
+    },
+    'widgets': {
+        title: 'Widgets',
+        tabs: ['widgets', 'notes', 'bookmarks']
+    },
+    'search-ai': {
+        title: 'Search & AI',
+        tabs: ['ai', 'voice', 'visual']
+    },
+    'system': {
+        title: 'System & Controls',
+        tabs: ['keyboard', 'privacy', 'performance', 'developer']
+    },
+    'about': {
+        title: 'About',
+        tabs: ['about']
+    }
+};
+
 export function applySettingsVisuals() {
     applyAppearanceVisuals();
     applyNotesVisuals();
@@ -27,37 +50,196 @@ export function initSettingsPanel() {
     // Apply initial visuals on load
     applySettingsVisuals();
 
-    // 1. Sidebar Tab Switching
+    // Restore saved settings modal dimensions if any
+    const modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+        try {
+            const savedSize = JSON.parse(localStorage.getItem('startpage_settings_size'));
+            if (savedSize && savedSize.w && savedSize.h) {
+                modalContent.style.width = `${savedSize.w}px`;
+                modalContent.style.height = `${savedSize.h}px`;
+            }
+        } catch (e) {
+            // Ignore parse error
+        }
+
+        if (window.ResizeObserver) {
+            const resizeObserver = new ResizeObserver(() => {
+                const w = modalContent.offsetWidth;
+                const h = modalContent.offsetHeight;
+                if (w && h) {
+                    localStorage.setItem('startpage_settings_size', JSON.stringify({ w, h }));
+                }
+            });
+            resizeObserver.observe(modalContent);
+        }
+    }
+
+    const mainSidebar = document.getElementById('sidebar-main-menu');
+    const subSidebar = document.getElementById('sidebar-sub-menu');
+    const backBtn = document.getElementById('btn-back-categories');
+    const currentCategoryTitle = document.getElementById('current-category-title');
+    const searchInput = document.getElementById('settings-search');
+
+    const categoryMenuItems = modal.querySelectorAll('.category-menu-item');
+    const categoryCards = modal.querySelectorAll('.category-card');
     const menuItems = modal.querySelectorAll('.menu-item');
     const panes = modal.querySelectorAll('.settings-pane');
-    
-    menuItems.forEach(item => {
+
+    let currentCategory = null;
+
+    function resetToLevel1() {
+        currentCategory = null;
+        if (searchInput) searchInput.value = '';
+
+        // Show main menu in sidebar, hide sub-menu
+        if (mainSidebar) mainSidebar.classList.remove('hidden');
+        if (subSidebar) subSidebar.classList.add('hidden');
+        if (backBtn) backBtn.style.display = 'inline-flex';
+
+        // Clear active states
+        categoryMenuItems.forEach(item => item.classList.remove('active'));
+        menuItems.forEach(item => {
+            item.classList.remove('active');
+            item.style.display = 'flex';
+        });
+
+        // Activate overview pane
+        panes.forEach(pane => pane.classList.remove('active'));
+        const overviewPane = modal.querySelector('#tab-overview');
+        if (overviewPane) overviewPane.classList.add('active');
+    }
+
+    function openCategory(categoryId, defaultTab = null) {
+        const config = CATEGORY_CONFIG[categoryId];
+        if (!config) return;
+
+        currentCategory = categoryId;
+
+        // Update sidebar state: Hide Level 1, Show Level 2
+        if (mainSidebar) mainSidebar.classList.add('hidden');
+        if (subSidebar) subSidebar.classList.remove('hidden');
+        if (backBtn) backBtn.style.display = 'inline-flex';
+        if (currentCategoryTitle) currentCategoryTitle.textContent = config.title;
+
+        // Highlight category menu item
+        categoryMenuItems.forEach(item => {
+            if (item.getAttribute('data-category') === categoryId) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Filter Level 2 menu items
+        menuItems.forEach(item => {
+            const tabId = item.getAttribute('data-tab');
+            if (config.tabs.includes(tabId)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        // Determine target tab to activate
+        const targetTabId = defaultTab && config.tabs.includes(defaultTab) ? defaultTab : config.tabs[0];
+        activateTab(targetTabId);
+    }
+
+    function activateTab(tabId) {
+        menuItems.forEach(mi => {
+            if (mi.getAttribute('data-tab') === tabId) {
+                mi.classList.add('active');
+            } else {
+                mi.classList.remove('active');
+            }
+        });
+
+        panes.forEach(pane => pane.classList.remove('active'));
+        const activePane = modal.querySelector(`#tab-${tabId}`);
+        if (activePane) activePane.classList.add('active');
+    }
+
+    // 1. Level 1 Event Listeners (Category Cards & Category Sidebar Items)
+    categoryMenuItems.forEach(item => {
         item.addEventListener('click', () => {
-            const targetTab = item.getAttribute('data-tab');
-            
-            menuItems.forEach(mi => mi.classList.remove('active'));
-            panes.forEach(pane => pane.classList.remove('active'));
-            
-            item.classList.add('active');
-            const activePane = modal.querySelector(`#tab-${targetTab}`);
-            if (activePane) activePane.classList.add('active');
+            const catId = item.getAttribute('data-category');
+            openCategory(catId);
         });
     });
 
-    // 2. Sidebar Live Search
-    const searchInput = document.getElementById('settings-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            menuItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                const matched = text.includes(query);
-                item.style.display = matched ? 'block' : 'none';
-            });
+    categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const catId = card.getAttribute('data-category');
+            openCategory(catId);
+        });
+    });
+
+    // 2. Back Button Listener
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            resetToLevel1();
         });
     }
 
-    // 3. Initialize all sub-panels
+    // 3. Level 2 Tab Switching
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const targetTab = item.getAttribute('data-tab');
+            activateTab(targetTab);
+        });
+    });
+
+    // 4. Live Search in Sidebar
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+
+            if (query.length > 0) {
+                // In search mode, show sub-menu sidebar and hide main menu
+                if (mainSidebar) mainSidebar.classList.add('hidden');
+                if (subSidebar) subSidebar.classList.remove('hidden');
+                if (backBtn) backBtn.style.display = 'none';
+                if (currentCategoryTitle) currentCategoryTitle.textContent = 'Search Results';
+
+                let firstMatchedTab = null;
+                menuItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    const matched = text.includes(query);
+                    item.style.display = matched ? 'flex' : 'none';
+                    if (matched && !firstMatchedTab) {
+                        firstMatchedTab = item.getAttribute('data-tab');
+                    }
+                });
+
+                if (firstMatchedTab) {
+                    activateTab(firstMatchedTab);
+                }
+            } else {
+                // If search query is cleared, restore current category or Level 1 overview
+                if (currentCategory) {
+                    openCategory(currentCategory);
+                } else {
+                    resetToLevel1();
+                }
+            }
+        });
+    }
+
+    // 5. Reset to Level 1 whenever modal becomes visible
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                const isHidden = modal.classList.contains('hidden');
+                if (!isHidden) {
+                    resetToLevel1();
+                }
+            }
+        });
+    });
+    observer.observe(modal, { attributes: true });
+
+    // 6. Initialize sub-panels
     initAppearance(modal);
     initNotesSettings(modal);
     initBookmarksSettings(modal);
