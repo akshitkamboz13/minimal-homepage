@@ -55,10 +55,17 @@ export function initTopPanel() {
         });
     }
     if (settingsModal) {
+        let isMouseDownOnOverlay = false;
+
+        settingsModal.addEventListener('mousedown', (e) => {
+            isMouseDownOnOverlay = (e.target === settingsModal);
+        });
+
         settingsModal.addEventListener('click', (e) => {
-            if (e.target === settingsModal) {
+            if (e.target === settingsModal && isMouseDownOnOverlay) {
                 settingsModal.classList.add('hidden');
             }
+            isMouseDownOnOverlay = false;
         });
     }
 }

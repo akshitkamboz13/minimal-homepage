@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Home",
-  "version": "1.0",
-  "description": "A beautiful startpage that integrates your real bookmarks.",
+  "name": "Home by si4k",
+  "version": "1.2.0",
+  "description": "A beautiful, high-performance, and feature-rich new tab override extension for Google Chrome.",
+  "author": "Akshit Kamboj (si4k)",
+  "homepage_url": "https://github.com/akshitKamboj13/minimal-homepage",
   "icons": {
     "16": "assets/icons/icon16.png",
     "48": "assets/icons/icon48.png",

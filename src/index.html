@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Home by si4k</title>
     <link rel="icon" type="image/svg+xml" href="../assets/icons/icon.svg">
     <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <!-- ===================================== -->
     <!-- Background -->
@@ -20,25 +22,52 @@
         <div class="blob blob-3"></div>
     </div>
     <div id="background-image-layer" class="background-image-layer" aria-hidden="true"></div>
-    
-    
+
+
     <div class="container fade-in">
         <!-- ===================================== -->
         <!-- Header -->
         <!-- ===================================== -->
         <header>
             <button id="add-note-btn" class="glass-btn" aria-label="Add Sticky Note" style="margin-right: 1rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-plus">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
             </button>
             <button id="settings-toggle" class="glass-btn" aria-label="Settings" style="margin-right: 1rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-settings">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                </svg>
             </button>
             <button id="theme-toggle" class="glass-btn" aria-label="Toggle dark mode">
-                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-sun" style="display: none;">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
             </button>
         </header>
-        
+
         <main>
             <!-- ===================================== -->
             <!-- Clock & Greeting -->
@@ -47,36 +76,56 @@
                 <time class="clock" id="clock">00:00</time>
                 <h1 class="greeting" id="greeting">Hello.</h1>
             </section>
-            
+
             <!-- ===================================== -->
             <!-- Search -->
             <!-- ===================================== -->
             <form id="search-form" class="search-container glass-panel" role="search">
                 <div class="search-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="search-icon">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+
                     <div id="image-preview-container" class="hidden">
                         <img id="image-preview" src="" alt="Preview">
                         <button type="button" id="clear-image-btn" aria-label="Remove image">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
                         </button>
                     </div>
 
-                    <input type="text" id="search-input" placeholder="What are you looking for?" autocomplete="off" autofocus>
-                    
-                    <button type="submit" id="search-submit-btn" class="search-submit-btn hidden" aria-label="Submit Search">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
+                    <input type="text" id="search-input" placeholder="What are you looking for?" autocomplete="off"
+                        autofocus>
+
+                    <button type="submit" id="search-submit-btn" class="search-submit-btn hidden"
+                        aria-label="Submit Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 10 4 15 9 20"></polyline>
+                            <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+                        </svg>
                     </button>
 
                     <fieldset class="search-mode-wrapper">
                         <legend class="hidden">Search Mode</legend>
                         <input type="radio" id="mode-google" name="search-mode" value="google" checked>
                         <label for="mode-google" class="mode-label google-label">Search</label>
-                        
+
                         <input type="radio" id="mode-ai" name="search-mode" value="ai">
                         <div class="ai-dropdown-wrapper">
                             <label for="mode-ai" class="mode-label ai-label">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                </svg>
                                 AI
                             </label>
                             <nav class="ai-dropdown glass-panel" aria-label="AI Providers">
@@ -85,7 +134,8 @@
                                 <button type="button" class="ai-option" data-ai="bing">Bing AI</button>
                                 <button type="button" class="ai-option" data-ai="claude">Claude</button>
                                 <button type="button" class="ai-option" data-ai="grok">Grok</button>
-                                <button type="button" class="ai-option" data-ai="custom" id="search-ai-custom-btn">Custom AI</button>
+                                <button type="button" class="ai-option" data-ai="custom"
+                                    id="search-ai-custom-btn">Custom AI</button>
                             </nav>
                         </div>
                         <div class="mode-slider" aria-hidden="true"></div>
@@ -110,11 +160,22 @@
         <section class="modal-content glass-panel">
             <header class="modal-header">
                 <div class="header-title-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-header-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="settings-header-icon">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
                     <h2>System Settings</h2>
                 </div>
                 <button id="close-settings" class="icon-btn" aria-label="Close Settings">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                 </button>
             </header>
 
@@ -124,28 +185,62 @@
                     <div class="sidebar-search">
                         <input type="text" id="settings-search" placeholder="Search settings..." autocomplete="off">
                     </div>
-                    
+
                     <!-- Level 1: Main Categories -->
                     <div class="sidebar-main-menu" id="sidebar-main-menu">
                         <ul class="settings-menu main-categories-menu">
                             <li class="category-menu-item" data-category="personalization">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path
+                                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z" />
+                                    <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" />
+                                    <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor" />
+                                    <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor" />
+                                    <circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" />
+                                </svg>
                                 Personalization
                             </li>
                             <li class="category-menu-item" data-category="widgets">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="3" width="7" height="9" rx="1" />
+                                    <rect x="14" y="3" width="7" height="5" rx="1" />
+                                    <rect x="14" y="12" width="7" height="9" rx="1" />
+                                    <rect x="3" y="16" width="7" height="5" rx="1" />
+                                </svg>
                                 Widgets
                             </li>
                             <li class="category-menu-item" data-category="search-ai">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="11" width="18" height="10" rx="2" />
+                                    <circle cx="12" cy="5" r="2" />
+                                    <path d="M12 7v4" />
+                                    <line x1="8" y1="16" x2="8" y2="16" />
+                                    <line x1="16" y1="16" x2="16" y2="16" />
+                                </svg>
                                 Search & AI
                             </li>
                             <li class="category-menu-item" data-category="system">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                </svg>
                                 System & Controls
                             </li>
                             <li class="category-menu-item" data-category="about">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                </svg>
                                 About
                             </li>
                         </ul>
@@ -154,61 +249,152 @@
                     <!-- Level 2: Sub-menu Items -->
                     <div class="sidebar-sub-menu hidden" id="sidebar-sub-menu">
                         <button type="button" class="back-to-categories-btn" id="btn-back-categories">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="sidebar-icon">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
                             <span>Back to Main</span>
                         </button>
                         <div class="current-category-title" id="current-category-title">Category</div>
                         <ul class="settings-menu sub-categories-menu">
                             <li class="menu-item" data-tab="appearance">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path
+                                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z" />
+                                    <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" />
+                                    <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor" />
+                                    <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor" />
+                                    <circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" />
+                                </svg>
                                 Appearance
                             </li>
                             <li class="menu-item" data-tab="windows">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                    <line x1="12" y1="3" x2="12" y2="21" />
+                                </svg>
                                 Windows
                             </li>
                             <li class="menu-item" data-tab="widgets">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="3" width="7" height="9" rx="1" />
+                                    <rect x="14" y="3" width="7" height="5" rx="1" />
+                                    <rect x="14" y="12" width="7" height="9" rx="1" />
+                                    <rect x="3" y="16" width="7" height="5" rx="1" />
+                                </svg>
                                 Clock & Apps
                             </li>
                             <li class="menu-item" data-tab="notes">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <line x1="10" y1="9" x2="8" y2="9" />
+                                </svg>
                                 Notes Widget
                             </li>
                             <li class="menu-item" data-tab="bookmarks">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                </svg>
                                 Bookmarks Widget
                             </li>
                             <li class="menu-item" data-tab="ai">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="11" width="18" height="10" rx="2" />
+                                    <circle cx="12" cy="5" r="2" />
+                                    <path d="M12 7v4" />
+                                    <line x1="8" y1="16" x2="8" y2="16" />
+                                    <line x1="16" y1="16" x2="16" y2="16" />
+                                </svg>
                                 AI Options
                             </li>
                             <li class="menu-item" data-tab="voice">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                                    <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+                                    <line x1="12" y1="19" x2="12" y2="22" />
+                                </svg>
                                 Voice Search
                             </li>
                             <li class="menu-item" data-tab="visual">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path
+                                        d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                    <circle cx="12" cy="13" r="4" />
+                                </svg>
                                 Visual Search
                             </li>
                             <li class="menu-item" data-tab="keyboard">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                                    <line x1="6" y1="8" x2="6" y2="8" />
+                                    <line x1="10" y1="8" x2="10" y2="8" />
+                                    <line x1="14" y1="8" x2="14" y2="8" />
+                                    <line x1="18" y1="8" x2="18" y2="8" />
+                                    <line x1="6" y1="12" x2="6" y2="12" />
+                                    <line x1="18" y1="12" x2="18" y2="12" />
+                                    <line x1="7" y1="16" x2="17" y2="16" />
+                                    <line x1="10" y1="12" x2="14" y2="12" />
+                                </svg>
                                 Keyboard
                             </li>
                             <li class="menu-item" data-tab="privacy">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
                                 Privacy
                             </li>
                             <li class="menu-item" data-tab="performance">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                </svg>
                                 Performance
                             </li>
                             <li class="menu-item" data-tab="developer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <polyline points="16 18 22 12 16 6" />
+                                    <polyline points="8 6 2 12 8 18" />
+                                </svg>
                                 Developer
                             </li>
                             <li class="menu-item" data-tab="about">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                </svg>
                                 About
                             </li>
                         </ul>
@@ -221,60 +407,101 @@
                     <section id="tab-overview" class="settings-pane active">
                         <div class="settings-dashboard-header">
                             <h3>Settings Overview</h3>
-                            <span class="setting-desc" style="display: block; margin-top: 0.25rem; margin-bottom: 1rem;">Select a category to customize your homepage preferences.</span>
+                            <span class="setting-desc"
+                                style="display: block; margin-top: 0.25rem; margin-bottom: 1rem;">Select a category to
+                                customize your homepage preferences.</span>
                         </div>
                         <div class="settings-categories-grid">
                             <div class="category-card" data-category="personalization">
                                 <div class="category-card-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.01445 19.1559 5.09239 19.2338 5.1523 19.3241C5.23403 19.4473 5.27116 19.5939 5.25732 19.7423C5.24719 19.851 5.2023 19.997 5.11252 20.2891L4.82 21.24C4.69755 21.638 5.06201 22 5.47953 22H12Z" />
+                                        <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" />
+                                        <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor" />
+                                        <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor" />
+                                        <circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" />
+                                    </svg>
                                 </div>
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">Personalization</h4>
-                                    <p class="category-card-desc">Themes, accent colors, wallpaper meshes, and window scaling.</p>
+                                    <p class="category-card-desc">Themes, accent colors, wallpaper meshes, and window
+                                        scaling.</p>
                                     <span class="category-card-tags">Appearance • Windows</span>
                                 </div>
                             </div>
 
                             <div class="category-card" data-category="widgets">
                                 <div class="category-card-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="3" width="7" height="9" rx="1" />
+                                        <rect x="14" y="3" width="7" height="5" rx="1" />
+                                        <rect x="14" y="12" width="7" height="9" rx="1" />
+                                        <rect x="3" y="16" width="7" height="5" rx="1" />
+                                    </svg>
                                 </div>
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">Widgets</h4>
-                                    <p class="category-card-desc">Manage clock format, notes autosave, and bookmarks directory tiles.</p>
+                                    <p class="category-card-desc">Manage clock format, notes autosave, and bookmarks
+                                        directory tiles.</p>
                                     <span class="category-card-tags">Clock & Apps • Notes • Bookmarks</span>
                                 </div>
                             </div>
 
                             <div class="category-card" data-category="search-ai">
                                 <div class="category-card-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="10" rx="2" />
+                                        <circle cx="12" cy="5" r="2" />
+                                        <path d="M12 7v4" />
+                                        <line x1="8" y1="16" x2="8" y2="16" />
+                                        <line x1="16" y1="16" x2="16" y2="16" />
+                                    </svg>
                                 </div>
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">Search & AI</h4>
-                                    <p class="category-card-desc">Select default AI engines, voice speech language, and lens search provider.</p>
+                                    <p class="category-card-desc">Select default AI engines, voice speech language, and
+                                        lens search provider.</p>
                                     <span class="category-card-tags">AI Options • Voice • Visual Search</span>
                                 </div>
                             </div>
 
                             <div class="category-card" data-category="system">
                                 <div class="category-card-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                    </svg>
                                 </div>
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">System & Controls</h4>
-                                    <p class="category-card-desc">Keyboard hotkeys, privacy search history, animations, and dev configs.</p>
+                                    <p class="category-card-desc">Keyboard hotkeys, privacy search history, animations,
+                                        and dev configs.</p>
                                     <span class="category-card-tags">Keyboard • Privacy • Performance • Developer</span>
                                 </div>
                             </div>
 
                             <div class="category-card" data-category="about">
                                 <div class="category-card-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                    </svg>
                                 </div>
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">About</h4>
-                                    <p class="category-card-desc">Application details, version specifications, and project links.</p>
+                                    <p class="category-card-desc">Application details, version specifications, and
+                                        project links.</p>
                                     <span class="category-card-tags">About Startpage</span>
                                 </div>
                             </div>
@@ -291,12 +518,18 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-theme">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">Follow System</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="system" role="option">Follow System</li>
+                                        <li class="dropdown-item active" data-value="system" role="option">Follow System
+                                        </li>
                                         <li class="dropdown-item" data-value="light" role="option">Light Theme</li>
                                         <li class="dropdown-item" data-value="dark" role="option">Dark Theme</li>
                                     </ul>
@@ -324,24 +557,32 @@
                             </div>
                             <div class="setting-control">
                                 <div class="color-presets" style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <button type="button" class="color-dot" data-color="blue" style="background: #3b82f6;" title="Blue"></button>
-                                    <button type="button" class="color-dot" data-color="purple" style="background: #a855f7;" title="Purple"></button>
-                                    <button type="button" class="color-dot" data-color="emerald" style="background: #10b981;" title="Emerald"></button>
-                                    <button type="button" class="color-dot" data-color="amber" style="background: #f59e0b;" title="Amber"></button>
-                                    <button type="button" class="color-dot" data-color="rose" style="background: #f43f5e;" title="Rose"></button>
-                                    <div class="color-picker-wrapper" id="custom-accent-wrapper" title="Custom Accent Color">
+                                    <button type="button" class="color-dot" data-color="blue"
+                                        style="background: #3b82f6;" title="Blue"></button>
+                                    <button type="button" class="color-dot" data-color="purple"
+                                        style="background: #a855f7;" title="Purple"></button>
+                                    <button type="button" class="color-dot" data-color="emerald"
+                                        style="background: #10b981;" title="Emerald"></button>
+                                    <button type="button" class="color-dot" data-color="amber"
+                                        style="background: #f59e0b;" title="Amber"></button>
+                                    <button type="button" class="color-dot" data-color="rose"
+                                        style="background: #f43f5e;" title="Rose"></button>
+                                    <div class="color-picker-wrapper" id="custom-accent-wrapper"
+                                        title="Custom Accent Color">
                                         <input type="color" id="setting-accent-custom" value="#3b82f6">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="setting-group-section" id="background-presets-container" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                        <div class="setting-group-section" id="background-presets-container"
+                            style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
                             <h4 class="section-title">Background Theme</h4>
-                            
+
                             <h5 class="section-subtitle">Animated Gradient Mesh</h5>
                             <div class="bg-presets-grid animated-meshes">
-                                <button type="button" class="bg-preset-card active" data-bg="mesh-default" title="Default Mesh">
+                                <button type="button" class="bg-preset-card active" data-bg="mesh-default"
+                                    title="Default Mesh">
                                     <div class="bg-preview mesh-default-preview"></div>
                                     <span class="bg-label">Default Mesh</span>
                                 </button>
@@ -353,7 +594,8 @@
                                     <div class="bg-preview mesh-sunset-preview"></div>
                                     <span class="bg-label">Sunset Mesh</span>
                                 </button>
-                                <button type="button" class="bg-preset-card" data-bg="mesh-midnight" title="Midnight Mesh">
+                                <button type="button" class="bg-preset-card" data-bg="mesh-midnight"
+                                    title="Midnight Mesh">
                                     <div class="bg-preview mesh-midnight-preview"></div>
                                     <span class="bg-label">Midnight Mesh</span>
                                 </button>
@@ -361,6 +603,22 @@
                                     <div class="bg-preview mesh-custom-preview"></div>
                                     <span class="bg-label">Custom Mesh</span>
                                 </button>
+                                <button type="button" class="bg-preset-card" data-bg="solid" title="Solid Color">
+                                    <div class="bg-preview" id="solid-color-preview"></div>
+                                    <span class="bg-label">Solid Color</span>
+                                </button>
+                            </div>
+
+                            <div class="custom-solid-controls hidden" id="custom-solid-controls"
+                                style="margin-top: 0.75rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <label style="font-size: 0.85rem; font-weight: 500; color: var(--text-color);">Solid
+                                        Background Color:</label>
+                                    <div class="color-picker-item" style="width: 100px;">
+                                        <input type="color" id="setting-solid-bg-color" value="#0f172a"
+                                            class="color-picker-input">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="custom-mesh-controls hidden" id="custom-mesh-controls">
@@ -407,47 +665,139 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <h5 class="section-subtitle" style="margin-top: 1rem;">Premium Wallpapers</h5>
                             <div class="bg-presets-grid static-wallpapers">
                                 <button type="button" class="bg-preset-card" data-bg="aurora" title="Aurora Landscape">
-                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/aurora.png')"></div>
+                                    <div class="bg-preview"
+                                        style="background-image: url('../assets/backgrounds/aurora.png')"></div>
                                     <span class="bg-label">Aurora</span>
                                 </button>
                                 <button type="button" class="bg-preset-card" data-bg="cyberpunk" title="Cyberpunk City">
-                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/cyberpunk.png')"></div>
+                                    <div class="bg-preview"
+                                        style="background-image: url('../assets/backgrounds/cyberpunk.png')"></div>
                                     <span class="bg-label">Cyberpunk</span>
                                 </button>
-                                <button type="button" class="bg-preset-card" data-bg="mountains" title="Sunset Mountains">
-                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/mountains.png')"></div>
+                                <button type="button" class="bg-preset-card" data-bg="mountains"
+                                    title="Sunset Mountains">
+                                    <div class="bg-preview"
+                                        style="background-image: url('../assets/backgrounds/mountains.png')"></div>
                                     <span class="bg-label">Mountains</span>
                                 </button>
                                 <button type="button" class="bg-preset-card" data-bg="abstract" title="Abstract Silk">
-                                    <div class="bg-preview" style="background-image: url('../assets/backgrounds/abstract.png')"></div>
+                                    <div class="bg-preview"
+                                        style="background-image: url('../assets/backgrounds/abstract.png')"></div>
                                     <span class="bg-label">Abstract</span>
                                 </button>
-                                <button type="button" class="bg-preset-card" data-bg="custom" title="Custom Image" id="bg-custom-card">
+                                <button type="button" class="bg-preset-card" data-bg="custom" title="Custom Image"
+                                    id="bg-custom-card">
                                     <div class="bg-preview custom-preview">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                            <polyline points="21 15 16 10 5 21"></polyline>
+                                        </svg>
                                     </div>
                                     <span class="bg-label">Custom Image</span>
                                 </button>
                             </div>
-                            
+
                             <div class="custom-bg-controls hidden" id="custom-bg-controls">
                                 <div class="custom-bg-row">
-                                    <input type="text" id="custom-bg-url" placeholder="Paste image URL (https://...)" class="custom-input" style="flex: 1; width: auto;">
+                                    <input type="text" id="custom-bg-url" placeholder="Paste image URL (https://...)"
+                                        class="custom-input" style="flex: 1; width: auto;">
                                     <button type="button" class="action-btn" id="btn-apply-bg-url">Apply URL</button>
                                 </div>
                                 <div class="custom-bg-divider">or</div>
                                 <div class="custom-bg-row">
-                                    <label class="action-btn upload-label" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex: 1; cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                    <label class="action-btn upload-label"
+                                        style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex: 1; cursor: pointer;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17 8 12 3 7 8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
                                         Upload Image File
                                         <input type="file" id="custom-bg-file" accept="image/*" style="display: none;">
                                     </label>
                                 </div>
-                                <span class="setting-desc" style="margin-top: 0.25rem;">Images are saved locally inside your browser storage.</span>
+                                <span class="setting-desc" style="margin-top: 0.25rem;">Images are saved locally inside
+                                    your browser storage.</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-group-section" id="custom-mode-colors-container"
+                            style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 1rem;">
+                            <h4 class="section-title">Custom Mode Colors (Background & Fonts)</h4>
+                            <span class="setting-desc" style="display: block; margin-bottom: 1rem;">Customize background
+                                base color, primary font color, and secondary font color for Light and Dark
+                                modes.</span>
+
+                            <div style="margin-bottom: 1.25rem;">
+                                <h5
+                                    style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);">
+                                    ☀️ Light Mode Colors</h5>
+                                <div
+                                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
+                                    <div class="color-picker-item">
+                                        <label
+                                            style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Background</label>
+                                        <input type="color" id="setting-color-bg-light" value="#f8fafc"
+                                            class="color-picker-input">
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label
+                                            style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Primary
+                                            Font</label>
+                                        <input type="color" id="setting-color-text-light" value="#1e293b"
+                                            class="color-picker-input">
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label
+                                            style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Secondary
+                                            Font</label>
+                                        <input type="color" id="setting-color-text-sec-light" value="#64748b"
+                                            class="color-picker-input">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 1.25rem;">
+                                <h5
+                                    style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);">
+                                    🌙 Dark Mode Colors</h5>
+                                <div
+                                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
+                                    <div class="color-picker-item">
+                                        <label
+                                            style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Background</label>
+                                        <input type="color" id="setting-color-bg-dark" value="#0f172a"
+                                            class="color-picker-input">
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label
+                                            style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Primary
+                                            Font</label>
+                                        <input type="color" id="setting-color-text-dark" value="#f8fafc"
+                                            class="color-picker-input">
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label
+                                            style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Secondary
+                                            Font</label>
+                                        <input type="color" id="setting-color-text-sec-dark" value="#cbd5e1"
+                                            class="color-picker-input">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 0.75rem;">
+                                <button type="button" id="btn-reset-mode-colors" class="action-btn">Restore Default
+                                    Theme Colors</button>
                             </div>
                         </div>
                     </section>
@@ -462,14 +812,21 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-notes-font">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">System Sans-Serif</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="sans" role="option">System Sans-Serif</li>
+                                        <li class="dropdown-item active" data-value="sans" role="option">System
+                                            Sans-Serif</li>
                                         <li class="dropdown-item" data-value="serif" role="option">Classic Serif</li>
-                                        <li class="dropdown-item" data-value="mono" role="option">Developer Monospace</li>
+                                        <li class="dropdown-item" data-value="mono" role="option">Developer Monospace
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -492,7 +849,8 @@
                                 <span class="setting-desc">Default content text for blank notes.</span>
                             </div>
                             <div class="setting-control">
-                                <input type="text" id="setting-notes-placeholder" placeholder="Type a note here..." class="custom-input">
+                                <input type="text" id="setting-notes-placeholder" placeholder="Type a note here..."
+                                    class="custom-input">
                             </div>
                         </div>
 
@@ -524,7 +882,8 @@
                                 <span class="setting-desc">Remove all open sticky notes from your workspace.</span>
                             </div>
                             <div class="setting-control">
-                                <button type="button" id="btn-close-all-notes" class="action-btn danger">Close All Notes</button>
+                                <button type="button" id="btn-close-all-notes" class="action-btn danger">Close All
+                                    Notes</button>
                             </div>
                         </div>
                     </section>
@@ -552,9 +911,14 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-bookmark-target">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">New Tab</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
                                         <li class="dropdown-item active" data-value="_blank" role="option">New Tab</li>
@@ -576,7 +940,7 @@
                                 </label>
                             </div>
                         </div>
-                        
+
 
                         <div class="setting-group-section" id="folder-toggles-container">
                             <h4 class="section-title">Visible Folders & Links</h4>
@@ -624,12 +988,18 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-clock-format">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">12-Hour (AM/PM)</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="12" role="option">12-Hour (AM/PM)</li>
+                                        <li class="dropdown-item active" data-value="12" role="option">12-Hour (AM/PM)
+                                        </li>
                                         <li class="dropdown-item" data-value="24" role="option">24-Hour</li>
                                     </ul>
                                 </div>
@@ -665,13 +1035,19 @@
                         <div class="setting-row">
                             <div class="setting-info">
                                 <label>Clock Block Alignment</label>
-                                <span class="setting-desc">Align time, greeting, and date displays (Left, Center, Right).</span>
+                                <span class="setting-desc">Align time, greeting, and date displays (Left, Center,
+                                    Right).</span>
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-clock-align">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">Center</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
                                         <li class="dropdown-item active" data-value="center" role="option">Center</li>
@@ -689,45 +1065,64 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-greeting-mode">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">Default (Time-Based)</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="default" role="option">Default (Time-Based)</li>
-                                        <li class="dropdown-item" data-value="time_custom" role="option">Custom Time Greetings</li>
-                                        <li class="dropdown-item" data-value="custom_text" role="option">Fixed Custom Message</li>
+                                        <li class="dropdown-item active" data-value="default" role="option">Default
+                                            (Time-Based)</li>
+                                        <li class="dropdown-item" data-value="time_custom" role="option">Custom Time
+                                            Greetings</li>
+                                        <li class="dropdown-item" data-value="custom_text" role="option">Fixed Custom
+                                            Message</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="setting-group-section hidden" id="custom-time-greetings-container" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                        <div class="setting-group-section hidden" id="custom-time-greetings-container"
+                            style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
                             <h4 class="section-title">Time-Based Greeting Texts</h4>
                             <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
                                 <div class="setting-row" style="padding: 0.25rem 0;">
-                                    <div class="setting-info"><label style="font-size: 0.85rem;">Morning (05:00 - 11:59)</label></div>
-                                    <div class="setting-control"><input type="text" id="setting-greeting-morning" placeholder="Good morning." class="custom-input"></div>
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Morning (05:00 -
+                                            11:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-morning"
+                                            placeholder="Good morning." class="custom-input"></div>
                                 </div>
                                 <div class="setting-row" style="padding: 0.25rem 0;">
-                                    <div class="setting-info"><label style="font-size: 0.85rem;">Afternoon (12:00 - 17:59)</label></div>
-                                    <div class="setting-control"><input type="text" id="setting-greeting-afternoon" placeholder="Good afternoon." class="custom-input"></div>
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Afternoon (12:00 -
+                                            17:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-afternoon"
+                                            placeholder="Good afternoon." class="custom-input"></div>
                                 </div>
                                 <div class="setting-row" style="padding: 0.25rem 0;">
-                                    <div class="setting-info"><label style="font-size: 0.85rem;">Evening (18:00 - 22:59)</label></div>
-                                    <div class="setting-control"><input type="text" id="setting-greeting-evening" placeholder="Good evening." class="custom-input"></div>
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Evening (18:00 -
+                                            22:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-evening"
+                                            placeholder="Good evening." class="custom-input"></div>
                                 </div>
                                 <div class="setting-row" style="padding: 0.25rem 0;">
-                                    <div class="setting-info"><label style="font-size: 0.85rem;">Night (23:00 - 04:59)</label></div>
-                                    <div class="setting-control"><input type="text" id="setting-greeting-night" placeholder="Good night." class="custom-input"></div>
+                                    <div class="setting-info"><label style="font-size: 0.85rem;">Night (23:00 -
+                                            04:59)</label></div>
+                                    <div class="setting-control"><input type="text" id="setting-greeting-night"
+                                            placeholder="Good night." class="custom-input"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="setting-group-section hidden" id="custom-text-greeting-container" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                        <div class="setting-group-section hidden" id="custom-text-greeting-container"
+                            style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
                             <h4 class="section-title">Fixed Greeting Text</h4>
                             <div style="margin-top: 0.5rem;">
-                                <input type="text" id="setting-greeting-text" placeholder="Welcome back." class="custom-input" style="width: 100%;">
+                                <input type="text" id="setting-greeting-text" placeholder="Welcome back."
+                                    class="custom-input" style="width: 100%;">
                             </div>
                         </div>
 
@@ -737,7 +1132,8 @@
                                 <span class="setting-desc">Reset greeting mode and texts back to factory default.</span>
                             </div>
                             <div class="setting-control">
-                                <button type="button" id="btn-reset-greeting" class="action-btn">Restore Default</button>
+                                <button type="button" id="btn-reset-greeting" class="action-btn">Restore
+                                    Default</button>
                             </div>
                         </div>
 
@@ -765,9 +1161,14 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-ai-provider">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">Google AI</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
                                         <!-- Injected dynamically in ai.js -->
@@ -776,27 +1177,36 @@
                             </div>
                         </div>
 
-                        <div class="setting-group-section" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                        <div class="setting-group-section"
+                            style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
                             <h4 class="section-title">Manage AI Engines</h4>
-                            <span class="setting-desc" style="display: block; margin-bottom: 0.75rem;">Enable engines to show on main page AI selector.</span>
-                            <div class="ai-engines-list" id="ai-engines-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 180px; overflow-y: auto; padding-right: 0.25rem; margin-bottom: 1rem;">
+                            <span class="setting-desc" style="display: block; margin-bottom: 0.75rem;">Enable engines to
+                                show on main page AI selector.</span>
+                            <div class="ai-engines-list" id="ai-engines-list"
+                                style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 180px; overflow-y: auto; padding-right: 0.25rem; margin-bottom: 1rem;">
                                 <!-- Injected dynamically in ai.js -->
                             </div>
-                            
+
                             <h5 class="section-subtitle">Add Custom AI</h5>
-                            <div class="add-ai-form" style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(255, 255, 255, 0.03); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                            <div class="add-ai-form"
+                                style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(255, 255, 255, 0.03); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--glass-border);">
                                 <div class="form-row" style="display: flex; gap: 0.5rem;">
-                                    <input type="text" id="add-ai-name" placeholder="AI Name (e.g. DeepSeek)" class="custom-input" style="flex: 1; min-width: 0;">
-                                    <input type="text" id="add-ai-url" placeholder="Query URL (use {query} placeholder)" class="custom-input" style="flex: 2; min-width: 0;">
+                                    <input type="text" id="add-ai-name" placeholder="AI Name (e.g. DeepSeek)"
+                                        class="custom-input" style="flex: 1; min-width: 0;">
+                                    <input type="text" id="add-ai-url" placeholder="Query URL (use {query} placeholder)"
+                                        class="custom-input" style="flex: 2; min-width: 0;">
                                 </div>
-                                <button type="button" id="btn-add-custom-ai" class="action-btn" style="width: 100%; justify-content: center; padding: 0.6rem;">Add AI Engine</button>
+                                <button type="button" id="btn-add-custom-ai" class="action-btn"
+                                    style="width: 100%; justify-content: center; padding: 0.6rem;">Add AI
+                                    Engine</button>
                             </div>
                         </div>
 
                         <div class="setting-row">
                             <div class="setting-info">
                                 <label for="toggle-show-ai">Show AI Toggle on Search Bar</label>
-                                <span class="setting-desc">Display the AI mode selector on the homepage search bar.</span>
+                                <span class="setting-desc">Display the AI mode selector on the homepage search
+                                    bar.</span>
                             </div>
                             <div class="setting-control">
                                 <label class="switch">
@@ -812,7 +1222,8 @@
                                 <span class="setting-desc">Automatically append context to AI queries.</span>
                             </div>
                             <div class="setting-control">
-                                <input type="text" id="setting-ai-custom-prompt" placeholder="e.g., explain briefly" class="custom-input">
+                                <input type="text" id="setting-ai-custom-prompt" placeholder="e.g., explain briefly"
+                                    class="custom-input">
                             </div>
                         </div>
                     </section>
@@ -827,12 +1238,18 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-voice-lang">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">English (US)</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="en-US" role="option">English (US)</li>
+                                        <li class="dropdown-item active" data-value="en-US" role="option">English (US)
+                                        </li>
                                         <li class="dropdown-item" data-value="es-ES" role="option">Spanish (Spain)</li>
                                         <li class="dropdown-item" data-value="fr-FR" role="option">French (France)</li>
                                         <li class="dropdown-item" data-value="de-DE" role="option">German (Germany)</li>
@@ -880,12 +1297,18 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-visual-provider">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">Google Lens</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
-                                        <li class="dropdown-item active" data-value="google" role="option">Google Lens</li>
+                                        <li class="dropdown-item active" data-value="google" role="option">Google Lens
+                                        </li>
                                         <li class="dropdown-item" data-value="bing" role="option">Bing Visual</li>
                                         <li class="dropdown-item" data-value="yandex" role="option">Yandex Visual</li>
                                     </ul>
@@ -965,9 +1388,14 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-history-count">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">5 items</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
                                         <li class="dropdown-item" data-value="3" role="option">3 items</li>
@@ -985,9 +1413,14 @@
                             </div>
                             <div class="setting-control">
                                 <div class="custom-dropdown" id="dropdown-suggestions-limit">
-                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
                                         <span class="dropdown-selected-label">5 items</span>
-                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </button>
                                     <ul class="dropdown-menu" role="listbox">
                                         <li class="dropdown-item" data-value="3" role="option">3 items</li>
@@ -1018,7 +1451,8 @@
                                 <span class="setting-desc">Remove all cached history queries.</span>
                             </div>
                             <div class="setting-control">
-                                <button type="button" id="btn-clear-history" class="action-btn danger">Clear History</button>
+                                <button type="button" id="btn-clear-history" class="action-btn danger">Clear
+                                    History</button>
                             </div>
                         </div>
                     </section>
@@ -1049,7 +1483,8 @@
                                 <span class="setting-desc">Download current settings as JSON file.</span>
                             </div>
                             <div class="setting-control">
-                                <button type="button" id="btn-export-settings" class="action-btn">Export Configuration</button>
+                                <button type="button" id="btn-export-settings" class="action-btn">Export
+                                    Configuration</button>
                             </div>
                         </div>
 
@@ -1059,7 +1494,8 @@
                                 <span class="setting-desc">Restore settings from JSON file.</span>
                             </div>
                             <div class="setting-control">
-                                <button type="button" id="btn-import-settings" class="action-btn">Import Configuration</button>
+                                <button type="button" id="btn-import-settings" class="action-btn">Import
+                                    Configuration</button>
                                 <input type="file" id="file-import-settings" accept=".json" style="display:none;">
                             </div>
                         </div>
@@ -1070,7 +1506,8 @@
                                 <span class="setting-desc">Wipe all local settings cache to default.</span>
                             </div>
                             <div class="setting-control">
-                                <button type="button" id="btn-reset-settings" class="action-btn danger">Factory Reset</button>
+                                <button type="button" id="btn-reset-settings" class="action-btn danger">Factory
+                                    Reset</button>
                             </div>
                         </div>
                     </section>
@@ -1079,15 +1516,80 @@
                     <section id="tab-about" class="settings-pane">
                         <h3>About Startpage</h3>
                         <div class="about-card">
-                            <div class="about-app-icon">H</div>
-                            <h4 class="about-app-title">Home Startup page</h4>
+                            <div class="about-app-icon"
+                                style="background: none; width: 64px; height: 64px; margin-bottom: 0.75rem; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%"
+                                    height="100%">
+                                    <defs>
+                                        <linearGradient id="grad-about" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="512" height="512" rx="128" fill="url(#grad-about)" />
+                                    <path
+                                        d="M256 140 L140 256 L180 256 L180 360 L230 360 L230 300 L282 300 L282 360 L332 360 L332 256 L372 256 Z"
+                                        fill="#ffffff" />
+                                </svg>
+                            </div>
+                            <h4 class="about-app-title">Home by si4k</h4>
                             <span class="about-app-version">v1.2.0</span>
-                            <p class="about-app-desc">A beautiful, high-performance, and feature-rich new tab override extension for Google Chrome.</p>
-                            
-                            <div class="about-links-wrapper">
-                                <a href="https://github.com/akshitkamboz13/minimal-homepage" target="_blank" class="about-link-button">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="about-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                                    GitHub Project Repository
+                            <p class="about-app-desc">A beautiful, high-performance, and feature-rich new tab override
+                                extension for Google Chrome.</p>
+
+                            <div class="about-app-author-wrapper"
+                                style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                                Developed by <strong class="about-app-author" style="color: var(--text-color);">Akshit
+                                    Kamboj (si4k)</strong>
+                            </div>
+
+                            <div class="setting-row" style="margin-top: 1rem; width: 100%; text-align: left;">
+                                <div class="setting-info">
+                                    <label for="setting-app-name">Application Name / Title</label>
+                                    <span class="setting-desc">Customize displayed app name.</span>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="text" id="setting-app-name" placeholder="Home by si4k"
+                                        class="custom-input">
+                                </div>
+                            </div>
+
+                            <div class="about-links-wrapper"
+                                style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+                                <a href="https://github.com/akshitKamboj13/minimal-homepage" target="_blank"
+                                    class="about-link-button" id="about-repo-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="about-icon">
+                                        <path
+                                            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                                        </path>
+                                    </svg>
+                                    GitHub Repository
+                                </a>
+                                <a href="https://www.si4k.online/projects/minimalist-homepage" target="_blank"
+                                    class="about-link-button" id="about-site-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="about-icon">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                                        <path
+                                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                        </path>
+                                    </svg>
+                                    Project Website (si4k.online)
+                                </a>
+                                <a href="https://www.si4k.online/contribution" target="_blank"
+                                    class="about-link-button contribution-btn" id="about-contrib-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="about-icon">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                    Post on Wall of Awesome Humans (No Payment Needed!)
                                 </a>
                             </div>
                         </div>
@@ -1103,22 +1605,26 @@
     <aside class="fab-container" aria-label="Quick Actions">
         <button id="google-apps-trigger" class="floating-action-btn google-apps-btn" aria-label="Google Apps">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="4" cy="4" r="2"/>
-              <circle cx="12" cy="4" r="2"/>
-              <circle cx="20" cy="4" r="2"/>
-              <circle cx="4" cy="12" r="2"/>
-              <circle cx="12" cy="12" r="2"/>
-              <circle cx="20" cy="12" r="2"/>
-              <circle cx="4" cy="20" r="2"/>
-              <circle cx="12" cy="20" r="2"/>
-              <circle cx="20" cy="20" r="2"/>
+                <circle cx="4" cy="4" r="2" />
+                <circle cx="12" cy="4" r="2" />
+                <circle cx="20" cy="4" r="2" />
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="20" cy="12" r="2" />
+                <circle cx="4" cy="20" r="2" />
+                <circle cx="12" cy="20" r="2" />
+                <circle cx="20" cy="20" r="2" />
             </svg>
         </button>
         <button id="image-search-trigger" class="floating-action-btn" aria-label="Visual Search">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
         </button>
     </aside>
-    
+
     <!-- ===================================== -->
     <!-- Visual Search Panel -->
     <!-- ===================================== -->
@@ -1126,18 +1632,29 @@
         <h2>Visual Search</h2>
         <div class="drag-drop-area" id="modal-drag-drop">
             <div class="drag-drop-content" id="modal-drag-content">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="upload-icon">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
                 <p>Drag image here or <span class="browse-link">browse</span></p>
             </div>
             <div class="preview-container hidden" id="modal-preview-container">
                 <img id="modal-image-preview" class="preview-img" src="" alt="Preview">
                 <button type="button" id="modal-clear-image-btn" class="clear-preview-btn" aria-label="Clear image">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                 </button>
             </div>
         </div>
         <div class="panel-input-wrapper">
-            <input type="text" id="modal-text-input" class="panel-text-input" placeholder="Add context (optional)" autocomplete="off">
+            <input type="text" id="modal-text-input" class="panel-text-input" placeholder="Add context (optional)"
+                autocomplete="off">
         </div>
         <footer class="panel-footer">
             <span class="panel-footer-title">Search with</span>
@@ -1158,183 +1675,390 @@
     <nav id="google-apps-panel" class="google-apps-panel glass-panel" aria-label="Google Apps List">
         <div class="apps-grid">
             <a href="https://myaccount.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
                 <span>Google Account</span>
             </a>
             <a href="https://www.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
                 <span>Search</span>
             </a>
             <a href="https://mail.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
                 <span>Gmail</span>
             </a>
             <a href="https://drive.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 22 22 22"></polygon></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 22 22 22"></polygon>
+                </svg>
                 <span>Drive</span>
             </a>
             <a href="https://www.youtube.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.18 1 12 1 12s0 3.82.46 5.58a2.78 2.78 0 0 0 1.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.82 23 12 23 12s0-3.82-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.18 1 12 1 12s0 3.82.46 5.58a2.78 2.78 0 0 0 1.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.82 23 12 23 12s0-3.82-.46-5.58z">
+                    </path>
+                    <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon>
+                </svg>
                 <span>YouTube</span>
             </a>
             <a href="https://maps.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
                 <span>Maps</span>
             </a>
             <a href="https://calendar.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
                 <span>Calendar</span>
             </a>
             <a href="https://photos.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
                 <span>Photos</span>
             </a>
             <a href="https://translate.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                    </path>
+                </svg>
                 <span>Translate</span>
             </a>
             <a href="https://meet.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                </svg>
                 <span>Meet</span>
             </a>
             <a href="https://docs.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
                 <span>Docs</span>
             </a>
             <a href="https://docs.google.com/spreadsheets/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                </svg>
                 <span>Sheets</span>
             </a>
             <a href="https://docs.google.com/presentation/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
                 <span>Slides</span>
             </a>
             <a href="https://keep.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a5 5 0 0 0-5 5c0 2 1.5 3.5 2 5v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2c.5-1.5 2-3 2-5a5 5 0 0 0-5-5z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18h6" />
+                    <path d="M10 22h4" />
+                    <path
+                        d="M12 2a5 5 0 0 0-5 5c0 2 1.5 3.5 2 5v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2c.5-1.5 2-3 2-5a5 5 0 0 0-5-5z" />
+                </svg>
                 <span>Keep</span>
             </a>
             <a href="https://contacts.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
                 <span>Contacts</span>
             </a>
             <a href="https://play.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
                 <span>Play</span>
             </a>
             <a href="https://news.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 1 2 2z"/><line x1="15" y1="9" x2="9" y2="9"/><line x1="15" y1="13" x2="9" y2="13"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 1 2 2z" />
+                    <line x1="15" y1="9" x2="9" y2="9" />
+                    <line x1="15" y1="13" x2="9" y2="13" />
+                </svg>
                 <span>News</span>
             </a>
             <a href="https://gemini.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
                 <span>Gemini</span>
             </a>
             <a href="https://wallet.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                    <line x1="1" y1="10" x2="23" y2="10" />
+                </svg>
                 <span>Wallet</span>
             </a>
             <a href="https://music.youtube.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="10 8 16 12 10 16 10 8" />
+                </svg>
                 <span>YouTube Music</span>
             </a>
             <a href="https://one.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
                 <span>Google One</span>
             </a>
             <a href="https://tasks.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 11 12 14 22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
                 <span>Tasks</span>
             </a>
             <a href="https://passwords.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
                 <span>Password Manager</span>
             </a>
             <a href="https://docs.google.com/forms/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
                 <span>Forms</span>
             </a>
             <a href="https://earth.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
                 <span>Earth</span>
             </a>
             <a href="https://chat.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
                 <span>Chats</span>
             </a>
             <a href="https://classroom.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h20v14H2z"/><path d="M10 21h4"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h20v14H2z" />
+                    <path d="M10 21h4" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
                 <span>Classroom</span>
             </a>
             <a href="https://shopping.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
                 <span>Shopping</span>
             </a>
             <a href="https://www.google.com/travel/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="3 11 22 2 13 21 11 13 3 11" />
+                </svg>
                 <span>Travel</span>
             </a>
             <a href="https://www.google.com/finance/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
                 <span>Finence</span>
             </a>
             <a href="https://chrome.google.com/webstore" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="4" />
+                    <line x1="21.17" y1="8" x2="12" y2="8" />
+                    <line x1="3.95" y1="6.06" x2="8.54" y2="14" />
+                    <line x1="10.88" y1="21.94" x2="15.46" y2="14" />
+                </svg>
                 <span>Chrome Web Store</span>
             </a>
             <a href="https://www.google.com/save" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
                 <span>Saved</span>
             </a>
             <a href="https://www.blogger.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+                    <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
                 <span>Blogger</span>
             </a>
             <a href="https://artsandculture.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
                 <span>Art and Culture</span>
             </a>
             <a href="https://ads.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
                 <span>Google Ad</span>
             </a>
             <a href="https://myadcenter.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
                 <span>My Ad Center</span>
             </a>
             <a href="https://merchants.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
                 <span>Merchant Center</span>
             </a>
             <a href="https://business.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
                 <span>Business profile manger</span>
             </a>
             <a href="https://store.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                </svg>
                 <span>Store</span>
             </a>
             <a href="https://analytics.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
                 <span>Google Analytics</span>
             </a>
             <a href="https://notebooklm.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
                 <span>NotebookLM</span>
             </a>
             <a href="https://workspace.google.com/products/vids/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+                    <line x1="7" y1="2" x2="7" y2="22" />
+                    <line x1="17" y1="2" x2="17" y2="22" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <line x1="2" y1="7" x2="7" y2="7" />
+                    <line x1="2" y1="17" x2="7" y2="17" />
+                    <line x1="17" y1="17" x2="22" y2="17" />
+                    <line x1="17" y1="7" x2="22" y2="7" />
+                </svg>
                 <span>Vids</span>
             </a>
             <a href="https://books.google.com/" class="app-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
                 <span>Books</span>
             </a>
         </div>
     </nav>
-    
+
     <!-- ===================================== -->
     <!-- Scripts -->
     <!-- ===================================== -->
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

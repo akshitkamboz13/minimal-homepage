@@ -140,7 +140,7 @@ To run this Chrome extension locally:
 
 1. Clone this repository to your local computer:
    ```bash
-   git clone https://github.com/akshitkamboz13/minimal-homepage.git
+   git clone https://github.com/akshitKamboj13/minimal-homepage.git
    cd minimal-homepage
    ```
 2. Open Google Chrome and navigate to `chrome://extensions/`.
@@ -160,7 +160,7 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/akshitkamboz13/minimal-homepage.git
+git remote add origin https://github.com/akshitKamboj13/minimal-homepage.git
 git push -u origin main
 ```
 

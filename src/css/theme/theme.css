@@ -20,12 +20,12 @@
 
 [data-theme="dark"] {
     /* Dark Theme Variables */
-    --text-color: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --glass-bg: rgba(15, 23, 42, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    --glass-highlight: rgba(255, 255, 255, 0.1);
+    --text-color: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --glass-highlight: rgba(255, 255, 255, 0.15);
     --accent-color: #60a5fa;
     
     /* Mesh Gradients */

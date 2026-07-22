@@ -208,3 +208,15 @@ body {
     background: var(--glass-highlight);
     transform: translateY(-2px);
 }
+
+[data-theme="dark"] .glass-btn {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #f8fafc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .glass-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}

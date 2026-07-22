@@ -13,7 +13,19 @@ export function applyAppearanceVisuals() {
         document.body.setAttribute('data-accent', userSettings.accentColor);
     }
 
-    // 2. Background Visuals
+    // 2. Custom Mode Colors (Background & Font Colors)
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+        if (userSettings.customBgDark) document.body.style.setProperty('--bg-base', userSettings.customBgDark);
+        if (userSettings.customTextColorDark) document.body.style.setProperty('--text-color', userSettings.customTextColorDark);
+        if (userSettings.customTextSecondaryDark) document.body.style.setProperty('--text-secondary', userSettings.customTextSecondaryDark);
+    } else {
+        if (userSettings.customBgLight) document.body.style.setProperty('--bg-base', userSettings.customBgLight);
+        if (userSettings.customTextColorLight) document.body.style.setProperty('--text-color', userSettings.customTextColorLight);
+        if (userSettings.customTextSecondaryLight) document.body.style.setProperty('--text-secondary', userSettings.customTextSecondaryLight);
+    }
+
+    // 3. Background Visuals
     applyBackgroundVisuals();
 }
 
@@ -29,7 +41,14 @@ export async function applyBackgroundVisuals() {
     document.body.style.removeProperty('--blob-2');
     document.body.style.removeProperty('--blob-3');
 
-    if (bgType.startsWith('mesh-')) {
+    if (bgType === 'solid') {
+        document.body.removeAttribute('data-mesh');
+        imgLayer.classList.remove('active');
+        mesh.style.display = 'none';
+        if (userSettings.solidBgColor) {
+            document.body.style.setProperty('--bg-base', userSettings.solidBgColor);
+        }
+    } else if (bgType.startsWith('mesh-')) {
         imgLayer.classList.remove('active');
         mesh.style.display = 'block';
         
@@ -156,6 +175,8 @@ export function initAppearance(modal) {
     const bgPresetCards = modal.querySelectorAll('.bg-preset-card');
     const customBgControls = modal.querySelector('#custom-bg-controls');
     const customMeshControls = modal.querySelector('#custom-mesh-controls');
+    const customSolidControls = modal.querySelector('#custom-solid-controls');
+    const settingSolidBgColor = modal.querySelector('#setting-solid-bg-color');
     const customBgUrlInput = modal.querySelector('#custom-bg-url');
     const btnApplyBgUrl = modal.querySelector('#btn-apply-bg-url');
     const customBgFileInput = modal.querySelector('#custom-bg-file');
@@ -169,18 +190,19 @@ export function initAppearance(modal) {
     const meshDarkBlob3 = modal.querySelector('#mesh-dark-blob-3');
 
     const updateControlsVisibility = (bgType) => {
-        if (bgType === 'custom') {
-            customBgControls.classList.remove('hidden');
-        } else {
-            customBgControls.classList.add('hidden');
-        }
-
-        if (bgType === 'mesh-custom') {
-            customMeshControls.classList.remove('hidden');
-        } else {
-            customMeshControls.classList.add('hidden');
-        }
+        if (customBgControls) customBgControls.classList.toggle('hidden', bgType !== 'custom');
+        if (customMeshControls) customMeshControls.classList.toggle('hidden', bgType !== 'mesh-custom');
+        if (customSolidControls) customSolidControls.classList.toggle('hidden', bgType !== 'solid');
     };
+
+    if (settingSolidBgColor) {
+        settingSolidBgColor.value = userSettings.solidBgColor || '#0f172a';
+        settingSolidBgColor.addEventListener('input', (e) => {
+            userSettings.solidBgColor = e.target.value;
+            saveSettings();
+            applyAppearanceVisuals();
+        });
+    }
 
     // Pre-fill fields
     if (customBgUrlInput) {
@@ -302,4 +324,58 @@ export function initAppearance(modal) {
     registerMeshPicker(meshDarkBlob1, 'customMeshBlob1Dark');
     registerMeshPicker(meshDarkBlob2, 'customMeshBlob2Dark');
     registerMeshPicker(meshDarkBlob3, 'customMeshBlob3Dark');
+
+    // Custom Mode Color Pickers (Light & Dark Mode)
+    const colorBgLight = modal.querySelector('#setting-color-bg-light');
+    const colorTextLight = modal.querySelector('#setting-color-text-light');
+    const colorTextSecLight = modal.querySelector('#setting-color-text-sec-light');
+    const colorBgDark = modal.querySelector('#setting-color-bg-dark');
+    const colorTextDark = modal.querySelector('#setting-color-text-dark');
+    const colorTextSecDark = modal.querySelector('#setting-color-text-sec-dark');
+    const btnResetModeColors = modal.querySelector('#btn-reset-mode-colors');
+
+    if (colorBgLight) colorBgLight.value = userSettings.customBgLight || '#f8fafc';
+    if (colorTextLight) colorTextLight.value = userSettings.customTextColorLight || '#1e293b';
+    if (colorTextSecLight) colorTextSecLight.value = userSettings.customTextSecondaryLight || '#64748b';
+    if (colorBgDark) colorBgDark.value = userSettings.customBgDark || '#0f172a';
+    if (colorTextDark) colorTextDark.value = userSettings.customTextColorDark || '#f8fafc';
+    if (colorTextSecDark) colorTextSecDark.value = userSettings.customTextSecondaryDark || '#cbd5e1';
+
+    const registerColorPicker = (inputEl, key) => {
+        if (inputEl) {
+            inputEl.addEventListener('input', (e) => {
+                userSettings[key] = e.target.value;
+                saveSettings();
+                applyAppearanceVisuals();
+            });
+        }
+    };
+
+    registerColorPicker(colorBgLight, 'customBgLight');
+    registerColorPicker(colorTextLight, 'customTextColorLight');
+    registerColorPicker(colorTextSecLight, 'customTextSecondaryLight');
+    registerColorPicker(colorBgDark, 'customBgDark');
+    registerColorPicker(colorTextDark, 'customTextColorDark');
+    registerColorPicker(colorTextSecDark, 'customTextSecondaryDark');
+
+    if (btnResetModeColors) {
+        btnResetModeColors.addEventListener('click', () => {
+            userSettings.customBgLight = '#f8fafc';
+            userSettings.customTextColorLight = '#1e293b';
+            userSettings.customTextSecondaryLight = '#64748b';
+            userSettings.customBgDark = '#0f172a';
+            userSettings.customTextColorDark = '#f8fafc';
+            userSettings.customTextSecondaryDark = '#cbd5e1';
+            saveSettings();
+
+            if (colorBgLight) colorBgLight.value = '#f8fafc';
+            if (colorTextLight) colorTextLight.value = '#1e293b';
+            if (colorTextSecLight) colorTextSecLight.value = '#64748b';
+            if (colorBgDark) colorBgDark.value = '#0f172a';
+            if (colorTextDark) colorTextDark.value = '#f8fafc';
+            if (colorTextSecDark) colorTextSecDark.value = '#cbd5e1';
+
+            applyAppearanceVisuals();
+        });
+    }
 }

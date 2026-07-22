@@ -1,5 +1,5 @@
 import { userSettings, saveSettings, onSettingsChanged } from '../settings/index.js';
-import { applyBackgroundVisuals } from '../settings/panels/appearance.js';
+import { applyAppearanceVisuals } from '../settings/panels/appearance.js';
 
 export function initTheme() {
     const themeToggleBtn = document.getElementById('theme-toggle');
@@ -22,8 +22,8 @@ export function initTheme() {
         }
         localStorage.setItem('theme', resolvedTheme);
         
-        // Refresh background visuals (especially if in custom mesh mode)
-        applyBackgroundVisuals();
+        // Refresh appearance & background visuals (including custom mode colors)
+        applyAppearanceVisuals();
     };
 
     // Apply initial theme from settings

@@ -98,6 +98,7 @@ export function initNotes() {
             });
 
             textarea.addEventListener('mousedown', e => e.stopPropagation());
+            textarea.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
 
             const deleteBtn = noteEl.querySelector('.delete-note-btn');
             deleteBtn.addEventListener('click', () => {

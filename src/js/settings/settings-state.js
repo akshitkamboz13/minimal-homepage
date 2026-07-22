@@ -60,7 +60,15 @@ const defaults = {
     customMeshBlob3Light: '#ffd4b3',
     customMeshBlob1Dark: '#4c1d95',
     customMeshBlob2Dark: '#1e3a8a',
-    customMeshBlob3Dark: '#831843'
+    customMeshBlob3Dark: '#831843',
+    customBgLight: '#f8fafc',
+    customTextColorLight: '#1e293b',
+    customTextSecondaryLight: '#64748b',
+    customBgDark: '#0f172a',
+    customTextColorDark: '#f8fafc',
+    customTextSecondaryDark: '#cbd5e1',
+    solidBgColor: '#0f172a',
+    appName: 'Home by si4k'
 };
 
 // Merge loaded settings with defaults to guarantee all keys exist
