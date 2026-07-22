@@ -6,6 +6,7 @@ import { initVisualSearch } from './search/visual/visual.js';
 import { initBookmarks } from './bookmarks/index.js';
 import { initPanels } from './ui/index.js';
 import { initNotes } from './notes/notes.js';
+import { initLayoutManager } from './ui/panels/layout-manager.js';
 
 export function initApp() {
     initTheme();
@@ -16,4 +17,5 @@ export function initApp() {
     initBookmarks();
     initPanels();
     initNotes();
+    initLayoutManager();
 }

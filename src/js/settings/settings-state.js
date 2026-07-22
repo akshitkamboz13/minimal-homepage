@@ -68,7 +68,9 @@ const defaults = {
     customTextColorDark: '#f8fafc',
     customTextSecondaryDark: '#cbd5e1',
     solidBgColor: '#0f172a',
-    appName: 'Home by si4k'
+    appName: 'Home by si4k',
+    freeformLayout: false,
+    layoutPositions: {}
 };
 
 // Merge loaded settings with defaults to guarantee all keys exist

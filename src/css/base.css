@@ -7,7 +7,11 @@
 }
 
 html, body {
-    overflow-x: hidden !important;
+    /* No overflow restriction — any overflow value on both html+body
+       in Chromium transfers to the viewport and clips position:fixed
+       elements, creating an invisible wall during drag. This is a
+       Chrome extension new tab — no scrolling is needed. */
+    overflow: visible;
 }
 
 /* Premium Custom scrollbar rules */
@@ -46,9 +50,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
     transition: background-color 0.5s ease, color 0.5s ease;
-    isolation: isolate; /* Create new stacking context on body for negative z-index background layers */
+    /* isolation:isolate removed — it created a clipping stacking context that trapped position:fixed elements */
 }
 
 /* Dynamic Animated Mesh Background */
@@ -172,7 +175,7 @@ body {
 
 @keyframes fadeInSlideUp {
     0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 1; transform: none; }
 }
 
 /* Glassmorphism Utilities */
@@ -219,4 +222,110 @@ body {
 [data-theme="dark"] .glass-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
+}
+
+/* Rearrange Screen Layout Styles */
+.rearrange-toolbar {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 9999px;
+    background: var(--glass-bg);
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeInDown 0.3s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.rearrange-toolbar .toolbar-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.rearrange-toolbar .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.draggable-layout-item,
+.freeform-placed {
+    transition: none !important;
+}
+
+.draggable-layout-item {
+    cursor: grab !important;
+    outline: 2px dashed rgba(59, 130, 246, 0.5);
+    outline-offset: 4px;
+    border-radius: 16px;
+}
+
+.draggable-layout-item:hover {
+    outline-color: var(--accent-color);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+}
+
+.draggable-layout-item.is-dragging {
+    cursor: grabbing !important;
+    outline-color: var(--accent-color);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+    opacity: 0.95;
+    user-select: none;
+}
+
+.layout-drag-badge {
+    position: absolute;
+    top: -12px;
+    left: 12px;
+    background: var(--accent-color);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#top-header-bar.freeform-placed,
+#top-header-bar.draggable-layout-item,
+#quick-actions-fab.freeform-placed,
+#quick-actions-fab.draggable-layout-item,
+.fab-container.freeform-placed,
+.fab-container.draggable-layout-item {
+    width: fit-content !important;
+    height: fit-content !important;
+    bottom: auto !important;
+    right: auto !important;
+}
+
+.labs-badge {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+    display: inline-flex;
+    align-items: center;
 }

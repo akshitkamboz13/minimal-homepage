@@ -28,7 +28,7 @@
         <!-- ===================================== -->
         <!-- Header -->
         <!-- ===================================== -->
-        <header>
+        <header id="main-header">
             <button id="add-note-btn" class="glass-btn" aria-label="Add Sticky Note" style="margin-right: 1rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -403,7 +403,7 @@
 
                 <!-- Content Area -->
                 <main class="settings-body">
-                    <!-- 🎛 Overview (Level 1 Dashboard) -->
+                    <!-- Overview (Level 1 Dashboard) -->
                     <section id="tab-overview" class="settings-pane active">
                         <div class="settings-dashboard-header">
                             <h3>Settings Overview</h3>
@@ -508,7 +508,7 @@
                         </div>
                     </section>
 
-                    <!-- 🎨 Appearance -->
+                    <!-- Appearance -->
                     <section id="tab-appearance" class="settings-pane">
                         <h3>Appearance</h3>
                         <div class="setting-row">
@@ -739,8 +739,10 @@
 
                             <div style="margin-bottom: 1.25rem;">
                                 <h5
-                                    style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);">
-                                    ☀️ Light Mode Colors</h5>
+                                    style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color); display: flex; align-items: center; gap: 0.4rem;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                                    Light Mode Colors
+                                </h5>
                                 <div
                                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
                                     <div class="color-picker-item">
@@ -768,8 +770,10 @@
 
                             <div style="margin-bottom: 1.25rem;">
                                 <h5
-                                    style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);">
-                                    🌙 Dark Mode Colors</h5>
+                                    style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color); display: flex; align-items: center; gap: 0.4rem;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                                    Dark Mode Colors
+                                </h5>
                                 <div
                                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
                                     <div class="color-picker-item">
@@ -802,7 +806,7 @@
                         </div>
                     </section>
 
-                    <!-- 📝 Notes -->
+                    <!-- Notes -->
                     <section id="tab-notes" class="settings-pane">
                         <h3>Notes Settings</h3>
                         <div class="setting-row">
@@ -888,7 +892,7 @@
                         </div>
                     </section>
 
-                    <!-- 📚 Bookmarks -->
+                    <!-- Bookmarks -->
                     <section id="tab-bookmarks" class="settings-pane">
                         <h3>Bookmarks Settings</h3>
                         <div class="setting-row">
@@ -950,7 +954,7 @@
                         </div>
                     </section>
 
-                    <!-- 🪟 Windows -->
+                    <!-- Windows -->
                     <section id="tab-windows" class="settings-pane">
                         <h3>Windows & Navigation</h3>
                         <div class="setting-row">
@@ -976,9 +980,42 @@
                                 </label>
                             </div>
                         </div>
+
+                        <div class="setting-group-section" id="layout-rearrange-section"
+                            style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 1rem;">
+                            <h4 class="section-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55A2 2 0 0 0 6.512 23h10.976a2 2 0 0 0 1.792-2.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path><line x1="8.5" y1="2" x2="15.5" y2="2"></line><line x1="8.5" y1="14" x2="15.5" y2="14"></line></svg>
+                                Screen Layout Rearrangement
+                                <span class="labs-badge">Labs</span>
+                            </h4>
+                            <span class="setting-desc" style="display: block; margin-bottom: 1rem;">Experimental Labs Feature: Rearrange search bar, hero clock, bookmarks, top header, and quick action FABs anywhere on screen using drag & drop.</span>
+
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <label for="toggle-freeform-layout">Freeform Layout Mode</label>
+                                    <span class="setting-desc">Enable custom drag & drop positioning.</span>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-freeform-layout">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                                <button type="button" id="btn-unlock-layout" class="action-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.35rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+                                    Unlock Drag & Drop Layout
+                                </button>
+                                <button type="button" id="btn-reset-screen-layout" class="action-btn secondary">
+                                    Restore Default Layout
+                                </button>
+                            </div>
+                        </div>
                     </section>
 
-                    <!-- 🧩 Widgets -->
+                    <!-- Widgets -->
                     <section id="tab-widgets" class="settings-pane">
                         <h3>Widgets Settings</h3>
                         <div class="setting-row">
@@ -1151,7 +1188,7 @@
                         </div>
                     </section>
 
-                    <!-- 🤖 AI -->
+                    <!-- AI -->
                     <section id="tab-ai" class="settings-pane">
                         <h3>AI Options</h3>
                         <div class="setting-row">
@@ -1228,7 +1265,7 @@
                         </div>
                     </section>
 
-                    <!-- 🎙 Voice Search -->
+                    <!-- Voice Search -->
                     <section id="tab-voice" class="settings-pane">
                         <h3>Voice Settings</h3>
                         <div class="setting-row">
@@ -1274,7 +1311,7 @@
                         </div>
                     </section>
 
-                    <!-- 📷 Visual Search -->
+                    <!-- Visual Search -->
                     <section id="tab-visual" class="settings-pane">
                         <h3>Visual Search Settings</h3>
                         <div class="setting-row">
@@ -1317,7 +1354,7 @@
                         </div>
                     </section>
 
-                    <!-- ⌨ Keyboard -->
+                    <!-- Keyboard -->
                     <section id="tab-keyboard" class="settings-pane">
                         <h3>Keyboard Shortcuts</h3>
                         <div class="setting-row">
@@ -1365,7 +1402,7 @@
                         </div>
                     </section>
 
-                    <!-- 🔒 Privacy -->
+                    <!-- Privacy -->
                     <section id="tab-privacy" class="settings-pane">
                         <h3>Privacy & History</h3>
                         <div class="setting-row">
@@ -1457,7 +1494,7 @@
                         </div>
                     </section>
 
-                    <!-- ⚡ Performance -->
+                    <!-- Performance -->
                     <section id="tab-performance" class="settings-pane">
                         <h3>Performance & Motion</h3>
                         <div class="setting-row">
@@ -1474,7 +1511,7 @@
                         </div>
                     </section>
 
-                    <!-- 👨‍💻 Developer -->
+                    <!-- Developer -->
                     <section id="tab-developer" class="settings-pane">
                         <h3>Developer & Debug</h3>
                         <div class="setting-row">
@@ -1512,7 +1549,7 @@
                         </div>
                     </section>
 
-                    <!-- ℹ About -->
+                    <!-- About -->
                     <section id="tab-about" class="settings-pane">
                         <h3>About Startpage</h3>
                         <div class="about-card">
@@ -1591,6 +1628,50 @@
                                     </svg>
                                     Post on Wall of Awesome Humans (No Payment Needed!)
                                 </a>
+                            </div>
+
+                            <!-- Labs & Experimental Features Warning -->
+                            <div class="about-card labs-warning-card" style="margin-top: 1.25rem; text-align: left; border: 1px solid rgba(236, 72, 153, 0.3); background: rgba(139, 92, 246, 0.08); width: 100%;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55A2 2 0 0 0 6.512 23h10.976a2 2 0 0 0 1.792-2.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path><line x1="8.5" y1="2" x2="15.5" y2="2"></line><line x1="8.5" y1="14" x2="15.5" y2="14"></line></svg>
+                                    <h4 style="margin: 0; font-size: 1rem; color: var(--text-color);">Labs & Experimental Features Warning</h4>
+                                    <span class="labs-badge" style="margin-left: auto;">Labs</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">
+                                    Features tagged with <strong>Labs</strong> (such as <em>Freeform Drag & Drop Screen Layout Rearrangement</em>) are active testing features in continuous development.
+                                </p>
+                                <ul style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; padding-left: 1.25rem; margin-bottom: 0.75rem;">
+                                    <li><strong>Stability:</strong> Labs features may undergo layout changes, variations, or experimental updates.</li>
+                                    <li><strong>Testing Purpose:</strong> Designed for early feedback, customization testing, and power-user experimentation.</li>
+                                    <li><strong>Recovery:</strong> If you experience unexpected layout displacement, click <strong>Restore Default Layout</strong> under Windows settings anytime.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Privacy Policy & Data Transparency -->
+                            <div class="about-card privacy-card" style="margin-top: 1rem; text-align: left; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); width: 100%;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    <h4 style="margin: 0; font-size: 1rem; color: var(--text-color);">Privacy Policy & Data Transparency</h4>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">
+                                    <strong>Home by si4k</strong> is built with strict privacy-first principles. Your data belongs exclusively to you.
+                                </p>
+                                <ul style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; padding-left: 1.25rem; margin-bottom: 0.5rem;">
+                                    <li><strong>100% Client-Side Execution:</strong> No tracking scripts, no telemetry analytics, and zero external data collection.</li>
+                                    <li><strong>Local Storage Only:</strong> Your notes, settings, background colors, and custom element coordinates remain strictly in your browser (<code>localStorage</code> & <code>chrome.storage.local</code>).</li>
+                                    <li><strong>Bookmarks & Permissions:</strong> Chrome permissions are used exclusively to display your local browser bookmarks bar. No bookmark data ever leaves your device.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Terms & License -->
+                            <div class="about-card terms-card" style="margin-top: 1rem; text-align: left; border: 1px solid var(--glass-border); width: 100%;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                    <h4 style="margin: 0; font-size: 1rem; color: var(--text-color);">Terms & Open Source License</h4>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+                                    Open-source minimalist startpage created with passion by <strong>Akshit Kamboz (si4k)</strong>. Free to use, adapt, and build upon.
+                                </p>
                             </div>
                         </div>
                     </section>

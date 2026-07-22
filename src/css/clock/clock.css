@@ -11,6 +11,13 @@ header {
     transition: text-align 0.3s ease;
 }
 
+.hero-section.freeform-placed,
+.hero-section.draggable-layout-item {
+    width: fit-content !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
 .hero-section.align-left {
     text-align: left;
 }
