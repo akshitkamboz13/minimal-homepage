@@ -329,3 +329,57 @@ body {
     display: inline-flex;
     align-items: center;
 }
+
+/* 3x3 Alignment Grid Overlay & Magnetic Snapping Lines */
+.layout-grid-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 85;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.layout-grid-overlay.visible {
+    opacity: 1;
+}
+
+.grid-line {
+    position: absolute;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.grid-line.vertical {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    border-left: 1px dashed rgba(59, 130, 246, 0.3);
+}
+
+.grid-line.horizontal {
+    left: 0;
+    right: 0;
+    height: 1px;
+    border-top: 1px dashed rgba(59, 130, 246, 0.3);
+}
+
+.grid-line.snapped {
+    border-color: var(--accent-color, #3b82f6) !important;
+    background: var(--accent-color, #3b82f6) !important;
+    box-shadow: 0 0 12px var(--accent-color, #3b82f6), 0 0 24px var(--accent-color, #3b82f6);
+    opacity: 1 !important;
+    z-index: 88;
+}
+
+.grid-line.vertical.snapped {
+    width: 2px;
+    border-left-style: solid;
+}
+
+.grid-line.horizontal.snapped {
+    height: 2px;
+    border-top-style: solid;
+}

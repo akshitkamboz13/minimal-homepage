@@ -1,6 +1,7 @@
 import { userSettings, saveSettings, onSettingsChanged } from '../../settings/index.js';
 
 let isRearrangeActive = false;
+let gridOverlay = null;
 
 // Track original parents so we can restore elements on teardown
 const originalParents = new WeakMap();
@@ -33,6 +34,37 @@ export function initLayoutManager() {
     window.addEventListener('load', () => {
         applyLayoutPositions();
     });
+}
+
+// ─── Grid Overlay (3 Vertical & 3 Horizontal Alignment Lines) ─────────────────
+function toggleGridOverlay(show) {
+    if (show) {
+        if (!gridOverlay) {
+            gridOverlay = document.createElement('div');
+            gridOverlay.id = 'layout-grid-overlay';
+            gridOverlay.className = 'layout-grid-overlay';
+            gridOverlay.innerHTML = `
+                <div class="grid-line vertical v1" style="left: 25%;"></div>
+                <div class="grid-line vertical v2" style="left: 50%;"></div>
+                <div class="grid-line vertical v3" style="left: 75%;"></div>
+                <div class="grid-line horizontal h1" style="top: 25%;"></div>
+                <div class="grid-line horizontal h2" style="top: 50%;"></div>
+                <div class="grid-line horizontal h3" style="top: 75%;"></div>
+            `;
+            document.body.appendChild(gridOverlay);
+        }
+        requestAnimationFrame(() => gridOverlay.classList.add('visible'));
+    } else {
+        if (gridOverlay) {
+            gridOverlay.classList.remove('visible');
+            setTimeout(() => {
+                if (gridOverlay) {
+                    gridOverlay.remove();
+                    gridOverlay = null;
+                }
+            }, 300);
+        }
+    }
 }
 
 // ─── Apply saved positions (surgical style removal — no flash) ─────────────────
@@ -133,6 +165,9 @@ export function enableRearrangeMode(enable) {
         if (toggleWidth) toggleWidth.checked = true;
         saveSettings();
 
+        // Show 3x3 alignment grid overlay
+        toggleGridOverlay(true);
+
         if (!toolbar) {
             toolbar = document.createElement('div');
             toolbar.id        = 'rearrange-toolbar';
@@ -170,6 +205,7 @@ export function enableRearrangeMode(enable) {
 
     } else {
         if (toolbar) toolbar.classList.add('hidden');
+        toggleGridOverlay(false);
         teardownDragHandlers();
     }
 }
@@ -271,9 +307,74 @@ function setupDragHandlers() {
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
 
-            // Full viewport canvas — viewport is now the true containing block
-            currentX = Math.max(0, Math.min(currentX, window.innerWidth  - el.offsetWidth));
-            currentY = Math.max(0, Math.min(currentY, window.innerHeight - el.offsetHeight));
+            // Viewport bounds
+            const width  = el.offsetWidth;
+            const height = el.offsetHeight;
+            currentX = Math.max(0, Math.min(currentX, window.innerWidth  - width));
+            currentY = Math.max(0, Math.min(currentY, window.innerHeight - height));
+
+            // ── Magnetic Snapping to 3 Vertical & 3 Horizontal Lines ──
+            const SNAP_THRESHOLD = 16;
+            const vLines = [
+                { pos: window.innerWidth * 0.25, el: gridOverlay?.querySelector('.v1') },
+                { pos: window.innerWidth * 0.50, el: gridOverlay?.querySelector('.v2') },
+                { pos: window.innerWidth * 0.75, el: gridOverlay?.querySelector('.v3') },
+            ];
+            const hLines = [
+                { pos: window.innerHeight * 0.25, el: gridOverlay?.querySelector('.h1') },
+                { pos: window.innerHeight * 0.50, el: gridOverlay?.querySelector('.h2') },
+                { pos: window.innerHeight * 0.75, el: gridOverlay?.querySelector('.h3') },
+            ];
+
+            // Clear snapped state
+            vLines.forEach(l => l.el?.classList.remove('snapped'));
+            hLines.forEach(l => l.el?.classList.remove('snapped'));
+
+            // Snap X (Vertical lines: check left edge, center, right edge)
+            for (const line of vLines) {
+                const targetX = line.pos;
+                // Left edge snap
+                if (Math.abs(currentX - targetX) <= SNAP_THRESHOLD) {
+                    currentX = targetX;
+                    line.el?.classList.add('snapped');
+                    break;
+                }
+                // Center snap
+                if (Math.abs((currentX + width / 2) - targetX) <= SNAP_THRESHOLD) {
+                    currentX = targetX - width / 2;
+                    line.el?.classList.add('snapped');
+                    break;
+                }
+                // Right edge snap
+                if (Math.abs((currentX + width) - targetX) <= SNAP_THRESHOLD) {
+                    currentX = targetX - width;
+                    line.el?.classList.add('snapped');
+                    break;
+                }
+            }
+
+            // Snap Y (Horizontal lines: check top edge, middle, bottom edge)
+            for (const line of hLines) {
+                const targetY = line.pos;
+                // Top edge snap
+                if (Math.abs(currentY - targetY) <= SNAP_THRESHOLD) {
+                    currentY = targetY;
+                    line.el?.classList.add('snapped');
+                    break;
+                }
+                // Middle snap
+                if (Math.abs((currentY + height / 2) - targetY) <= SNAP_THRESHOLD) {
+                    currentY = targetY - height / 2;
+                    line.el?.classList.add('snapped');
+                    break;
+                }
+                // Bottom edge snap
+                if (Math.abs((currentY + height) - targetY) <= SNAP_THRESHOLD) {
+                    currentY = targetY - height;
+                    line.el?.classList.add('snapped');
+                    break;
+                }
+            }
 
             xOffset = currentX;
             yOffset = currentY;
@@ -289,6 +390,9 @@ function setupDragHandlers() {
             isDragging = false;
             el.classList.remove('is-dragging');
             el.style.zIndex = '90';
+
+            // Clear line snapped highlights
+            gridOverlay?.querySelectorAll('.grid-line').forEach(l => l.classList.remove('snapped'));
 
             // Resolve overlaps on drop — push siblings apart without blocking drag
             const resolved = resolveCollisions(el, xOffset, yOffset);
