@@ -19,9 +19,15 @@ const defaults = {
     showHeaderNote: true,
     showHeaderSettings: true,
     showHeaderTheme: true,
-    showDock: false,
-    dockPosition: 'bottom', // 'bottom' | 'top'
+    showDock: true,
+    dockPosition: 'bottom', // 'bottom' | 'top' | 'left' | 'right'
     dockAutohide: false,
+    customPanelItems: [
+        { id: 'item_google', title: 'Google', url: 'https://www.google.com', panel: 'dock', target: '_blank', icon: '' },
+        { id: 'item_youtube', title: 'YouTube', url: 'https://www.youtube.com', panel: 'dock', target: '_blank', icon: '' },
+        { id: 'item_github', title: 'GitHub', url: 'https://github.com', panel: 'dock', target: '_blank', icon: '' },
+        { id: 'item_chatgpt', title: 'ChatGPT', url: 'https://chatgpt.com', panel: 'dock', target: '_blank', icon: '' }
+    ],
 
     // New configuration settings
     theme: 'system', // 'system' | 'light' | 'dark'
@@ -110,7 +116,57 @@ export function onSettingsChanged(callback) {
 
 export function saveSettings() {
     localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
+    if (window.chrome && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ startpage_settings: userSettings });
+    }
     changeCallbacks.forEach(cb => cb(userSettings));
+}
+
+if (window.chrome && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(['startpage_settings'], (result) => {
+        if (result && result.startpage_settings) {
+            const remoteItems = result.startpage_settings.customPanelItems || [];
+            const localItems = userSettings.customPanelItems || [];
+            
+            const mergedMap = new Map();
+            [...defaults.customPanelItems, ...localItems, ...remoteItems].forEach(item => {
+                if (item && item.id) mergedMap.set(item.id, item);
+            });
+
+            userSettings = {
+                ...defaults,
+                ...userSettings,
+                ...result.startpage_settings,
+                customPanelItems: Array.from(mergedMap.values())
+            };
+        } else {
+            userSettings = { ...defaults, ...userSettings };
+        }
+        localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
+        chrome.storage.local.set({ startpage_settings: userSettings });
+        changeCallbacks.forEach(cb => cb(userSettings));
+    });
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName === 'local' && changes.startpage_settings && changes.startpage_settings.newValue) {
+            const remoteItems = changes.startpage_settings.newValue.customPanelItems || [];
+            const localItems = userSettings.customPanelItems || [];
+
+            const mergedMap = new Map();
+            [...localItems, ...remoteItems].forEach(item => {
+                if (item && item.id) mergedMap.set(item.id, item);
+            });
+
+            userSettings = {
+                ...defaults,
+                ...userSettings,
+                ...changes.startpage_settings.newValue,
+                customPanelItems: Array.from(mergedMap.values())
+            };
+            localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
+            changeCallbacks.forEach(cb => cb(userSettings));
+        }
+    });
 }
 
 export { userSettings };

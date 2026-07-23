@@ -45,6 +45,32 @@ export function applySettingsVisuals() {
     applyPanelsVisuals();
 }
 
+export function openDockSettings() {
+    const modal = document.getElementById('settings-modal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden', 'is-minimized');
+    localStorage.setItem('startpage_settings_minimized', 'false');
+
+    if (typeof window.openSettingsCategory === 'function') {
+        window.openSettingsCategory('widgets', 'panels');
+    }
+
+    setTimeout(() => {
+        const targetSection = document.getElementById('dock-settings-section') || document.getElementById('dropdown-dock-position')?.closest('.setting-group-section');
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetSection.style.transition = 'outline 0.3s ease, box-shadow 0.3s ease';
+            targetSection.style.outline = '2px solid var(--accent-color, #3b82f6)';
+            targetSection.style.outlineOffset = '4px';
+            targetSection.style.borderRadius = '12px';
+            setTimeout(() => {
+                targetSection.style.outline = 'none';
+            }, 2500);
+        }
+    }, 200);
+}
+
 export function initSettingsPanel() {
     const modal = document.getElementById('settings-modal');
     if (!modal) return;
@@ -148,6 +174,8 @@ export function initSettingsPanel() {
         activateTab(targetTabId);
     }
 
+    window.openSettingsCategory = openCategory;
+
     function activateTab(tabId) {
         menuItems.forEach(mi => {
             if (mi.getAttribute('data-tab') === tabId) {
@@ -160,6 +188,16 @@ export function initSettingsPanel() {
         panes.forEach(pane => pane.classList.remove('active'));
         const activePane = modal.querySelector(`#tab-${tabId}`);
         if (activePane) activePane.classList.add('active');
+
+        // Persist last active category and tab state
+        try {
+            if (currentCategory && tabId) {
+                localStorage.setItem('startpage_settings_last_tab', JSON.stringify({
+                    categoryId: currentCategory,
+                    tabId: tabId
+                }));
+            }
+        } catch (e) {}
     }
 
     // 1. Level 1 Event Listeners (Category Cards & Category Sidebar Items)
@@ -228,13 +266,26 @@ export function initSettingsPanel() {
         });
     }
 
-    // 5. Reset to Level 1 whenever modal becomes visible
+    function restoreLastState() {
+        try {
+            const savedState = JSON.parse(localStorage.getItem('startpage_settings_last_tab'));
+            if (savedState && savedState.categoryId && savedState.tabId) {
+                openCategory(savedState.categoryId, savedState.tabId);
+                return true;
+            }
+        } catch (e) {}
+        return false;
+    }
+
+    // 5. Restore last category/tab state whenever modal becomes visible
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.attributeName === 'class') {
                 const isHidden = modal.classList.contains('hidden');
                 if (!isHidden) {
-                    resetToLevel1();
+                    if (!restoreLastState()) {
+                        resetToLevel1();
+                    }
                 }
             }
         });

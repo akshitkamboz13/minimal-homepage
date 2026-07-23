@@ -11,7 +11,8 @@ const CATEGORY_MAP = {
         'reduceMotion'
     ],
     layout: [
-        'freeformLayout', 'layoutPositions', 'containerWidth', 'tileWidth', 'windowScale', 'sidebarHover'
+        'freeformLayout', 'layoutPositions', 'containerWidth', 'tileWidth', 'windowScale', 'sidebarHover',
+        'showDock', 'dockPosition', 'dockAutohide', 'customPanelItems'
     ],
     search: [
         'selectedAi', 'selectedAiName', 'showAiToggle', 'aiCustomPrompt', 'aiEngines',

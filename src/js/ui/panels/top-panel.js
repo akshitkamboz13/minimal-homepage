@@ -38,21 +38,48 @@ export function applyLayoutSettings() {
 export function initTopPanel() {
     const settingsBtn = document.getElementById('settings-toggle');
     const closeSettingsBtn = document.getElementById('close-settings');
+    const minimizeSettingsBtn = document.getElementById('minimize-settings');
     const settingsModal = document.getElementById('settings-modal');
 
     // Apply initial layout settings
     applyLayoutSettings();
 
+    // Restore initial minimized state if saved
+    try {
+        const isMinimized = localStorage.getItem('startpage_settings_minimized') === 'true';
+        if (isMinimized && settingsModal) {
+            settingsModal.classList.remove('hidden');
+            settingsModal.classList.add('is-minimized');
+        }
+    } catch(e) {}
+
     // Settings Modal Togglers
     if (settingsBtn) {
         settingsBtn.addEventListener('click', () => {
-            if (settingsModal) settingsModal.classList.remove('hidden');
+            if (settingsModal) {
+                settingsModal.classList.remove('hidden', 'is-minimized');
+                localStorage.setItem('startpage_settings_minimized', 'false');
+            }
         });
     }
-    if (closeSettingsBtn) {
-        closeSettingsBtn.addEventListener('click', () => {
-            if (settingsModal) settingsModal.classList.add('hidden');
+    if (minimizeSettingsBtn && settingsModal) {
+        minimizeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('is-minimized');
+            localStorage.setItem('startpage_settings_minimized', 'true');
         });
+    }
+
+    const closeSettings = () => {
+        if (settingsModal) {
+            settingsModal.classList.add('hidden');
+            settingsModal.classList.remove('is-minimized');
+            localStorage.setItem('startpage_settings_minimized', 'false');
+            localStorage.removeItem('startpage_settings_last_tab'); // Erase last tab state on explicit close
+        }
+    };
+
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', closeSettings);
     }
     if (settingsModal) {
         let isMouseDownOnOverlay = false;
@@ -63,7 +90,7 @@ export function initTopPanel() {
 
         settingsModal.addEventListener('click', (e) => {
             if (e.target === settingsModal && isMouseDownOnOverlay) {
-                settingsModal.classList.add('hidden');
+                closeSettings();
             }
             isMouseDownOnOverlay = false;
         });

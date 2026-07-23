@@ -106,8 +106,92 @@ async function registerNetRules() {
     }
 }
 
-// Trigger rule registration on startup, install and immediate loading
-chrome.runtime.onInstalled.addListener(registerNetRules);
-chrome.runtime.onStartup.addListener(registerNetRules);
+// Register Chrome Context Menus ("Add Site to Home")
+function initExtensionContextMenus() {
+    if (!chrome || !chrome.contextMenus) return;
+
+    chrome.contextMenus.removeAll(() => {
+        chrome.contextMenus.create({
+            id: 'add_site_to_home_parent',
+            title: 'Add Site to Home',
+            contexts: ['all']
+        }, () => { const err = chrome.runtime.lastError; });
+
+        chrome.contextMenus.create({
+            id: 'add_to_dock',
+            parentId: 'add_site_to_home_parent',
+            title: 'Add to Application Dock',
+            contexts: ['all']
+        }, () => { const err = chrome.runtime.lastError; });
+
+        chrome.contextMenus.create({
+            id: 'add_to_vertical',
+            parentId: 'add_site_to_home_parent',
+            title: 'Add to Vertical Panel (FAB)',
+            contexts: ['all']
+        }, () => { const err = chrome.runtime.lastError; });
+
+        chrome.contextMenus.create({
+            id: 'add_to_horizontal',
+            parentId: 'add_site_to_home_parent',
+            title: 'Add to Horizontal Panel (Header)',
+            contexts: ['all']
+        }, () => { const err = chrome.runtime.lastError; });
+    });
+}
+
+// Register on install and startup
+chrome.runtime.onInstalled.addListener(() => {
+    registerNetRules();
+    initExtensionContextMenus();
+});
+
+chrome.runtime.onStartup.addListener(() => {
+    registerNetRules();
+    initExtensionContextMenus();
+});
+
 registerNetRules();
+
+if (chrome.contextMenus) {
+    chrome.contextMenus.onClicked.addListener((info, tab) => {
+        const targetUrl = info.linkUrl || info.pageUrl || (tab ? tab.url : '');
+        if (!targetUrl) return;
+
+        let targetTitle = info.selectionText || (tab && tab.title ? tab.title : '');
+        if (!targetTitle || targetTitle === targetUrl) {
+            try {
+                targetTitle = new URL(targetUrl).hostname.replace(/^www\./i, '');
+            } catch (e) {
+                targetTitle = 'Shortcut';
+            }
+        }
+
+        let panel = 'dock';
+        if (info.menuItemId === 'add_to_vertical') panel = 'vertical';
+        if (info.menuItemId === 'add_to_horizontal') panel = 'horizontal';
+
+        const newtabUrl = chrome.runtime.getURL("src/index.html");
+
+        chrome.tabs.query({}, (tabs) => {
+            const openStartpageTab = tabs.find(t => t.url && (t.url.startsWith(newtabUrl) || t.url.startsWith('chrome://newtab')));
+            if (openStartpageTab) {
+                chrome.tabs.update(openStartpageTab.id, { active: true }, () => {
+                    if (openStartpageTab.windowId) {
+                        chrome.windows.update(openStartpageTab.windowId, { focused: true });
+                    }
+                    chrome.tabs.sendMessage(openStartpageTab.id, {
+                        type: 'open-add-site-modal',
+                        url: targetUrl,
+                        title: targetTitle,
+                        panel: panel
+                    });
+                });
+            } else {
+                const targetAppUrl = `${newtabUrl}?add_site=true&url=${encodeURIComponent(targetUrl)}&title=${encodeURIComponent(targetTitle)}&panel=${encodeURIComponent(panel)}`;
+                chrome.tabs.create({ url: targetAppUrl });
+            }
+        });
+    });
+}
 

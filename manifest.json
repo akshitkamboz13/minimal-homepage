@@ -21,7 +21,10 @@
     "offscreen",
     "search",
     "declarativeNetRequest",
-    "favicon"
+    "favicon",
+    "contextMenus",
+    "activeTab",
+    "tabs"
   ],
   "host_permissions": [
     "*://suggestqueries.google.com/*",

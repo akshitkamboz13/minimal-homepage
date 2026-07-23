@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    z-index: 1000;
+    z-index: 6000;
 }
 
 /* Floating Action Button (FAB) */
@@ -50,7 +50,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    z-index: 1001;
+    z-index: 6500;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
     transition: var(--transition-smooth);
@@ -275,7 +275,7 @@ body[data-theme="dark"] .search-provider-btn:hover {
     right: 2rem;
     width: 320px;
     padding: 1.5rem;
-    z-index: 1001;
+    z-index: 6500;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
     transition: var(--transition-smooth);

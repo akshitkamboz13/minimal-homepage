@@ -11,7 +11,7 @@
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 9000;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -31,7 +31,14 @@ body.dark-mode .glass-note {
 .glass-note.dragging {
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
     transform: scale(1.02);
-    z-index: 1001;
+    z-index: 9400;
+}
+
+.glass-note.is-minimized {
+    transform: scale(0.1) translateY(250px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .note-header {

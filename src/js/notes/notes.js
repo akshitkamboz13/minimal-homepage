@@ -1,5 +1,13 @@
 import { userSettings, onSettingsChanged } from '../settings/index.js';
 
+let highestNoteZIndex = 9005;
+
+function bringNoteToFront(noteEl) {
+    highestNoteZIndex++;
+    if (highestNoteZIndex > 9490) highestNoteZIndex = 9005;
+    noteEl.style.zIndex = highestNoteZIndex;
+}
+
 export function initNotes() {
     class NoteManager {
         constructor() {
@@ -64,12 +72,22 @@ export function initNotes() {
             if (noteData.w) noteEl.style.width = `${noteData.w}px`;
             if (noteData.h) noteEl.style.height = `${noteData.h}px`;
             noteEl.dataset.id = noteData.id;
+            bringNoteToFront(noteEl);
+
+            noteEl.addEventListener('mousedown', () => bringNoteToFront(noteEl));
+
+            if (noteData.isMinimized) {
+                noteEl.classList.add('is-minimized');
+            }
 
             const placeholderText = userSettings.notesPlaceholder;
             noteEl.innerHTML = `
                 <div class="note-header">
                     <input type="text" class="note-title" placeholder="Note Title" value="${noteData.title || ''}" readonly spellcheck="false" title="Double click to edit title" aria-label="Note Title" />
                     <div class="note-actions">
+                        <button class="note-btn minimize-note-btn" aria-label="Minimize Note" title="Minimize Note">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
                         <button class="note-btn cycle-color-btn" aria-label="Change Color" title="Change Color">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path></svg>
                         </button>
@@ -82,6 +100,19 @@ export function initNotes() {
             `;
 
             this.container.appendChild(noteEl);
+
+            const minimizeBtn = noteEl.querySelector('.minimize-note-btn');
+            if (minimizeBtn) {
+                minimizeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const note = this.notes.find(n => n.id === noteData.id);
+                    if (note) {
+                        note.isMinimized = true;
+                        this.saveNotes();
+                    }
+                    noteEl.classList.add('is-minimized');
+                });
+            }
 
             const titleInput = noteEl.querySelector('.note-title');
             
