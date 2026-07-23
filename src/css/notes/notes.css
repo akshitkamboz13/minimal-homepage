@@ -50,6 +50,60 @@ body.dark-mode .glass-note {
     cursor: grabbing;
 }
 
+.note-title {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    font-family: inherit;
+    padding: 3px 6px;
+    margin-right: 6px;
+    border-radius: 4px;
+    transition: var(--transition-smooth, background-color 0.2s);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.note-title[readonly] {
+    cursor: grab;
+    user-select: none;
+}
+
+.note-header:active .note-title[readonly] {
+    cursor: grabbing;
+}
+
+.note-title.is-editing {
+    cursor: text;
+    user-select: text;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode .note-title.is-editing {
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.note-title::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+    font-weight: 400;
+}
+
+.note-title:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .note-title:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
 .note-actions {
     display: flex;
     gap: 8px;

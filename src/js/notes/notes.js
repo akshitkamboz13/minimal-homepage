@@ -50,7 +50,7 @@ export function initNotes() {
             const x = Math.max(100, window.innerWidth / 2 - defaultW / 2 + (Math.random() * 40 - 20));
             const y = Math.max(100, window.innerHeight / 2 - defaultH / 2 + (Math.random() * 40 - 20));
             
-            const noteData = { id, text: '', color, x, y, w: defaultW, h: defaultH };
+            const noteData = { id, title: '', text: '', color, x, y, w: defaultW, h: defaultH };
             this.notes.push(noteData);
             this.saveNotes();
             this.renderNote(noteData);
@@ -68,10 +68,10 @@ export function initNotes() {
             const placeholderText = userSettings.notesPlaceholder;
             noteEl.innerHTML = `
                 <div class="note-header">
-                    <div class="note-drag-handle" style="flex:1; height:100%;"></div>
+                    <input type="text" class="note-title" placeholder="Note Title" value="${noteData.title || ''}" readonly spellcheck="false" title="Double click to edit title" aria-label="Note Title" />
                     <div class="note-actions">
                         <button class="note-btn cycle-color-btn" aria-label="Change Color" title="Change Color">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path></svg>
                         </button>
                         <button class="note-btn delete-note-btn" aria-label="Delete Note" title="Delete Note">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -82,6 +82,54 @@ export function initNotes() {
             `;
 
             this.container.appendChild(noteEl);
+
+            const titleInput = noteEl.querySelector('.note-title');
+            
+            titleInput.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                titleInput.removeAttribute('readonly');
+                titleInput.classList.add('is-editing');
+                titleInput.focus();
+                titleInput.select();
+            });
+
+            titleInput.addEventListener('blur', () => {
+                titleInput.setAttribute('readonly', 'readonly');
+                titleInput.classList.remove('is-editing');
+                const note = this.notes.find(n => n.id === noteData.id);
+                if (note && note.title !== titleInput.value) {
+                    note.title = titleInput.value;
+                    this.saveNotes();
+                }
+            });
+
+            titleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === 'Escape') {
+                    e.preventDefault();
+                    titleInput.blur();
+                } else {
+                    e.stopPropagation();
+                }
+            });
+
+            titleInput.addEventListener('input', (e) => {
+                const note = this.notes.find(n => n.id === noteData.id);
+                if (note) {
+                    note.title = e.target.value;
+                    
+                    // Debounce saving using userSettings.notesAutosave seconds
+                    clearTimeout(this.saveTimeouts[`title_${noteData.id}`]);
+                    this.saveTimeouts[`title_${noteData.id}`] = setTimeout(() => {
+                        this.saveNotes();
+                    }, userSettings.notesAutosave * 1000);
+                }
+            });
+
+            titleInput.addEventListener('mousedown', (e) => {
+                if (titleInput.classList.contains('is-editing')) {
+                    e.stopPropagation();
+                }
+            });
 
             const textarea = noteEl.querySelector('.note-content');
             textarea.addEventListener('input', (e) => {
@@ -156,6 +204,7 @@ export function initNotes() {
 
             const dragStart = (e) => {
                 if (e.target.closest('button')) return;
+                if (e.target.closest('.note-title') && e.target.classList.contains('is-editing')) return;
                 initialX = e.clientX - xOffset;
                 initialY = e.clientY - yOffset;
                 isDragging = true;
