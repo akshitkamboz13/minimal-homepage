@@ -226,32 +226,44 @@ function renderDock() {
     isRenderingDock = false;
 }
 
+let isAutoHideListening = false;
+let autoHideAnimationFrame = null;
+
 function setupAutoHide() {
+    if (isAutoHideListening) return;
+    isAutoHideListening = true;
+
     document.addEventListener('mousemove', (e) => {
         if (!dockContainer || !userSettings.showDock || !userSettings.dockAutohide) return;
+        if (autoHideAnimationFrame) return;
 
-        const pos = userSettings.dockPosition || 'bottom';
         const mouseX = e.clientX;
         const mouseY = e.clientY;
-        const screenW = window.innerWidth;
-        const screenH = window.innerHeight;
+        const target = e.target;
 
-        let reveal = false;
+        autoHideAnimationFrame = requestAnimationFrame(() => {
+            autoHideAnimationFrame = null;
+            const pos = userSettings.dockPosition || 'bottom';
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
 
-        if (pos === 'bottom') {
-            if (mouseY >= screenH - 40 || dockContainer.contains(e.target)) reveal = true;
-        } else if (pos === 'top') {
-            if (mouseY <= 90 || dockContainer.contains(e.target)) reveal = true;
-        } else if (pos === 'left') {
-            if (mouseX <= 40 || dockContainer.contains(e.target)) reveal = true;
-        } else if (pos === 'right') {
-            if (mouseX >= screenW - 40 || dockContainer.contains(e.target)) reveal = true;
-        }
+            let reveal = false;
 
-        if (reveal) {
-            dockContainer.classList.remove('dock-hidden');
-        } else {
-            dockContainer.classList.add('dock-hidden');
-        }
-    });
+            if (pos === 'bottom') {
+                if (mouseY >= screenH - 40 || dockContainer.contains(target)) reveal = true;
+            } else if (pos === 'top') {
+                if (mouseY <= 90 || dockContainer.contains(target)) reveal = true;
+            } else if (pos === 'left') {
+                if (mouseX <= 40 || dockContainer.contains(target)) reveal = true;
+            } else if (pos === 'right') {
+                if (mouseX >= screenW - 40 || dockContainer.contains(target)) reveal = true;
+            }
+
+            if (reveal) {
+                dockContainer.classList.remove('dock-hidden');
+            } else {
+                dockContainer.classList.add('dock-hidden');
+            }
+        });
+    }, { passive: true });
 }

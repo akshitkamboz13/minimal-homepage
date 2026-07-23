@@ -179,8 +179,36 @@ export function initNotes() {
             textarea.addEventListener('mousedown', e => e.stopPropagation());
             textarea.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
 
+            let cleanupDrag = this.setupDrag(noteEl, noteEl.querySelector('.note-header'), noteData);
+            let resizeObserver = null;
+
+            if (window.ResizeObserver) {
+                resizeObserver = new ResizeObserver(() => {
+                    const note = this.notes.find(n => n.id === noteData.id);
+                    if (note) {
+                        const newW = noteEl.offsetWidth;
+                        const newH = noteEl.offsetHeight;
+                        if (newW && newH && (note.w !== newW || note.h !== newH)) {
+                            note.w = newW;
+                            note.h = newH;
+                            this.saveNotes();
+                        }
+                    }
+                });
+                resizeObserver.observe(noteEl);
+            }
+
             const deleteBtn = noteEl.querySelector('.delete-note-btn');
             deleteBtn.addEventListener('click', () => {
+                if (this.saveTimeouts[noteData.id]) {
+                    clearTimeout(this.saveTimeouts[noteData.id]);
+                    delete this.saveTimeouts[noteData.id];
+                }
+                if (cleanupDrag) cleanupDrag();
+                if (resizeObserver) {
+                    resizeObserver.unobserve(noteEl);
+                    resizeObserver.disconnect();
+                }
                 noteEl.style.transform = 'scale(0.8)';
                 noteEl.style.opacity = '0';
                 noteEl.style.transition = 'all 0.2s';
@@ -204,24 +232,6 @@ export function initNotes() {
                     this.saveNotes();
                 }
             });
-
-            this.setupDrag(noteEl, noteEl.querySelector('.note-header'), noteData);
-
-            if (window.ResizeObserver) {
-                const resizeObserver = new ResizeObserver(() => {
-                    const note = this.notes.find(n => n.id === noteData.id);
-                    if (note) {
-                        const newW = noteEl.offsetWidth;
-                        const newH = noteEl.offsetHeight;
-                        if (newW && newH && (note.w !== newW || note.h !== newH)) {
-                            note.w = newW;
-                            note.h = newH;
-                            this.saveNotes();
-                        }
-                    }
-                });
-                resizeObserver.observe(noteEl);
-            }
         }
 
         setupDrag(noteEl, headerEl, noteData) {
@@ -277,6 +287,12 @@ export function initNotes() {
             headerEl.addEventListener('mousedown', dragStart);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', dragEnd);
+
+            return () => {
+                headerEl.removeEventListener('mousedown', dragStart);
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', dragEnd);
+            };
         }
     }
 
