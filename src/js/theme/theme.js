@@ -11,12 +11,11 @@ export function initTheme() {
         if (themeVal === 'system') {
             resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
+        document.body.setAttribute('data-theme', resolvedTheme);
         if (resolvedTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
             if (sunIcon) sunIcon.style.display = 'block';
             if (moonIcon) moonIcon.style.display = 'none';
         } else {
-            document.body.removeAttribute('data-theme');
             if (sunIcon) sunIcon.style.display = 'none';
             if (moonIcon) moonIcon.style.display = 'block';
         }

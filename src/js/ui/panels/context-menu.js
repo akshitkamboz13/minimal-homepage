@@ -414,8 +414,8 @@ export function initContextMenu() {
 
     // Right-click listener on document
     document.addEventListener('contextmenu', (e) => {
-        // Do not intercept if user right-clicks inside editable text input/textarea or selection
-        if (e.target.closest('input, textarea') || window.getSelection().toString().length > 0) {
+        // Do not intercept native right-clicks on interactive controls, inputs, links, buttons, top header, windows, or modals
+        if (e.target.closest('input, textarea, button, a, [contenteditable="true"], .glass-window-wrapper, #main-header, .top-panel, .header-actions, .settings-modal, .modal-content, .search-container, .clock-container, .fab-container, .bookmark-card, .bookmark-item, .app-item') || window.getSelection().toString().length > 0) {
             return;
         }
 

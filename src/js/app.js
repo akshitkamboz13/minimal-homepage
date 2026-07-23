@@ -6,6 +6,7 @@ import { initVisualSearch } from './search/visual/visual.js';
 import { initBookmarks } from './bookmarks/index.js';
 import { initPanels } from './ui/index.js';
 import { initNotes } from './notes/notes.js';
+import { initPuff } from './puff/puff.js';
 import { initLayoutManager } from './ui/panels/layout-manager.js';
 import { initContextMenu } from './ui/panels/context-menu.js';
 
@@ -18,6 +19,7 @@ export function initApp() {
     initBookmarks();
     initPanels();
     initNotes();
+    initPuff();
     initLayoutManager();
     initContextMenu();
 }

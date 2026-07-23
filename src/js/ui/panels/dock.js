@@ -1,5 +1,7 @@
 import { userSettings, onSettingsChanged } from '../../settings/index.js';
 import { toggleAppsGrid } from './apps-grid.js';
+import { togglePuffShell } from '../../puff/puff.js';
+import { appRegistry } from '../app-registry.js';
 
 let dockContainer = null;
 
@@ -25,6 +27,11 @@ export function initDock() {
         applyDockVisuals();
     });
 
+    // Subscribe to central AppRegistry for real-time active application updates
+    appRegistry.subscribe(() => {
+        if (!isRenderingDock) renderDock();
+    });
+
     // Observer to auto-update dock ONLY when notes container or settings modal state changes
     const observer = new MutationObserver(() => {
         if (isRenderingDock) return;
@@ -39,6 +46,10 @@ export function initDock() {
     if (notesContainer) {
         observer.observe(notesContainer, { childList: true, subtree: true });
     }
+
+    window.addEventListener('dock-state-changed', () => {
+        if (!isRenderingDock) renderDock();
+    });
 
     applyDockVisuals();
 }
@@ -82,12 +93,14 @@ function renderDock() {
     const openNotesCount = document.querySelectorAll('.glass-note').length;
     const settingsModal = document.getElementById('settings-modal');
     const isSettingsOpen = settingsModal && !settingsModal.classList.contains('hidden');
+    const registeredActiveApps = appRegistry.getActiveApps();
 
     // Signature fingerprint check: Do NOT clear innerHTML if dock contents have not changed
     const signature = JSON.stringify({
         pinned: pinnedDockItems.map(i => i.id + '_' + i.title + '_' + i.url),
         notes: openNotesCount,
-        settings: isSettingsOpen
+        settings: isSettingsOpen,
+        registry: registeredActiveApps.map(a => a.id + '_' + a.isMinimized)
     });
 
     if (dockContainer.dataset.renderedSignature === signature) {
@@ -119,7 +132,13 @@ function renderDock() {
 
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (item.url) {
+            if (item.toggleMinimize || item.focus) {
+                if (item.isMinimized) {
+                    item.focus();
+                } else {
+                    item.toggleMinimize();
+                }
+            } else if (item.url) {
                 const target = item.target || '_blank';
                 if (target === '_self') {
                     window.location.href = item.url;
@@ -131,7 +150,6 @@ function renderDock() {
                 const minimizedNotes = document.querySelectorAll('.glass-note.is-minimized');
                 
                 if (minimizedNotes.length > 0) {
-                    // Unminimize all minimized notes
                     minimizedNotes.forEach(noteEl => {
                         noteEl.classList.remove('is-minimized');
                     });
@@ -142,7 +160,6 @@ function renderDock() {
                     } catch(err) {}
                     if (notes.length > 0) notes[0].click();
                 } else if (notes.length > 0) {
-                    // If all visible, minimize all notes
                     notes.forEach(noteEl => noteEl.classList.add('is-minimized'));
                     try {
                         const rawNotes = JSON.parse(localStorage.getItem('startpage_notes') || '[]');
@@ -154,19 +171,21 @@ function renderDock() {
                     if (addBtn) addBtn.click();
                 }
             } else if (item.action === 'focus-settings') {
-                const settingsModal = document.getElementById('settings-modal');
-                if (settingsModal) {
-                    if (settingsModal.classList.contains('is-minimized')) {
-                        settingsModal.classList.remove('is-minimized', 'hidden');
+                const modal = document.getElementById('settings-modal');
+                if (modal) {
+                    if (modal.classList.contains('is-minimized')) {
+                        modal.classList.remove('is-minimized', 'hidden');
                         localStorage.setItem('startpage_settings_minimized', 'false');
-                    } else if (!settingsModal.classList.contains('hidden')) {
-                        settingsModal.classList.add('is-minimized');
+                    } else if (!modal.classList.contains('hidden')) {
+                        modal.classList.add('is-minimized');
                         localStorage.setItem('startpage_settings_minimized', 'true');
                     } else {
-                        settingsModal.classList.remove('hidden', 'is-minimized');
+                        modal.classList.remove('hidden', 'is-minimized');
                         localStorage.setItem('startpage_settings_minimized', 'false');
                     }
                 }
+            } else if (item.action === 'focus-puff') {
+                togglePuffShell();
             } else if (item.action === 'toggle-apps-grid') {
                 toggleAppsGrid();
             }
@@ -193,11 +212,11 @@ function renderDock() {
     // Render User-Pinned Items
     pinnedDockItems.forEach(item => renderItem(item));
 
-    // Dynamic Active Apps (Notes, Settings, etc.)
-    const activeApps = [];
+    // Dynamic Active Apps from central appRegistry
+    const activeApps = [...registeredActiveApps];
 
-    // Active Sticky Notes app tab
-    if (openNotesCount > 0) {
+    // Fallback for Sticky Notes and Settings if not registered
+    if (openNotesCount > 0 && !activeApps.some(a => a.id === 'sticky_notes')) {
         activeApps.push({
             id: 'active_notes',
             title: `Sticky Notes (${openNotesCount} active)`,
@@ -206,8 +225,7 @@ function renderDock() {
         });
     }
 
-    // Active Settings Modal app tab
-    if (isSettingsOpen) {
+    if (isSettingsOpen && !activeApps.some(a => a.id === 'settings_modal')) {
         activeApps.push({
             id: 'active_settings',
             title: 'Settings (Active)',

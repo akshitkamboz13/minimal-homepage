@@ -9,3 +9,5 @@
 @import url('./notes/notes.css');
 @import url('./ui/panels/dock.css');
 @import url('./ui/panels/apps-grid.css');
+@import url('./puff/puff.css');
+@import url('./ui/window-generator.css');

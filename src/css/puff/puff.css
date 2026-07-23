@@ -1,0 +1,121 @@
+/* Puff Terminal Shell Styling */
+.puff-window {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    background: rgba(15, 23, 42, 0.94);
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+
+    --puff-text: #f8fafc;
+    --puff-prompt: #22c55e;
+    --puff-banner-sub: #94a3b8;
+    --puff-cmd-text: #f8fafc;
+    --puff-cmd-result: #cbd5e1;
+    --puff-cmd-error: #f87171;
+    --puff-caret: #22c55e;
+}
+
+/* Light Theme Mode Overrides */
+body:not([data-theme="dark"]) .puff-window,
+body[data-theme="light"] .puff-window,
+body.light-mode .puff-window {
+    background: rgba(248, 250, 252, 0.95) !important;
+    color: #0f172a !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
+
+    --puff-text: #0f172a;
+    --puff-prompt: #16a34a;
+    --puff-banner-sub: #64748b;
+    --puff-cmd-text: #0f172a;
+    --puff-cmd-result: #334155;
+    --puff-cmd-error: #dc2626;
+    --puff-caret: #16a34a;
+}
+
+.puff-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.puff-banner {
+    color: var(--puff-banner-sub);
+    font-weight: 600;
+    white-space: pre-wrap;
+    margin-bottom: 0.5rem;
+}
+
+.puff-banner-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--puff-prompt);
+}
+
+.puff-banner-sub {
+    color: var(--puff-banner-sub);
+    font-weight: 400;
+    margin-top: 0.25rem;
+}
+
+.puff-output-history {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.puff-history-line {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.puff-cmd-entry {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--puff-cmd-text);
+}
+
+.puff-cmd-prompt {
+    color: var(--puff-prompt);
+    font-weight: 700;
+}
+
+.puff-cmd-text {
+    color: var(--puff-cmd-text);
+}
+
+.puff-cmd-result {
+    color: var(--puff-cmd-result);
+    white-space: pre-wrap;
+    padding-left: 1.1rem;
+}
+
+.puff-cmd-result.error {
+    color: var(--puff-cmd-error);
+}
+
+.puff-prompt-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.puff-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--puff-text);
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+    caret-color: var(--puff-caret);
+}

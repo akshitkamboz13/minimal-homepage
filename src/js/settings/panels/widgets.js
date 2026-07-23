@@ -138,4 +138,23 @@ export function initWidgets(modal) {
             applyLayoutSettings();
         });
     }
+
+    // 4. Puff Terminal Shell Controls
+    const togglePuffShell = document.getElementById('toggle-puff-shell');
+    if (togglePuffShell) {
+        togglePuffShell.checked = userSettings.showPuffShell !== false;
+        togglePuffShell.addEventListener('change', (e) => {
+            userSettings.showPuffShell = e.target.checked;
+            saveSettings();
+        });
+    }
+
+    const btnResetPuff = document.getElementById('btn-reset-puff');
+    if (btnResetPuff) {
+        btnResetPuff.addEventListener('click', () => {
+            localStorage.removeItem('startpage_puff_state');
+            const puffOutputHistory = document.getElementById('puff-output-history');
+            if (puffOutputHistory) puffOutputHistory.innerHTML = '';
+        });
+    }
 }

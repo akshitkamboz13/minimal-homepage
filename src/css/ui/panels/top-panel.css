@@ -15,14 +15,26 @@
     transition: var(--transition-smooth);
 }
 
+#main-header {
+    position: fixed;
+    top: 1.5rem;
+    right: 2rem;
+    z-index: 9990;
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+}
+
 .modal-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    display: none !important;
 }
 
 .modal-overlay.is-minimized {
     opacity: 0 !important;
     pointer-events: none !important;
+    display: none !important;
     transform: translateY(60px) scale(0.85) !important;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
