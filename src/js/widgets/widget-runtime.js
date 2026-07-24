@@ -192,9 +192,15 @@ export function loadActiveWidgets() {
             btn.setAttribute('title', widget.name);
             btn.style.cursor = 'pointer';
 
-            btn.innerHTML = widget.icon && widget.icon.trim().startsWith('<svg') 
-                ? widget.icon 
-                : `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
+            let iconMarkup = '';
+            if (widget.icon && widget.icon.trim().startsWith('<')) {
+                iconMarkup = widget.icon;
+            } else if (widget.icon && widget.icon.trim()) {
+                iconMarkup = `<img src="${widget.icon.trim()}" alt="${widget.name}" style="width: 24px; height: 24px; object-fit: contain; border-radius: 4px;" onerror="this.onerror=null; this.parentNode.innerHTML='<span style=\\'font-size: 20px;\\'>${widget.icon.trim().substring(0,2)}</span>';" />`;
+            } else {
+                iconMarkup = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
+            }
+            btn.innerHTML = iconMarkup;
 
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -213,9 +219,15 @@ export function loadActiveWidgets() {
             btn.setAttribute('title', widget.name);
             btn.style.cursor = 'pointer';
 
-            btn.innerHTML = widget.icon && widget.icon.trim().startsWith('<svg') 
-                ? widget.icon 
-                : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
+            let iconMarkup = '';
+            if (widget.icon && widget.icon.trim().startsWith('<')) {
+                iconMarkup = widget.icon;
+            } else if (widget.icon && widget.icon.trim()) {
+                iconMarkup = `<img src="${widget.icon.trim()}" alt="${widget.name}" style="width: 18px; height: 18px; object-fit: contain; border-radius: 4px;" onerror="this.onerror=null; this.parentNode.innerHTML='<span style=\\'font-size: 16px;\\'>${widget.icon.trim().substring(0,2)}</span>';" />`;
+            } else {
+                iconMarkup = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
+            }
+            btn.innerHTML = iconMarkup;
 
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();

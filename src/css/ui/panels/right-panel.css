@@ -40,6 +40,21 @@
     margin: 0 auto;
 }
 
+.floating-action-btn svg,
+.floating-action-btn img,
+.floating-action-btn i {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.glass-btn svg,
+.glass-btn img {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
 /* Visual Search Panel */
 .visual-search-panel {
     position: fixed;

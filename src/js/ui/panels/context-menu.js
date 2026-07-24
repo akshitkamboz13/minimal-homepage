@@ -214,6 +214,37 @@ export function initContextMenu() {
         if (dockMenuEl) {
             dockMenuEl.classList.add('hidden');
         }
+        if (appsGridMenuEl) {
+            appsGridMenuEl.classList.add('hidden');
+        }
+    };
+
+    const positionMenuElement = (menu, clientX, clientY) => {
+        menu.classList.remove('hidden');
+        menu.style.visibility = 'hidden';
+        menu.style.left = '0px';
+        menu.style.top = '0px';
+
+        const rect = menu.getBoundingClientRect();
+        const menuWidth = rect.width || 220;
+        const menuHeight = rect.height || 180;
+
+        let posX = clientX;
+        let posY = clientY;
+
+        if (posX + menuWidth > window.innerWidth) {
+            posX = window.innerWidth - menuWidth - 12;
+        }
+        if (posY + menuHeight > window.innerHeight) {
+            posY = window.innerHeight - menuHeight - 12;
+        }
+
+        if (posX < 12) posX = 12;
+        if (posY < 12) posY = 12;
+
+        menu.style.left = `${posX}px`;
+        menu.style.top = `${posY}px`;
+        menu.style.visibility = 'visible';
     };
 
     const showToastNotification = (msg) => {
@@ -258,6 +289,187 @@ export function initContextMenu() {
 
     // ── Dedicated Dock Context Menu ──
     let dockMenuEl = null;
+    let appsGridMenuEl = null;
+
+    const createAppsGridMenu = () => {
+        if (appsGridMenuEl) return appsGridMenuEl;
+        appsGridMenuEl = document.createElement('div');
+        appsGridMenuEl.id = 'apps-grid-context-menu';
+        appsGridMenuEl.className = 'custom-context-menu glass-panel hidden';
+        appsGridMenuEl.style.zIndex = '99999';
+        document.body.appendChild(appsGridMenuEl);
+        return appsGridMenuEl;
+    };
+
+    const showAppsGridContextMenu = (e, appTileEl) => {
+        const menu = createAppsGridMenu();
+        const appId = appTileEl.dataset.id;
+        const appName = appTileEl.dataset.name;
+        const appUrl = appTileEl.dataset.url;
+        const appCategory = appTileEl.dataset.category;
+
+        let isPinned = false;
+        if (appCategory === 'pinned') {
+            isPinned = true;
+        } else {
+            const items = userSettings.customPanelItems || [];
+            isPinned = items.some(item => (item.id === appId || item.id === 'item_custom_' + appId.replace('custom_widget_', '')) && item.panel === 'dock');
+        }
+
+        const isCustomWidget = appCategory === 'custom' || (appId && appId.startsWith('custom_widget_'));
+        const isUserShortcut = appCategory === 'grid' || appCategory === 'pinned';
+        const showRemove = isCustomWidget || isUserShortcut;
+        const removeLabel = isCustomWidget ? 'Remove Widget' : 'Remove App';
+
+        let menuHTML = '';
+        if (isPinned) {
+            menuHTML = `
+                <ul class="context-menu-list">
+                    <li class="context-menu-item" id="apps-ctx-unpin">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span>Unpin from Dock</span>
+                    </li>
+            `;
+        } else {
+            menuHTML = `
+                <ul class="context-menu-list">
+                    <li class="context-menu-item" id="apps-ctx-pin">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Pin to Dock</span>
+                    </li>
+            `;
+        }
+
+        if (showRemove) {
+            menuHTML += `
+                    <li class="context-menu-item" id="apps-ctx-remove" style="color: #f87171;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span>${removeLabel}</span>
+                    </li>
+            `;
+        }
+
+        menuHTML += `
+                </ul>
+            `;
+
+        menu.innerHTML = menuHTML;
+        positionMenuElement(menu, e.clientX, e.clientY);
+
+        const bindClick = (id, handler) => {
+            const btn = menu.querySelector('#' + id);
+            if (btn) btn.addEventListener('click', () => {
+                menu.classList.add('hidden');
+                handler();
+            });
+        };
+
+        bindClick('apps-ctx-pin', () => {
+            if (appCategory === 'grid') {
+                const items = userSettings.customPanelItems || [];
+                const found = items.find(item => item.id === appId);
+                if (found) {
+                    found.panel = 'dock';
+                }
+            } else if (appCategory === 'system') {
+                if (!userSettings.customPanelItems) userSettings.customPanelItems = [];
+                if (appId === 'app_sticky_notes') {
+                    userSettings.customPanelItems.push({
+                        id: 'item_sticky_notes',
+                        title: 'Sticky Notes',
+                        panel: 'dock',
+                        action: 'focus-notes',
+                        icon: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><path d="M14 3v5h5"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>`
+                    });
+                } else if (appId === 'app_puff_shell') {
+                    userSettings.customPanelItems.push({
+                        id: 'item_puff_shell',
+                        title: 'Puff Shell',
+                        panel: 'dock',
+                        url: 'action:puff',
+                        icon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#22c55e" stroke-width="2.2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`
+                    });
+                } else if (appId === 'app_system_settings') {
+                    userSettings.customPanelItems.push({
+                        id: 'item_system_settings',
+                        title: 'Settings',
+                        panel: 'dock',
+                        action: 'focus-settings',
+                        icon: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`
+                    });
+                }
+            } else if (appCategory === 'custom') {
+                try {
+                    const list = JSON.parse(localStorage.getItem('startpage_custom_widgets') || '[]');
+                    const wId = appId.replace('custom_widget_', '');
+                    const widget = list.find(w => w.id === wId);
+                    if (widget) {
+                        if (!userSettings.customPanelItems) userSettings.customPanelItems = [];
+                        userSettings.customPanelItems.push({
+                            id: 'item_custom_' + widget.id,
+                            title: widget.name,
+                            panel: 'dock',
+                            icon: widget.icon,
+                            url: 'action:custom-widget:' + widget.id
+                        });
+                    }
+                } catch(e) {}
+            }
+
+            saveSettings();
+            applyDockVisuals();
+            window.dispatchEvent(new CustomEvent('dock-state-changed'));
+            showToastNotification(`Pinned "${appName}" to Application Dock`);
+        });
+
+        bindClick('apps-ctx-unpin', () => {
+            if (appCategory === 'pinned') {
+                const items = userSettings.customPanelItems || [];
+                const found = items.find(item => item.id === appId);
+                if (found) {
+                    found.panel = 'grid';
+                }
+            } else {
+                userSettings.customPanelItems = (userSettings.customPanelItems || []).filter(item => {
+                    return item.id !== appId && item.id !== 'item_custom_' + appId.replace('custom_widget_', '') && item.id !== 'item_sticky_notes' && item.id !== 'item_puff_shell' && item.id !== 'item_system_settings';
+                });
+            }
+
+            saveSettings();
+            applyDockVisuals();
+            window.dispatchEvent(new CustomEvent('dock-state-changed'));
+            showToastNotification(`Unpinned "${appName}" from Application Dock`);
+        });
+
+        if (showRemove) {
+            bindClick('apps-ctx-remove', () => {
+                if (isCustomWidget) {
+                    const wId = appId.replace('custom_widget_', '');
+                    try {
+                        let list = JSON.parse(localStorage.getItem('startpage_custom_widgets') || '[]');
+                        list = list.filter(w => w.id !== wId);
+                        localStorage.setItem('startpage_custom_widgets', JSON.stringify(list));
+                        
+                        userSettings.customPanelItems = (userSettings.customPanelItems || []).filter(item => {
+                            return item.id !== 'item_custom_' + wId;
+                        });
+                        saveSettings();
+                        
+                        window.dispatchEvent(new CustomEvent('widgets-reloaded'));
+                        window.dispatchEvent(new CustomEvent('dock-state-changed'));
+                        showToastNotification(`Removed custom widget "${appName}"`);
+                    } catch (err) {}
+                } else if (isUserShortcut) {
+                    userSettings.customPanelItems = (userSettings.customPanelItems || []).filter(i => i.id !== appId);
+                    saveSettings();
+                    
+                    applyDockVisuals();
+                    window.dispatchEvent(new CustomEvent('dock-state-changed'));
+                    showToastNotification(`Removed shortcut "${appName}"`);
+                }
+            });
+        }
+    };
 
     const createDockMenu = () => {
         if (dockMenuEl) return dockMenuEl;
@@ -320,6 +532,8 @@ export function initContextMenu() {
                 </ul>
             `;
         } else if (dockItemEl) {
+            const isWidget = itemId && itemId.startsWith('item_custom_');
+            const removeLabel = isWidget ? 'Remove Widget' : 'Remove App';
             menuHTML = `
                 <ul class="context-menu-list">
                     <li class="context-menu-item" id="dock-ctx-open-item">
@@ -327,8 +541,12 @@ export function initContextMenu() {
                         <span>Launch App / Open</span>
                     </li>
                     <li class="context-menu-item" id="dock-ctx-unpin-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"></line><path d="M12 17v5M9 9v1.76a2 2 0 0 1-.44 1.24L6 16h10M14 4v2M10 4h4"></path></svg>
                         <span>Unpin from Dock</span>
+                    </li>
+                    <li class="context-menu-item" id="dock-ctx-remove-item" style="color: #f87171;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span>${removeLabel}</span>
                     </li>
                     <li class="context-menu-divider"></li>
                     <li class="context-menu-item" id="dock-ctx-settings">
@@ -354,18 +572,7 @@ export function initContextMenu() {
         }
 
         menu.innerHTML = menuHTML;
-        menu.classList.remove('hidden');
-
-        let posX = e.clientX;
-        let posY = e.clientY;
-        const menuWidth = 230;
-        const menuHeight = 180;
-
-        if (posX + menuWidth > window.innerWidth) posX = window.innerWidth - menuWidth - 12;
-        if (posY + menuHeight > window.innerHeight) posY = window.innerHeight - menuHeight - 12;
-
-        menu.style.left = `${posX}px`;
-        menu.style.top  = `${posY}px`;
+        positionMenuElement(menu, e.clientX, e.clientY);
 
         // Wire events
         const bindClick = (id, handler) => {
@@ -396,12 +603,28 @@ export function initContextMenu() {
         });
         bindClick('dock-ctx-unpin-item', () => {
             if (itemId) {
+                const items = userSettings.customPanelItems || [];
+                const found = items.find(i => i.id === itemId);
+                if (found) {
+                    found.panel = 'grid'; // Move to Apps Grid instead of deleting
+                }
+                saveSettings();
+                applyDockVisuals();
+                applyPanelsVisuals();
+                refreshCustomShortcutsList();
+                window.dispatchEvent(new CustomEvent('dock-state-changed'));
+                showToastNotification('Unpinned item from Application Dock (moved to Apps Grid)');
+            }
+        });
+        bindClick('dock-ctx-remove-item', () => {
+            if (itemId) {
                 userSettings.customPanelItems = (userSettings.customPanelItems || []).filter(i => i.id !== itemId);
                 saveSettings();
                 applyDockVisuals();
                 applyPanelsVisuals();
                 refreshCustomShortcutsList();
-                showToastNotification('Unpinned item from Application Dock');
+                window.dispatchEvent(new CustomEvent('dock-state-changed'));
+                showToastNotification(isWidget ? 'Removed custom widget' : 'Removed custom application shortcut');
             }
         });
         bindClick('dock-ctx-add-site', () => {
@@ -414,9 +637,23 @@ export function initContextMenu() {
 
     // Right-click listener on document
     document.addEventListener('contextmenu', (e) => {
-        // Do not intercept native right-clicks on interactive controls, inputs, links, buttons, top header, windows, or modals
-        if (e.target.closest('input, textarea, button, a, [contenteditable="true"], .glass-window-wrapper, #main-header, .top-panel, .header-actions, .settings-modal, .modal-content, .search-container, .clock-container, .fab-container, .bookmark-card, .bookmark-item, .app-item') || window.getSelection().toString().length > 0) {
+        const isDock = e.target.closest('.dock-item, #glass-dock');
+        const isAppsGrid = e.target.closest('.app-tile');
+        const isAppsGridOverlay = e.target.closest('#apps-grid-overlay');
+
+        // Prevent default context menus inside the applications grid overlay entirely,
+        // unless they are right-clicking specifically on an app tile
+        if (isAppsGridOverlay && !isAppsGrid) {
+            e.preventDefault();
             return;
+        }
+
+        // Do not intercept native right-clicks on interactive controls, inputs, links, buttons, top header, windows, or modals
+        // unless they are dock items or applications grid tiles
+        if (!isDock && !isAppsGrid) {
+            if (e.target.closest('input, textarea, button, a, [contenteditable="true"], .glass-window-wrapper, #main-header, .top-panel, .header-actions, .settings-modal, .modal-content, .search-container, .clock-container, .fab-container, .bookmark-card, .bookmark-item, .app-item') || window.getSelection().toString().length > 0) {
+                return;
+            }
         }
 
         // Check if user right-clicked on Dock or Dock Applications
@@ -433,6 +670,15 @@ export function initContextMenu() {
 
         if (dockMenuEl) dockMenuEl.classList.add('hidden');
 
+        // Check if user right-clicked on Applications Grid items
+        if (isAppsGrid && !isAppsGrid.classList.contains('app-tile-add')) {
+            e.preventDefault();
+            e.stopPropagation();
+            hideMenu();
+            showAppsGridContextMenu(e, isAppsGrid);
+            return;
+        }
+
         const targetEl = e.target.closest('a[href], [data-url], .bookmark-item, .bookmark-card, .app-item');
         if (targetEl) {
             const rawUrl = targetEl.href || targetEl.dataset.url || targetEl.getAttribute('href') || '';
@@ -444,29 +690,15 @@ export function initContextMenu() {
 
         e.preventDefault();
         const menu = createMenu();
-
-        // Position menu at pointer coordinates (clamp to screen)
-        menu.classList.remove('hidden');
-        const menuWidth = 260;
-        const menuHeight = 320;
-
-        let posX = e.clientX;
-        let posY = e.clientY;
-
-        if (posX + menuWidth > window.innerWidth) {
-            posX = window.innerWidth - menuWidth - 12;
-        }
-        if (posY + menuHeight > window.innerHeight) {
-            posY = window.innerHeight - menuHeight - 12;
-        }
-
-        menu.style.left = `${posX}px`;
-        menu.style.top  = `${posY}px`;
+        positionMenuElement(menu, e.clientX, e.clientY);
     });
 
     // Dismiss context menu on click or escape
     document.addEventListener('click', (e) => {
-        if (menuEl && !menuEl.contains(e.target)) {
+        const clickInMenu = (menuEl && menuEl.contains(e.target)) ||
+                            (dockMenuEl && dockMenuEl.contains(e.target)) ||
+                            (appsGridMenuEl && appsGridMenuEl.contains(e.target));
+        if (!clickInMenu) {
             hideMenu();
         }
     });

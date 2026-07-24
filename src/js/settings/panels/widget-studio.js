@@ -17,6 +17,16 @@ async function decompressBlob(blob) {
     return await response.text();
 }
 
+function getWidgetIconMarkup(icon, name, size = 22) {
+    if (icon && icon.trim().startsWith('<')) {
+        return icon;
+    } else if (icon && icon.trim()) {
+        return `<img src="${icon.trim()}" alt="${name}" style="width: ${size}px; height: ${size}px; object-fit: contain; border-radius: 4px;" onerror="this.onerror=null; this.parentNode.innerHTML='<span style=\\'font-size: ${size - 2}px; line-height: 1;\\'>${icon.trim().substring(0,2)}</span>';" />`;
+    } else {
+        return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
+    }
+}
+
 // Get custom widgets from localStorage
 function getCustomWidgets() {
     try {
@@ -135,7 +145,7 @@ function renderManageList(modal) {
         card.innerHTML = `
             <div class="widget-item-info">
                 <div class="widget-item-icon">
-                    ${widget.icon && widget.icon.trim().startsWith('<svg') ? widget.icon : `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`}
+                    ${getWidgetIconMarkup(widget.icon, widget.name, 22)}
                 </div>
                 <div class="widget-item-meta">
                     <span class="widget-item-name">${escapeHTML(widget.name)}</span>
@@ -201,7 +211,7 @@ function renderExportList(modal) {
         card.innerHTML = `
             <div class="widget-item-info">
                 <div class="widget-item-icon">
-                    ${widget.icon && widget.icon.trim().startsWith('<svg') ? widget.icon : `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`}
+                    ${getWidgetIconMarkup(widget.icon, widget.name, 22)}
                 </div>
                 <div class="widget-item-meta">
                     <span class="widget-item-name">${escapeHTML(widget.name)}</span>

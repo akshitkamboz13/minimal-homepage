@@ -76,6 +76,13 @@ export function initAppsGrid() {
         });
     }
 
+    // Reactively update apps grid on dock modifications
+    window.addEventListener('dock-state-changed', () => {
+        if (appsOverlayEl && !appsOverlayEl.classList.contains('hidden')) {
+            renderAppsGrid();
+        }
+    });
+
     // Category tabs listeners
     const tabBtns = document.querySelectorAll('.apps-grid-tab');
     tabBtns.forEach(tab => {
@@ -187,6 +194,10 @@ function renderAppsGrid() {
         const tile = document.createElement('div');
         tile.className = 'app-tile';
         tile.title = app.name;
+        tile.dataset.id = app.id;
+        tile.dataset.name = app.name;
+        tile.dataset.category = app.category;
+        if (app.url) tile.dataset.url = app.url;
 
         let iconMarkup = '';
         if (app.icon && app.icon.trim().startsWith('<')) {
