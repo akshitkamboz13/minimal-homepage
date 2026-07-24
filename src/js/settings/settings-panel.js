@@ -4,6 +4,7 @@ import { initNotesSettings, applyNotesVisuals } from './panels/notes.js';
 import { initBookmarksSettings } from './panels/bookmarks.js';
 import { initWindows, applyWindowsVisuals } from './panels/windows.js';
 import { initWidgets } from './panels/widgets.js';
+import { initDashboardLayout, renderWidgetsOrderList } from './panels/dashboard-layout.js';
 import { initAi } from './panels/ai.js';
 import { initVoice } from './panels/voice.js';
 import { initVisual } from './panels/visual.js';
@@ -19,7 +20,7 @@ import { initWidgetStudio } from './panels/widget-studio.js';
 const CATEGORY_CONFIG = {
     'personalization': {
         title: 'Personalization',
-        tabs: ['appearance', 'windows']
+        tabs: ['appearance', 'windows', 'dashboard-layout']
     },
     'widgets': {
         title: 'Widgets & Panels',
@@ -196,6 +197,10 @@ export function initSettingsPanel() {
         const activePane = modal.querySelector(`#tab-${tabId}`);
         if (activePane) activePane.classList.add('active');
 
+        if (tabId === 'dashboard-layout') {
+            renderWidgetsOrderList();
+        }
+
         // Persist last active category and tab state
         try {
             if (currentCategory && tabId) {
@@ -305,6 +310,7 @@ export function initSettingsPanel() {
     initBookmarksSettings(modal);
     initWindows(modal);
     initWidgets(modal);
+    initDashboardLayout(modal);
     initPuffSettings(modal);
     initPanelsSettings(modal);
     initWidgetStudio(modal);

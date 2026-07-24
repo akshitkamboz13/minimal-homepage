@@ -33,6 +33,11 @@ export function applyLayoutSettings() {
     if (!userSettings.showVisualSearch && visualSearchPanel) {
         visualSearchPanel.classList.remove('active');
     }
+
+    const dashboardWidgetsContainer = document.getElementById('dashboard-widgets-container');
+    if (dashboardWidgetsContainer) {
+        dashboardWidgetsContainer.style.display = userSettings.showDashboardWidgets !== false ? '' : 'none';
+    }
 }
 
 export function initTopPanel() {

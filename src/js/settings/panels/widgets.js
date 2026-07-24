@@ -138,5 +138,4 @@ export function initWidgets(modal) {
             applyLayoutSettings();
         });
     }
-
 }

@@ -29,5 +29,17 @@ export function initBookmarksSettings(modal) {
             applyLayoutSettings();
         });
     }
+
+    const folderLimitInput = document.getElementById('setting-bookmark-folders-limit');
+    if (folderLimitInput) {
+        folderLimitInput.value = userSettings.bookmarkFoldersLimit || 0;
+        folderLimitInput.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            userSettings.bookmarkFoldersLimit = val;
+            saveSettings();
+            applyLayoutSettings(); // Propagate change triggers
+        });
+    }
 }
 

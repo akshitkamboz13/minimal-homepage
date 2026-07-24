@@ -1,6 +1,8 @@
 import { appRegistry } from '../ui/app-registry.js';
 import { createGlassWindow } from '../ui/window-generator.js';
-import { onSettingsChanged } from '../settings/index.js';
+import { createGlassCard } from '../ui/card-generator.js';
+import { applyDashboardOrder } from '../settings/panels/dashboard-layout.js';
+import { userSettings, onSettingsChanged } from '../settings/index.js';
 
 // Map to hold open custom app instances
 const openAppInstances = new Map();
@@ -138,6 +140,10 @@ export function loadActiveWidgets() {
     openAppInstances.forEach(instance => instance.destroy());
     openAppInstances.clear();
 
+    if (userSettings.showDashboardWidgets === false) {
+        return;
+    }
+
     // 2. Fetch custom widgets list
     let list = [];
     try {
@@ -148,48 +154,33 @@ export function loadActiveWidgets() {
 
     const activeWidgets = list.filter(w => w.enabled !== false);
     const mainEl = document.querySelector('main');
+    const widgetsContainer = document.getElementById('dashboard-widgets-container') || mainEl;
     const fabCustom = document.getElementById('fab-custom-items');
     const headerCustom = document.getElementById('header-custom-items');
 
     activeWidgets.forEach(widget => {
         if (widget.type === 'widget') {
             // Dashboard layout widget
-            if (!mainEl) return;
+            if (!widgetsContainer) return;
 
-            const container = document.createElement('div');
-            container.className = 'custom-dashboard-widget glass-panel';
-            container.id = `layout_widget_${widget.id}`;
-            container.style.width = `${widget.defaultW || 400}px`;
-            container.style.height = `${widget.defaultH || 300}px`;
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.overflow = 'hidden';
-            container.style.borderRadius = '16px';
-            container.style.border = '1px solid var(--glass-border)';
-            container.style.background = 'var(--glass-bg)';
-            container.style.backdropFilter = 'blur(12px)';
-
-            // Optional Header for Dashboard Widget to drag
-            const header = document.createElement('div');
-            header.style.padding = '8px 12px';
-            header.style.fontSize = '0.8rem';
-            header.style.fontWeight = '600';
-            header.style.opacity = '0.7';
-            header.style.borderBottom = '1px solid var(--glass-border)';
-            header.style.cursor = 'grab';
-            header.textContent = widget.name;
-            container.appendChild(header);
+            const { cardEl, bodyEl } = createGlassCard({
+                id: `layout_widget_${widget.id}`,
+                title: widget.name,
+                width: widget.defaultW || 400,
+                height: 244,
+                className: 'custom-dashboard-widget'
+            });
 
             const iframe = document.createElement('iframe');
             iframe.setAttribute('sandbox', 'allow-scripts');
-            iframe.style.flex = '1';
             iframe.style.width = '100%';
+            iframe.style.height = '100%';
             iframe.style.border = 'none';
             iframe.style.background = 'transparent';
             setupSandboxIframe(iframe, widget);
 
-            container.appendChild(iframe);
-            mainEl.appendChild(container);
+            bodyEl.appendChild(iframe);
+            widgetsContainer.appendChild(cardEl);
 
         } else if (widget.type === 'vertical') {
             // Vertical Panel Shortcut
@@ -205,8 +196,9 @@ export function loadActiveWidgets() {
                 ? widget.icon 
                 : `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
 
-            btn.addEventListener('click', () => {
-                launchCustomApp(widget);
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleCustomPopupPanel(widget, btn);
             });
 
             fabCustom.appendChild(btn);
@@ -225,13 +217,17 @@ export function loadActiveWidgets() {
                 ? widget.icon 
                 : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
 
-            btn.addEventListener('click', () => {
-                launchCustomApp(widget);
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleCustomPopupPanel(widget, btn);
             });
 
             headerCustom.appendChild(btn);
         }
     });
+
+    // Apply saved dashboard layout flow sort order
+    applyDashboardOrder();
 
     // Notify layout-manager that dynamic widgets may have been added/removed
     window.dispatchEvent(new CustomEvent('layout-targets-changed'));
@@ -264,6 +260,8 @@ export function initWidgetRuntime() {
 
 // Register theme change listener to update active widgets inside iframe sandboxes dynamically
 onSettingsChanged((settings) => {
+    loadActiveWidgets();
+
     let resolvedTheme = settings.theme;
     if (resolvedTheme === 'system') {
         resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -321,3 +319,129 @@ window.addEventListener('message', (e) => {
         }
     }
 });
+
+function toggleCustomPopupPanel(widget, triggerBtn) {
+    const panelId = `custom-popup-panel-${widget.id}`;
+    let panel = document.getElementById(panelId);
+    
+    if (panel) {
+        const wasActive = panel.classList.contains('active');
+        closeAllCustomPopupPanels();
+        
+        if (!wasActive) {
+            positionCustomPanel(panel, triggerBtn, widget);
+            panel.classList.add('active');
+            triggerBtn.classList.add('active');
+        }
+        return;
+    }
+    
+    closeAllCustomPopupPanels();
+    
+    panel = document.createElement('div');
+    panel.id = panelId;
+    panel.className = 'custom-popup-panel glass-panel';
+    panel.style.width = `${widget.defaultW || 340}px`;
+    panel.style.height = `${widget.defaultH || 380}px`;
+    
+    const header = document.createElement('div');
+    header.className = 'custom-popup-header';
+    
+    const title = document.createElement('h3');
+    title.textContent = widget.name;
+    header.appendChild(title);
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'custom-popup-close-btn';
+    closeBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    `;
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.classList.remove('active');
+        triggerBtn.classList.remove('active');
+    });
+    header.appendChild(closeBtn);
+    panel.appendChild(header);
+    
+    const body = document.createElement('div');
+    body.className = 'custom-popup-body';
+    
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('sandbox', 'allow-scripts');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    iframe.style.background = 'transparent';
+    setupSandboxIframe(iframe, widget);
+    
+    body.appendChild(iframe);
+    panel.appendChild(body);
+    
+    document.body.appendChild(panel);
+    
+    setTimeout(() => {
+        positionCustomPanel(panel, triggerBtn, widget);
+        panel.classList.add('active');
+        triggerBtn.classList.add('active');
+    }, 0);
+    
+    const outsideClickListener = (e) => {
+        if (!panel.contains(e.target) && !triggerBtn.contains(e.target)) {
+            panel.classList.remove('active');
+            triggerBtn.classList.remove('active');
+            document.removeEventListener('click', outsideClickListener);
+        }
+    };
+    setTimeout(() => {
+        document.addEventListener('click', outsideClickListener);
+    }, 50);
+}
+
+function closeAllCustomPopupPanels() {
+    document.querySelectorAll('.custom-popup-panel').forEach(p => {
+        p.classList.remove('active');
+    });
+    document.querySelectorAll('.custom-panel-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+}
+
+function positionCustomPanel(panel, trigger, widget) {
+    if (!panel || !trigger) return;
+    
+    const tRect = trigger.getBoundingClientRect();
+    const pWidth = parseInt(panel.style.width) || 340;
+    const pHeight = parseInt(panel.style.height) || 380;
+    const padding = 12;
+    
+    let top;
+    if (tRect.bottom + pHeight + padding <= window.innerHeight) {
+        top = tRect.bottom + padding;
+    } else if (tRect.top - pHeight - padding >= 0) {
+        top = tRect.top - pHeight - padding;
+    } else {
+        top = Math.max(padding, window.innerHeight - pHeight - padding);
+    }
+    
+    let left;
+    if (tRect.left < window.innerWidth / 2) {
+        left = tRect.left;
+    } else {
+        left = tRect.right - pWidth;
+    }
+    
+    if (left < padding) left = padding;
+    if (left + pWidth > window.innerWidth - padding) {
+        left = window.innerWidth - pWidth - padding;
+    }
+    
+    panel.style.position = 'fixed';
+    panel.style.top = `${top}px`;
+    panel.style.left = `${left}px`;
+    panel.style.zIndex = '12000';
+}

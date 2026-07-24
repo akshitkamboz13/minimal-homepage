@@ -2,6 +2,8 @@ let userSettings = JSON.parse(localStorage.getItem('startpage_settings')) || {};
 
 const defaults = {
     showBookmarks: true,
+    showDashboardWidgets: true, // Toggle dashboard widgets visibility
+    dashboardOrder: [], // Sequence list of dashboard layout container children IDs
     containerWidth: 'full', // 'full' | 'contained'
     tileWidth: 'fixed', // 'fixed' | 'auto'
     hiddenFolders: [], // Array of folder titles that are hidden
@@ -50,6 +52,7 @@ const defaults = {
     defaultPuffWidth: 580,
     defaultPuffHeight: 380,
     bookmarkTarget: '_blank', // '_blank' | '_self'
+    bookmarkFoldersLimit: 0, // 0 for unlimited, or specific visible folder count
     windowScale: 100, // percentage 80-120
     sidebarHover: false,
     clockFormat: '12', // '12' | '24'

@@ -146,11 +146,14 @@
             </form>
 
             <!-- ===================================== -->
-            <!-- Bookmarks -->
+            <!-- Dashboard Widgets & Bookmarks Wrapper -->
             <!-- ===================================== -->
-            <section class="bookmarks-container" id="bookmarks-container" aria-label="Bookmarks">
-                <!-- Bookmarks will be injected here dynamically by script.js -->
-            </section>
+            <div id="dashboard-widgets-container" class="dashboard-widgets-container">
+                <!-- Bookmarks -->
+                <section class="bookmarks-container" id="bookmarks-container" aria-label="Bookmarks">
+                    <!-- Bookmarks will be injected here dynamically by script.js -->
+                </section>
+            </div>
         </main>
     </div>
 
@@ -293,6 +296,17 @@
                                     <line x1="12" y1="3" x2="12" y2="21" />
                                 </svg>
                                 Windows
+                            </li>
+                            <li class="menu-item" data-tab="dashboard-layout">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="3" width="7" height="9" rx="1"/>
+                                    <rect x="14" y="3" width="7" height="5" rx="1"/>
+                                    <rect x="14" y="12" width="7" height="9" rx="1"/>
+                                    <rect x="3" y="16" width="7" height="5" rx="1"/>
+                                </svg>
+                                Dashboard Layout
                             </li>
                             <li class="menu-item" data-tab="panels">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -1043,6 +1057,16 @@
                             </div>
                         </div>
 
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-bookmark-folders-limit">Visible Folders Limit</label>
+                                <span class="setting-desc">Number of folders visible at once (0 for unlimited).</span>
+                            </div>
+                            <div class="setting-control">
+                                <input type="number" id="setting-bookmark-folders-limit" class="custom-select" style="width: 80px; text-align: center;" min="0" max="20" value="0">
+                            </div>
+                        </div>
+
 
                         <div class="setting-group-section" id="folder-toggles-container">
                             <h4 class="section-title">Visible Folders & Links</h4>
@@ -1269,6 +1293,46 @@
                                 <button type="button" id="btn-reset-screen-layout" class="action-btn secondary">
                                     Restore Default Layout
                                 </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Dashboard Layout -->
+                    <section id="tab-dashboard-layout" class="settings-pane">
+                        <h3>Dashboard Layout</h3>
+                        
+                        <div class="setting-group-section" style="padding-top: 0.5rem;">
+                            <h4 class="section-title" style="margin-bottom: 0.85rem; font-size: 0.95rem; font-weight: 600; color: var(--accent-color, #3b82f6); display: flex; align-items: center; gap: 0.5rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="9" rx="1"/>
+                                    <rect x="14" y="3" width="7" height="5" rx="1"/>
+                                    <rect x="14" y="12" width="7" height="9" rx="1"/>
+                                    <rect x="3" y="16" width="7" height="5" rx="1"/>
+                                </svg>
+                                Dashboard Layout Widgets
+                            </h4>
+                            
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <label for="toggle-dashboard-widgets">Show Dashboard Widgets</label>
+                                    <span class="setting-desc">Toggle visibility of all dashboard widgets.</span>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-dashboard-widgets" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group-section" style="border-top: 1px solid var(--glass-border); padding-top: 1.25rem; margin-top: 1.25rem;">
+                            <h4 class="section-title">Widget Order Sequence</h4>
+                            <span class="setting-desc" style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; opacity: 0.7;">
+                                Specify display ordering of dashboard layout items (1 is leftmost/first).
+                            </span>
+                            <div id="dashboard-widgets-order-list" style="display: flex; flex-direction: column; gap: 0.25rem; margin-top: 0.5rem;">
+                                <!-- Order inputs will be generated dynamically by dashboard-layout.js -->
                             </div>
                         </div>
                     </section>

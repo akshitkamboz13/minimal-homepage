@@ -1,6 +1,16 @@
 import { userSettings } from '../settings/index.js';
 
 export function renderBookmarksGrid(folders, bookmarksContainer) {
+    if (bookmarksContainer) {
+        if (userSettings.bookmarkFoldersLimit > 0) {
+            bookmarksContainer.style.setProperty('--bookmark-folders-visible', userSettings.bookmarkFoldersLimit);
+            bookmarksContainer.setAttribute('data-folders-visible', 'true');
+        } else {
+            bookmarksContainer.style.removeProperty('--bookmark-folders-visible');
+            bookmarksContainer.removeAttribute('data-folders-visible');
+        }
+    }
+
     folders.forEach(folder => {
         const folderLinks = folder.children;
         if (folderLinks.length === 0 && !folder.isPseudo) return;

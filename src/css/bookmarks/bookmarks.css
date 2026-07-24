@@ -166,3 +166,99 @@ body[data-tile-width="auto"] .bookmark-link span {
         grid-template-columns: 1fr;
     }
 }
+
+/* Dashboard Widgets Wrapper Container for side-by-side flex */
+.dashboard-widgets-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+    padding-top: 1rem; /* Provide spacing for hover translates */
+}
+
+/* Enable full-bleed stretch for the widgets container in full-width mode */
+body:not([data-container-width="contained"]) .dashboard-widgets-container {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+
+/* Adjust bookmarks container behavior when inside side-by-side flex */
+.dashboard-widgets-container .bookmarks-container {
+    position: static;
+    width: auto;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    left: auto;
+    right: auto;
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 0 1rem 0; /* Remove top padding so cards align perfectly at the top */
+    flex: 0 1 auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+/* Constrain bookmarks width if folders visibility limit is active */
+body .dashboard-widgets-container .bookmarks-container[data-folders-visible="true"] {
+    --visible-count: var(--bookmark-folders-visible, 3);
+    width: 100%;
+    max-width: calc(var(--visible-count) * 260px + (var(--visible-count) - 1) * 1.5rem + 2rem);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    justify-content: flex-start;
+}
+
+/* Custom dashboard widget height locking to match bookmark cards */
+.custom-dashboard-widget {
+    height: 244px !important;
+}
+
+/* Settings Page Drag & Drop List Items */
+.settings-order-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: grab;
+    user-select: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+[data-theme="dark"] .settings-order-item {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.settings-order-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.settings-order-item:active {
+    cursor: grabbing;
+}
+
+.settings-order-item.is-dragging {
+    opacity: 0.4;
+    transform: scale(0.98);
+    border-style: dashed;
+}
+
+.settings-order-item .drag-handle-icon {
+    opacity: 0.5;
+    cursor: grab;
+    color: var(--text-color);
+}

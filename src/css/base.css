@@ -943,3 +943,109 @@ body.dark-mode .btn-gradient-primary:hover {
     border-color: rgba(255, 255, 255, 0.4) !important;
     background: rgba(255, 255, 255, 0.2) !important;
 }
+
+/* Card Generator Styles for Symmetry */
+.glass-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+}
+
+.glass-card-wrapper:hover {
+    transform: translateY(-4px);
+    background: var(--glass-highlight);
+}
+
+.glass-card-header {
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    cursor: grab;
+    user-select: none;
+}
+
+.glass-card-header h3 {
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+.glass-card-body {
+    flex: 1;
+    overflow: hidden; /* Hide outer container scrollbar to avoid double scrollbars */
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    position: relative;
+}
+
+/* Custom Popup Panel for panel shortcuts */
+.custom-popup-panel {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    z-index: 12000;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    transition: var(--transition-smooth);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.95);
+    background: rgba(255, 255, 255, 0.85); /* Light theme default */
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(45px);
+    -webkit-backdrop-filter: blur(45px);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .custom-popup-panel {
+    background: rgba(15, 23, 42, 0.85); /* Dark theme */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.custom-popup-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.custom-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem 0.5rem 1.25rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.custom-popup-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.custom-popup-close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.6;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+}
+
+.custom-popup-close-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-popup-body {
+    flex: 1;
+    padding: 0.5rem 1.25rem 1.25rem 1.25rem;
+    overflow: hidden;
+}
