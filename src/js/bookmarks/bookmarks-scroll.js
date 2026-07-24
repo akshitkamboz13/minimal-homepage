@@ -1,5 +1,6 @@
 export function initBookmarksScroll() {
     const bookmarksContainer = document.getElementById('bookmarks-container');
+    let isScrolling = false;
 
     // Map global vertical scroll to horizontal scroll for bookmarks
     window.addEventListener('wheel', (e) => {
@@ -15,8 +16,20 @@ export function initBookmarksScroll() {
         }
 
         if (bookmarksContainer) {
-            bookmarksContainer.scrollLeft += e.deltaY;
-            e.preventDefault(); 
+            e.preventDefault();
+            if (isScrolling) return;
+
+            isScrolling = true;
+            // Scroll by one card column step: card width (260px) + gap (24px) = 284px
+            const scrollAmount = e.deltaY > 0 ? 284 : -284;
+            bookmarksContainer.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+
+            setTimeout(() => {
+                isScrolling = false;
+            }, 300); // Debounce duration to align with scroll animation
         }
     }, { passive: false });
 }

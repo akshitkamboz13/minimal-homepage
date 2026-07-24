@@ -13,6 +13,8 @@
     margin-right: -50vw;
     
     overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
     padding: 2rem 5vw; /* Lots of padding for shadows and edge spacing */
     z-index: 500;
     
@@ -49,6 +51,7 @@ body[data-container-width="contained"] .bookmarks-container {
     transition: var(--transition-smooth);
     width: 260px; /* ~6.8cm */
     flex: 0 0 260px; 
+    scroll-snap-align: start;
 }
 
 /* Bookmark Tiles Auto Width Override */
@@ -80,6 +83,7 @@ body[data-tile-width="auto"] .bookmark-group {
     /* Show only 3 items max (3 * 44px + 2 * 0.75rem) */
     max-height: calc(132px + 1.5rem);
     overflow-y: auto;
+    scroll-behavior: smooth;
     padding-right: 4px; /* Space for custom scrollbar */
 }
 
