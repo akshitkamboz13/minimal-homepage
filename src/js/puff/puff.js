@@ -38,10 +38,11 @@ function createPuffDOM() {
         resizable: true,
         x: savedState.x !== undefined ? savedState.x : 140,
         y: savedState.y !== undefined ? savedState.y : 140,
-        width: savedState.w || 580,
-        height: savedState.h || 380,
+        width: savedState.w || userSettings.defaultPuffWidth || 580,
+        height: savedState.h || userSettings.defaultPuffHeight || 380,
         minWidth: 320,
         minHeight: 220,
+        colorClass: 'color-transparent',
         className: 'puff-window hidden',
         onMinimize: (isMin) => {
             savePuffState();
@@ -69,7 +70,7 @@ function createPuffDOM() {
             <div class="puff-output-history" id="puff-output-history"></div>
             <div class="puff-prompt-line">
                 <span class="puff-cmd-prompt">&gt;</span>
-                <input type="text" id="puff-input" class="puff-input" spellcheck="false" autocomplete="off" placeholder="" />
+                <input type="text" id="puff-input" class="puff-input" spellcheck="false" autocomplete="off" placeholder="${userSettings.puffPlaceholder || ''}" />
             </div>
         </div>
     `;

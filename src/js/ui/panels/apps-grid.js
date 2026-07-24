@@ -119,12 +119,15 @@ function renderAppsGrid() {
     const searchQuery = (searchInputEl ? searchInputEl.value : '').toLowerCase().trim();
 
     // 1. System Apps (Sticky Notes + Settings)
-    const systemApps = SYSTEM_APPS;
+    let systemApps = SYSTEM_APPS;
+    if (userSettings.showPuffShell === false) {
+        systemApps = systemApps.filter(app => app.id !== 'app_puff_shell');
+    }
 
     // 2. User Shortcuts (Dock & Apps Grid)
     const customPanelItems = userSettings.customPanelItems || [];
     const pinnedDockApps = customPanelItems
-        .filter(item => item.panel === 'dock' || item.panel === 'grid')
+        .filter(item => (item.panel === 'dock' || item.panel === 'grid') && item.id !== 'item_puff_shell' && item.url !== 'action:puff')
         .map(item => ({
             id: item.id || 'pinned_' + Math.random(),
             name: item.title || 'Shortcut',

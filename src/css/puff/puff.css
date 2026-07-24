@@ -1,10 +1,7 @@
 /* Puff Terminal Shell Styling */
 .puff-window {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    background: rgba(15, 23, 42, 0.94);
+    font-family: var(--puff-font-family, 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace);
     color: #f8fafc;
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 
     --puff-text: #f8fafc;
     --puff-prompt: #22c55e;
@@ -15,14 +12,17 @@
     --puff-caret: #22c55e;
 }
 
+.puff-window:not(.color-transparent) {
+    background: rgba(15, 23, 42, 0.94);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
 /* Light Theme Mode Overrides */
 body:not([data-theme="dark"]) .puff-window,
 body[data-theme="light"] .puff-window,
 body.light-mode .puff-window {
-    background: rgba(248, 250, 252, 0.95) !important;
     color: #0f172a !important;
-    border-color: rgba(0, 0, 0, 0.15) !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
 
     --puff-text: #0f172a;
     --puff-prompt: #16a34a;
@@ -31,6 +31,14 @@ body.light-mode .puff-window {
     --puff-cmd-result: #334155;
     --puff-cmd-error: #dc2626;
     --puff-caret: #16a34a;
+}
+
+body:not([data-theme="dark"]) .puff-window:not(.color-transparent),
+body[data-theme="light"] .puff-window:not(.color-transparent),
+body.light-mode .puff-window:not(.color-transparent) {
+    background: rgba(248, 250, 252, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
 }
 
 .puff-body {

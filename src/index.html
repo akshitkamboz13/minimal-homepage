@@ -329,6 +329,15 @@
                                 </svg>
                                 Bookmarks Widget
                             </li>
+                            <li class="menu-item" data-tab="puff">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <polyline points="4 17 10 11 4 5"></polyline>
+                                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                                </svg>
+                                Puff Terminal
+                            </li>
                             <li class="menu-item" data-tab="core-search">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -979,6 +988,92 @@
                         </div>
                     </section>
 
+                    <!-- Puff Terminal -->
+                    <section id="tab-puff" class="settings-pane">
+                        <h3>Puff Terminal Settings</h3>
+                        
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Font Family</label>
+                                <span class="setting-desc">Choose font typography style for shell text.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="custom-dropdown" id="dropdown-puff-font">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
+                                        <span class="dropdown-selected-label">Developer Monospace</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item" data-value="sans" role="option">System Sans-Serif</li>
+                                        <li class="dropdown-item" data-value="serif" role="option">Classic Serif</li>
+                                        <li class="dropdown-item active" data-value="mono" role="option">Developer Monospace</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-puff-placeholder">Placeholder Text</label>
+                                <span class="setting-desc">Default placeholder text for shell prompt.</span>
+                            </div>
+                            <div class="setting-control">
+                                <input type="text" id="setting-puff-placeholder" placeholder="Type a command..."
+                                    class="custom-input">
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-puff-width">Default Opening Width</label>
+                                <span class="setting-desc">Initial width for newly opened Puff Terminal.</span>
+                            </div>
+                            <div class="setting-control range-wrapper">
+                                <input type="range" id="setting-puff-width" min="320" max="800" value="580" step="10">
+                                <span class="range-value" id="puff-width-val">580px</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="setting-puff-height">Default Opening Height</label>
+                                <span class="setting-desc">Initial height for newly opened Puff Terminal.</span>
+                            </div>
+                            <div class="setting-control range-wrapper">
+                                <input type="range" id="setting-puff-height" min="220" max="600" value="380" step="10">
+                                <span class="range-value" id="puff-height-val">380px</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label for="toggle-puff-shell">Enable Puff Terminal Shell</label>
+                                <span class="setting-desc">Display Puff Shell launcher in Applications Grid and Dock.</span>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-puff-shell" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Reset Puff Terminal</label>
+                                <span class="setting-desc">Clear command history and reset terminal window position.</span>
+                            </div>
+                            <div class="setting-control">
+                                <button type="button" id="btn-reset-puff" class="action-btn">Reset Shell</button>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- Windows -->
                     <section id="tab-windows" class="settings-pane">
                         <h3>Windows & Navigation</h3>
@@ -1199,36 +1294,6 @@
                             </div>
                         </div>
 
-                        <!-- Puff Terminal Shell Section -->
-                        <div class="setting-group-section" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 1rem;" id="puff-settings-section">
-                            <h4 class="section-title" style="margin-bottom: 0.85rem; font-size: 0.95rem; font-weight: 600; color: #22c55e; display: flex; align-items: center; gap: 0.5rem;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                                Puff Terminal Shell
-                            </h4>
-
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <label for="toggle-puff-shell">Enable Puff Terminal Shell</label>
-                                    <span class="setting-desc">Display Puff Shell launcher in Applications Grid and Dock.</span>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="switch">
-                                        <input type="checkbox" id="toggle-puff-shell" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <label>Reset Puff Terminal</label>
-                                    <span class="setting-desc">Clear command history and reset terminal window position.</span>
-                                </div>
-                                <div class="setting-control">
-                                    <button type="button" id="btn-reset-puff" class="action-btn">Reset Shell</button>
-                                </div>
-                            </div>
-                        </div>
                     </section>
 
                     <!-- Panels & Bars -->

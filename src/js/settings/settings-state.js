@@ -23,6 +23,14 @@ const defaults = {
     dockPosition: 'bottom', // 'bottom' | 'top' | 'left' | 'right'
     dockAutohide: false,
     customPanelItems: [
+        { 
+            id: 'item_puff_shell', 
+            title: 'Puff Terminal', 
+            url: 'action:puff', 
+            panel: 'dock', 
+            target: '_self', 
+            icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>` 
+        },
         { id: 'item_google', title: 'Google', url: 'https://www.google.com', panel: 'dock', target: '_blank', icon: '' },
         { id: 'item_youtube', title: 'YouTube', url: 'https://www.youtube.com', panel: 'dock', target: '_blank', icon: '' },
         { id: 'item_github', title: 'GitHub', url: 'https://github.com', panel: 'dock', target: '_blank', icon: '' },
@@ -37,6 +45,10 @@ const defaults = {
     notesPlaceholder: 'Type a note here...',
     defaultNoteWidth: 250,
     defaultNoteHeight: 250,
+    puffFont: 'mono', // 'mono' | 'sans' | 'serif'
+    puffPlaceholder: '',
+    defaultPuffWidth: 580,
+    defaultPuffHeight: 380,
     bookmarkTarget: '_blank', // '_blank' | '_self'
     windowScale: 100, // percentage 80-120
     sidebarHover: false,
@@ -105,6 +117,22 @@ if (userSettings.aiEngines) {
         }
         localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
     }
+}
+
+// Guarantee Puff Terminal item is present in customPanelItems by default
+if (!userSettings.puffDockInitialized) {
+    userSettings.puffDockInitialized = true;
+    if (userSettings.customPanelItems && !userSettings.customPanelItems.some(i => i.id === 'item_puff_shell' || i.url === 'action:puff')) {
+        userSettings.customPanelItems.unshift({
+            id: 'item_puff_shell',
+            title: 'Puff Terminal',
+            url: 'action:puff',
+            panel: 'dock',
+            target: '_self',
+            icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`
+        });
+    }
+    localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
 }
 
 

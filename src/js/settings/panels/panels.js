@@ -583,7 +583,7 @@ export function initAddSiteModal() {
         const icon = document.getElementById('modal-shortcut-icon').value.trim();
 
         if (!url) return;
-        if (!/^https?:\/\//i.test(url)) {
+        if (!url.startsWith('action:') && !/^https?:\/\//i.test(url)) {
             url = 'https://' + url;
         }
         if (!title) {

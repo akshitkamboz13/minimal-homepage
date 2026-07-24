@@ -88,7 +88,10 @@ function renderDock() {
 
     const allItems = userSettings.customPanelItems || [];
     // User-pinned dock items ONLY
-    const pinnedDockItems = allItems.filter(item => item.panel === 'dock');
+    let pinnedDockItems = allItems.filter(item => item.panel === 'dock');
+    if (userSettings.showPuffShell === false) {
+        pinnedDockItems = pinnedDockItems.filter(item => item.id !== 'item_puff_shell' && item.url !== 'action:puff');
+    }
 
     const openNotesCount = document.querySelectorAll('.glass-note').length;
     const settingsModal = document.getElementById('settings-modal');
@@ -108,114 +111,34 @@ function renderDock() {
         return;
     }
     dockContainer.dataset.renderedSignature = signature;
-    dockContainer.innerHTML = '';
+    // 1. Build targets list
+    const targets = [];
 
-    // Helper to render an item
-    const renderItem = (item, isActiveApp = false) => {
-        const btn = document.createElement('button');
-        btn.className = 'dock-item' + (isActiveApp ? ' is-active-app' : '');
-        btn.setAttribute('aria-label', item.title);
-        btn.dataset.id = item.id;
-
-        let iconMarkup = item.icon || '';
-        if (!iconMarkup && item.url) {
-            const favUrl = getFaviconUrl(item.url);
-            iconMarkup = `<img src="${favUrl}" alt="${item.title}" onerror="this.onerror=null;this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><circle cx=%2212%22 cy=%2212%22 r=%2210%22/></svg>';" />`;
-        } else if (iconMarkup && !iconMarkup.trim().startsWith('<')) {
-            iconMarkup = `<img src="${iconMarkup}" alt="${item.title}" />`;
-        }
-
-        btn.innerHTML = `
-            <span class="dock-icon">${iconMarkup}</span>
-            <span class="dock-tooltip">${item.title}</span>
-        `;
-
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (item.toggleMinimize || item.focus) {
-                if (item.isMinimized) {
-                    item.focus();
-                } else {
-                    item.toggleMinimize();
-                }
-            } else if (item.url) {
-                const target = item.target || '_blank';
-                if (target === '_self') {
-                    window.location.href = item.url;
-                } else {
-                    window.open(item.url, '_blank');
-                }
-            } else if (item.action === 'focus-notes') {
-                const notes = document.querySelectorAll('.glass-note');
-                const minimizedNotes = document.querySelectorAll('.glass-note.is-minimized');
-                
-                if (minimizedNotes.length > 0) {
-                    minimizedNotes.forEach(noteEl => {
-                        noteEl.classList.remove('is-minimized');
-                    });
-                    try {
-                        const rawNotes = JSON.parse(localStorage.getItem('startpage_notes') || '[]');
-                        rawNotes.forEach(n => n.isMinimized = false);
-                        localStorage.setItem('startpage_notes', JSON.stringify(rawNotes));
-                    } catch(err) {}
-                    if (notes.length > 0) notes[0].click();
-                } else if (notes.length > 0) {
-                    notes.forEach(noteEl => noteEl.classList.add('is-minimized'));
-                    try {
-                        const rawNotes = JSON.parse(localStorage.getItem('startpage_notes') || '[]');
-                        rawNotes.forEach(n => n.isMinimized = true);
-                        localStorage.setItem('startpage_notes', JSON.stringify(rawNotes));
-                    } catch(err) {}
-                } else {
-                    const addBtn = document.getElementById('add-note-btn');
-                    if (addBtn) addBtn.click();
-                }
-            } else if (item.action === 'focus-settings') {
-                const modal = document.getElementById('settings-modal');
-                if (modal) {
-                    if (modal.classList.contains('is-minimized')) {
-                        modal.classList.remove('is-minimized', 'hidden');
-                        localStorage.setItem('startpage_settings_minimized', 'false');
-                    } else if (!modal.classList.contains('hidden')) {
-                        modal.classList.add('is-minimized');
-                        localStorage.setItem('startpage_settings_minimized', 'true');
-                    } else {
-                        modal.classList.remove('hidden', 'is-minimized');
-                        localStorage.setItem('startpage_settings_minimized', 'false');
-                    }
-                }
-            } else if (item.action === 'focus-puff') {
-                togglePuffShell();
-            } else if (item.action === 'toggle-apps-grid') {
-                toggleAppsGrid();
-            }
-        });
-
-        dockContainer.appendChild(btn);
-    };
-
-    // GNOME Show Applications Launcher Icon
-    const appsGridLauncher = {
+    // GNOME Show Applications Grid
+    targets.push({
+        type: 'button',
         id: 'show_applications_grid',
         title: 'Show Applications',
         action: 'toggle-apps-grid',
         icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="6.5" height="6.5" rx="1.5"/><rect x="14.5" y="3" width="6.5" height="6.5" rx="1.5"/><rect x="3" y="14.5" width="6.5" height="6.5" rx="1.5"/><rect x="14.5" y="14.5" width="6.5" height="6.5" rx="1.5"/></svg>`
-    };
-    renderItem(appsGridLauncher);
+    });
 
     if (pinnedDockItems.length > 0) {
-        const sep1 = document.createElement('div');
-        sep1.className = 'dock-separator';
-        dockContainer.appendChild(sep1);
+        targets.push({ type: 'separator', id: 'sep_pinned' });
     }
 
-    // Render User-Pinned Items
-    pinnedDockItems.forEach(item => renderItem(item));
+    pinnedDockItems.forEach(item => {
+        targets.push({
+            type: 'button',
+            id: item.id,
+            title: item.title,
+            url: item.url,
+            target: item.target,
+            icon: item.icon
+        });
+    });
 
-    // Dynamic Active Apps from central appRegistry
     const activeApps = [...registeredActiveApps];
-
-    // Fallback for Sticky Notes and Settings if not registered
     if (openNotesCount > 0 && !activeApps.some(a => a.id === 'sticky_notes')) {
         activeApps.push({
             id: 'active_notes',
@@ -235,12 +158,181 @@ function renderDock() {
     }
 
     if (activeApps.length > 0 && pinnedDockItems.length > 0) {
-        const sep = document.createElement('div');
-        sep.className = 'dock-separator';
-        dockContainer.appendChild(sep);
+        targets.push({ type: 'separator', id: 'sep_active' });
     }
 
-    activeApps.forEach(app => renderItem(app, true));
+    activeApps.forEach(app => {
+        targets.push({
+            type: 'button',
+            id: app.id,
+            title: app.title || app.name,
+            action: app.action,
+            icon: app.icon,
+            isActiveApp: true,
+            isMinimized: app.isMinimized,
+            focus: app.focus,
+            toggleMinimize: app.toggleMinimize
+        });
+    });
+
+    // 2. Perform DOM Reconciliation
+    const currentChildren = Array.from(dockContainer.children);
+    const existingById = new Map();
+    currentChildren.forEach(child => {
+        if (child.dataset.id) {
+            existingById.set(child.dataset.id, child);
+        }
+    });
+
+    targets.forEach((target, index) => {
+        let el = existingById.get(target.id);
+
+        if (el) {
+            // Update existing element
+            if (target.type === 'button') {
+                el.setAttribute('aria-label', target.title);
+                const tooltip = el.querySelector('.dock-tooltip');
+                if (tooltip) tooltip.textContent = target.title;
+                
+                if (target.isActiveApp) {
+                    el.classList.add('is-active-app');
+                } else {
+                    el.classList.remove('is-active-app');
+                }
+            }
+            
+            // Re-order if needed
+            if (dockContainer.children[index] !== el) {
+                dockContainer.insertBefore(el, dockContainer.children[index]);
+            }
+        } else {
+            // Create new
+            if (target.type === 'separator') {
+                el = document.createElement('div');
+                el.className = 'dock-separator';
+                el.dataset.id = target.id;
+            } else {
+                el = document.createElement('button');
+                el.className = 'dock-item dock-item-entering';
+                if (target.isActiveApp) el.classList.add('is-active-app');
+                el.setAttribute('aria-label', target.title);
+                el.dataset.id = target.id;
+
+                let iconMarkup = target.icon || '';
+                if (!iconMarkup && target.url) {
+                    const favUrl = getFaviconUrl(target.url);
+                    iconMarkup = `<img src="${favUrl}" alt="${target.title}" onerror="this.onerror=null;this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><circle cx=%2212%22 cy=%2212%22 r=%2210%22/></svg>';" />`;
+                } else if (iconMarkup && !iconMarkup.trim().startsWith('<')) {
+                    iconMarkup = `<img src="${iconMarkup}" alt="${target.title}" />`;
+                }
+
+                el.innerHTML = `
+                    <span class="dock-icon">${iconMarkup}</span>
+                    <span class="dock-tooltip">${target.title}</span>
+                `;
+
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (target.toggleMinimize || target.focus) {
+                        if (target.isMinimized) {
+                            target.focus();
+                        } else {
+                            target.toggleMinimize();
+                        }
+                    } else if (target.url) {
+                        if (target.url === 'action:puff') {
+                            togglePuffShell();
+                            return;
+                        }
+                        const targetFrame = target.target || '_blank';
+                        if (targetFrame === '_self') {
+                            window.location.href = target.url;
+                        } else {
+                            window.open(target.url, '_blank');
+                        }
+                    } else if (target.action === 'focus-notes') {
+                        const notes = document.querySelectorAll('.glass-note');
+                        const minimizedNotes = document.querySelectorAll('.glass-note.is-minimized');
+                        
+                        if (minimizedNotes.length > 0) {
+                            minimizedNotes.forEach(noteEl => {
+                                noteEl.classList.remove('is-minimized');
+                            });
+                            try {
+                                const rawNotes = JSON.parse(localStorage.getItem('startpage_notes') || '[]');
+                                rawNotes.forEach(n => n.isMinimized = false);
+                                localStorage.setItem('startpage_notes', JSON.stringify(rawNotes));
+                            } catch(err) {}
+                            if (notes.length > 0) notes[0].click();
+                        } else if (notes.length > 0) {
+                            notes.forEach(noteEl => noteEl.classList.add('is-minimized'));
+                            try {
+                                const rawNotes = JSON.parse(localStorage.getItem('startpage_notes') || '[]');
+                                rawNotes.forEach(n => n.isMinimized = true);
+                                localStorage.setItem('startpage_notes', JSON.stringify(rawNotes));
+                            } catch(err) {}
+                        } else {
+                            const addBtn = document.getElementById('add-note-btn');
+                            if (addBtn) addBtn.click();
+                        }
+                    } else if (target.action === 'focus-settings') {
+                        const modal = document.getElementById('settings-modal');
+                        if (modal) {
+                            if (modal.classList.contains('is-minimized')) {
+                                modal.classList.remove('is-minimized', 'hidden');
+                                localStorage.setItem('startpage_settings_minimized', 'false');
+                            } else if (!modal.classList.contains('hidden')) {
+                                modal.classList.add('is-minimized');
+                                localStorage.setItem('startpage_settings_minimized', 'true');
+                            } else {
+                                modal.classList.remove('hidden', 'is-minimized');
+                                localStorage.setItem('startpage_settings_minimized', 'false');
+                            }
+                        }
+                    } else if (target.action === 'focus-puff') {
+                        togglePuffShell();
+                    } else if (target.action === 'toggle-apps-grid') {
+                        toggleAppsGrid();
+                    }
+                });
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        el.classList.remove('dock-item-entering');
+                    });
+                });
+            }
+
+            if (index >= dockContainer.children.length) {
+                dockContainer.appendChild(el);
+            } else {
+                dockContainer.insertBefore(el, dockContainer.children[index]);
+            }
+        }
+    });
+
+    // Remove any children that are no longer in the targets list
+    const targetIds = new Set(targets.map(t => t.id));
+    currentChildren.forEach(child => {
+        const id = child.dataset.id;
+        if (id && !targetIds.has(id)) {
+            if (child.classList.contains('dock-separator')) {
+                child.remove();
+            } else {
+                child.classList.add('dock-item-exiting');
+                const removeFn = () => {
+                    child.remove();
+                };
+                child.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'width' || e.propertyName === 'opacity') {
+                        removeFn();
+                    }
+                }, { once: true });
+                setTimeout(removeFn, 350);
+            }
+        }
+    });
+
     isRenderingDock = false;
 }
 

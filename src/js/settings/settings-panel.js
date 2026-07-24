@@ -13,6 +13,7 @@ import { initPerformance, applyPerformanceVisuals } from './panels/performance.j
 import { initDeveloper } from './panels/developer.js';
 import { initAbout } from './panels/about.js';
 import { initPanelsSettings, applyPanelsVisuals } from './panels/panels.js';
+import { initPuffSettings, applyPuffVisuals } from './panels/puff.js';
 
 const CATEGORY_CONFIG = {
     'personalization': {
@@ -21,7 +22,7 @@ const CATEGORY_CONFIG = {
     },
     'widgets': {
         title: 'Widgets & Panels',
-        tabs: ['panels', 'widgets', 'notes', 'bookmarks']
+        tabs: ['panels', 'widgets', 'notes', 'bookmarks', 'puff']
     },
     'search-ai': {
         title: 'Search & AI',
@@ -40,6 +41,7 @@ const CATEGORY_CONFIG = {
 export function applySettingsVisuals() {
     applyAppearanceVisuals();
     applyNotesVisuals();
+    applyPuffVisuals();
     applyWindowsVisuals();
     applyPerformanceVisuals();
     applyPanelsVisuals();
@@ -298,6 +300,7 @@ export function initSettingsPanel() {
     initBookmarksSettings(modal);
     initWindows(modal);
     initWidgets(modal);
+    initPuffSettings(modal);
     initPanelsSettings(modal);
     initAi(modal);
     initVoice(modal);
