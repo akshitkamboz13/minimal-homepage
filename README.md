@@ -103,7 +103,7 @@ minimal-startpage/
 │       ├── icon16.png       # 16x16 icon resource
 │       ├── icon48.png       # 48x48 icon resource
 │       └── icon128.png      # 128x128 icon resource
-├── build/               # Compiled extension release zip builds (v1.2.0)
+├── build/               # Compiled extension release zip builds (v2.0.0)
 └── screenshots/         # Asset gallery for store visualization
 ```
 
