@@ -17,6 +17,14 @@ export function initLayoutManager() {
 
     window.addEventListener('start-rearrange-layout', () => enableRearrangeMode(true));
     window.addEventListener('reset-screen-layout',    () => resetLayoutPositions());
+    
+    window.addEventListener('layout-targets-changed', () => {
+        applyLayoutPositions();
+        const toolbar = document.getElementById('layout-rearrange-toolbar');
+        if (toolbar && !toolbar.classList.contains('hidden')) {
+            setupDragHandlers();
+        }
+    });
 
     window.addEventListener('resize', () => {
         if (userSettings.freeformLayout) applyLayoutPositions();
@@ -220,7 +228,7 @@ export function resetLayoutPositions() {
     applyLayoutPositions();
 }
 
-// ─── Target elements (Strictly main-header, hero-clock, search, bookmarks, quick-actions-fab) ───
+// ─── Target elements (Strictly main-header, hero-clock, search, bookmarks, quick-actions-fab, custom-dashboard-widgets) ───
 function getLayoutTargets() {
     const hero = document.querySelector('.hero-section');
     const search = document.getElementById('search-form');
@@ -232,7 +240,9 @@ function getLayoutTargets() {
     if (mainHeader && !mainHeader.id) mainHeader.id = 'main-header';
     if (fabContainer && !fabContainer.id) fabContainer.id = 'quick-actions-fab';
 
-    return [hero, search, bookmarks, mainHeader, fabContainer].filter(Boolean);
+    const customWidgets = Array.from(document.querySelectorAll('.custom-dashboard-widget'));
+
+    return [hero, search, bookmarks, mainHeader, fabContainer, ...customWidgets].filter(Boolean);
 }
 
 let activeDragCleanup = [];

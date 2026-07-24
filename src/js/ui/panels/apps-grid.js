@@ -137,8 +137,28 @@ function renderAppsGrid() {
             icon: item.icon || (item.url ? getFaviconUrl(item.url) : '')
         }));
 
-    // Combine ONLY Sticky Notes, Settings, and Pinned Dock Shortcuts
-    let allApps = [...systemApps, ...pinnedDockApps];
+    // Load custom app widgets
+    const customWidgets = [];
+    try {
+        const list = JSON.parse(localStorage.getItem('startpage_custom_widgets') || '[]');
+        list.forEach(w => {
+            if (w.type === 'app' && w.enabled !== false) {
+                customWidgets.push({
+                    id: 'custom_widget_' + w.id,
+                    name: w.name,
+                    category: 'custom',
+                    icon: w.icon,
+                    action: () => {
+                        window.dispatchEvent(new CustomEvent('launch-custom-widget', { detail: { id: w.id } }));
+                        closeAppsGrid();
+                    }
+                });
+            }
+        });
+    } catch (err) {}
+
+    // Combine Sticky Notes, Settings, Pinned Dock Shortcuts, and Custom App Widgets
+    let allApps = [...systemApps, ...pinnedDockApps, ...customWidgets];
 
     // Filter by Category
     if (currentCategory !== 'all') {

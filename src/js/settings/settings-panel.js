@@ -14,6 +14,7 @@ import { initDeveloper } from './panels/developer.js';
 import { initAbout } from './panels/about.js';
 import { initPanelsSettings, applyPanelsVisuals } from './panels/panels.js';
 import { initPuffSettings, applyPuffVisuals } from './panels/puff.js';
+import { initWidgetStudio } from './panels/widget-studio.js';
 
 const CATEGORY_CONFIG = {
     'personalization': {
@@ -23,6 +24,10 @@ const CATEGORY_CONFIG = {
     'widgets': {
         title: 'Widgets & Panels',
         tabs: ['panels', 'widgets', 'notes', 'bookmarks', 'puff']
+    },
+    'widget-studio': {
+        title: 'Widget Studio',
+        tabs: ['widget-manage', 'widget-import', 'widget-export', 'widget-build', 'widget-docs']
     },
     'search-ai': {
         title: 'Search & AI',
@@ -302,6 +307,7 @@ export function initSettingsPanel() {
     initWidgets(modal);
     initPuffSettings(modal);
     initPanelsSettings(modal);
+    initWidgetStudio(modal);
     initAi(modal);
     initVoice(modal);
     initVisual(modal);

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Widget Sandbox</title>
+    <style id="widget-style"></style>
+</head>
+<body>
+    <div id="widget-root"></div>
+    <script>
+        let activeAccentColor = '#3b82f6';
+
+        // Listen for initialization parameters
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data && data.type === 'init') {
+                // Set environment variables
+                window.ENV = data.env || {};
+                window.process = { env: data.env || {} };
+
+                // Apply CSS
+                document.getElementById('widget-style').textContent = data.css || '';
+
+                // Inject HTML
+                document.getElementById('widget-root').innerHTML = data.html || '';
+
+                // Apply initial theme classes
+                const theme = data.theme || 'dark';
+                document.body.className = `widget ${theme}`;
+
+                activeAccentColor = data.accentColor || '#3b82f6';
+
+                // Expose widget client APIs inside sandboxed iframe context
+                window.widget = {
+                    resize: (width, height) => {
+                        window.parent.postMessage({
+                            type: 'resize-widget',
+                            width: width,
+                            height: height
+                        }, '*');
+                    },
+                    close: () => {
+                        window.parent.postMessage({
+                            type: 'close-widget'
+                        }, '*');
+                    },
+                    minimize: () => {
+                        window.parent.postMessage({
+                            type: 'minimize-widget'
+                        }, '*');
+                    },
+                    theme: theme,
+                    accentColor: {
+                        get: () => activeAccentColor
+                    }
+                };
+
+                // Double-lock blocking of Chrome Extension APIs
+                try {
+                    if (window.chrome) delete window.chrome;
+                } catch(err) {}
+
+                // Execute JS (using new Function inside relaxed sandbox CSP)
+                try {
+                    const runner = new Function(data.js || '');
+                    runner();
+                } catch (err) {
+                    console.error("Sandboxed JS Error:", err);
+                    document.body.innerHTML += `<div style="color: #f87171; padding: 12px; margin-top: 15px; border: 1px dashed rgba(239, 68, 68, 0.4); border-radius: 8px; font-family: monospace; font-size: 0.8rem; white-space: pre-wrap;">JS Execution Error: ${err.message}</div>`;
+                }
+            } else if (data && data.type === 'theme-changed') {
+                document.body.className = `widget ${data.theme}`;
+                if (window.widget) {
+                    window.widget.theme = data.theme;
+                }
+                if (data.accentColor) {
+                    activeAccentColor = data.accentColor;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

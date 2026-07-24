@@ -5,11 +5,12 @@ export function initBookmarksScroll() {
     window.addEventListener('wheel', (e) => {
         if (e.deltaY === 0) return;
 
+        const isInsideBookmarks = e.target.closest('#bookmarks-container');
         const isInsideBookmarkLinks = e.target.closest('.bookmark-links');
-        const isInsideSettingsModal = e.target.closest('.modal-content');
-        const isInsideGoogleApps = e.target.closest('.google-apps-panel');
         
-        if (isInsideBookmarkLinks || isInsideSettingsModal || isInsideGoogleApps) {
+        // Only scroll bookmarks horizontally when hovering over the bookmarks container,
+        // but not when scrolling the vertical links list inside folders.
+        if (!isInsideBookmarks || isInsideBookmarkLinks) {
             return;
         }
 

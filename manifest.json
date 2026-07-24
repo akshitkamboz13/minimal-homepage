@@ -31,5 +31,8 @@
     "*://*.yandex.com/*",
     "*://*.yandex.ru/*",
     "*://*.bing.com/*"
-  ]
+  ],
+  "sandbox": {
+    "pages": ["src/sandbox.html"]
+  }
 }

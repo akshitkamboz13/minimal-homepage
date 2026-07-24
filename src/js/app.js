@@ -9,6 +9,7 @@ import { initNotes } from './notes/notes.js';
 import { initPuff } from './puff/puff.js';
 import { initLayoutManager } from './ui/panels/layout-manager.js';
 import { initContextMenu } from './ui/panels/context-menu.js';
+import { initWidgetRuntime } from './widgets/widget-runtime.js';
 
 export function initApp() {
     initTheme();
@@ -22,4 +23,5 @@ export function initApp() {
     initPuff();
     initLayoutManager();
     initContextMenu();
+    initWidgetRuntime();
 }

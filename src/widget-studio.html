@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Studio - Builder IDE</title>
+    <link rel="stylesheet" href="css/settings/widget-studio.css">
+</head>
+<body>
+
+    <!-- Header Actions -->
+    <header class="studio-header">
+        <div class="studio-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>Widget Studio Builder</span>
+        </div>
+        <div class="studio-actions">
+            <button type="button" id="btn-export-pkg" class="studio-btn">Export .homewidget</button>
+            <button type="button" id="btn-save-widget" class="studio-btn primary">Save Widget</button>
+            <button type="button" id="btn-close-studio" class="studio-btn">Close Studio</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="studio-workspace">
+
+        <!-- Sidebar Forms -->
+        <aside class="studio-sidebar">
+            <div class="sidebar-title">Widget Properties</div>
+            
+            <div class="form-group">
+                <label for="widget-name">Widget Name</label>
+                <input type="text" id="widget-name" class="form-control" placeholder="My Awesome Widget" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="widget-author">Author</label>
+                    <input type="text" id="widget-author" class="form-control" placeholder="si4k">
+                </div>
+                <div class="form-group">
+                    <label for="widget-version">Version</label>
+                    <input type="text" id="widget-version" class="form-control" value="1.0.0" placeholder="1.0.0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="widget-desc">Description</label>
+                <textarea id="widget-desc" class="form-control" placeholder="Brief details about what this widget does..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="widget-env">Environment Variables (.env)</label>
+                <textarea id="widget-env" class="form-control" style="font-family: monospace; font-size: 0.78rem; min-height: 70px;" placeholder="API_KEY=your_key_here&#10;DEFAULT_CITY=Tokyo"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="widget-type">Widget Type</label>
+                <select id="widget-type" class="form-control">
+                    <option value="app">Window Application</option>
+                    <option value="vertical">Vertical Panel Shortcut</option>
+                    <option value="horizontal">Horizontal Panel Shortcut</option>
+                    <option value="widget">Dashboard Layout Widget</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="widget-icon-svg">Icon (SVG XML Markup or Web Path)</label>
+                <textarea id="widget-icon-svg" class="form-control" style="font-family: monospace; font-size: 0.78rem;" placeholder="<svg>...</svg>"></textarea>
+            </div>
+
+            <!-- Optional Dimensions (Shows only for 'app' and 'widget') -->
+            <div id="dimensions-group" class="app-only-fields active">
+                <div class="sidebar-title" style="margin-top: 0.5rem;">Dimensions</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="widget-def-w">Default Width</label>
+                        <input type="number" id="widget-def-w" class="form-control" value="400">
+                    </div>
+                    <div class="form-group">
+                        <label for="widget-def-h">Default Height</label>
+                        <input type="number" id="widget-def-h" class="form-control" value="300">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="widget-min-w">Min Width</label>
+                        <input type="number" id="widget-min-w" class="form-control" value="200">
+                    </div>
+                    <div class="form-group">
+                        <label for="widget-min-h">Min Height</label>
+                        <input type="number" id="widget-min-h" class="form-control" value="160">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="widget-max-w">Max Width</label>
+                        <input type="number" id="widget-max-w" class="form-control" value="800">
+                    </div>
+                    <div class="form-group">
+                        <label for="widget-max-h">Max Height</label>
+                        <input type="number" id="widget-max-h" class="form-control" value="600">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Code Editors -->
+        <section class="studio-editor-area">
+            <div class="editor-tabs">
+                <button type="button" class="editor-tab active" data-editor="html">HTML</button>
+                <button type="button" class="editor-tab" data-editor="css">CSS</button>
+                <button type="button" class="editor-tab" data-editor="js">JavaScript (Sandboxed)</button>
+            </div>
+            
+            <div class="editor-container active" id="editor-html">
+                <textarea class="editor-textarea" spellcheck="false" placeholder="<!-- Write your HTML structure here -->
+<div class='custom-widget'>
+    <h2>Hello Widget!</h2>
+    <p id='widget-counter'>Counter: 0</p>
+    <button type='button' id='btn-increment'>Click Me</button>
+</div>"></textarea>
+            </div>
+
+            <div class="editor-container" id="editor-css">
+                <textarea class="editor-textarea" spellcheck="false" placeholder="/* Write your CSS styling here */
+.custom-widget {
+    padding: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    text-align: center;
+    color: #fff;
+}
+.custom-widget button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}"></textarea>
+            </div>
+
+            <div class="editor-container" id="editor-js">
+                <textarea class="editor-textarea" spellcheck="false" placeholder="// Write your isolated JS code here (sandboxed from chrome.* APIs)
+let count = 0;
+const btn = document.getElementById('btn-increment');
+const counterText = document.getElementById('widget-counter');
+
+if (btn && counterText) {
+    btn.addEventListener('click', () => {
+        count++;
+        counterText.textContent = `Counter: ${count}`;
+    });
+}"></textarea>
+            </div>
+        </section>
+
+        <!-- Preview Column -->
+        <section class="studio-preview-area">
+            <div class="preview-header">
+                <span class="preview-title">Live Preview</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <select id="preview-theme-select" style="padding: 4px 8px; font-size: 0.72rem; outline: none; border-radius: 4px; background: #27272a; color: #e4e4e7; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+                        <option value="dark">Dark Theme</option>
+                        <option value="light">Light Theme</option>
+                    </select>
+                    <button type="button" id="btn-refresh-preview" class="studio-btn" style="padding: 4px 8px; font-size: 0.75rem;">Run Code</button>
+                </div>
+            </div>
+            <div class="preview-body">
+                <div class="preview-frame-wrapper">
+                    <div class="preview-frame-header">
+                        <div class="preview-dot red"></div>
+                        <div class="preview-dot yellow"></div>
+                        <div class="preview-dot green"></div>
+                        <div class="preview-frame-title">sandbox://widget-preview</div>
+                    </div>
+                    <!-- Sandboxed iframe to prevent Chrome extensions API access -->
+                    <iframe sandbox="allow-scripts" id="preview-iframe" title="Widget Sandbox Preview" style="background: transparent;"></iframe>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Alert Status Notification -->
+    <div id="studio-alert" class="studio-alert">Action successful!</div>
+
+    <!-- Script imports -->
+    <script type="module" src="js/widget-studio/builder.js"></script>
+</body>
+</html>

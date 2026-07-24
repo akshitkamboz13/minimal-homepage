@@ -239,6 +239,13 @@
                                 </svg>
                                 System & Controls
                             </li>
+                            <li class="category-menu-item" data-category="widget-studio">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                </svg>
+                                Widget Studio
+                            </li>
                             <li class="category-menu-item" data-category="about">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -337,6 +344,49 @@
                                     <line x1="12" y1="19" x2="20" y2="19"></line>
                                 </svg>
                                 Puff Terminal
+                            </li>
+                            <li class="menu-item" data-tab="widget-manage">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
+                                    <rect x="3" y="3" width="7" height="7" />
+                                    <rect x="14" y="3" width="7" height="7" />
+                                    <rect x="14" y="14" width="7" height="7" />
+                                    <rect x="3" y="14" width="7" height="7" />
+                                </svg>
+                                Manage Widgets
+                            </li>
+                            <li class="menu-item" data-tab="widget-import">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="17 8 12 3 7 8" />
+                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                </svg>
+                                Import Widget
+                            </li>
+                            <li class="menu-item" data-tab="widget-export">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Export Widget
+                            </li>
+                            <li class="menu-item" data-tab="widget-build">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                </svg>
+                                Widget Studio
+                            </li>
+                            <li class="menu-item" data-tab="widget-docs">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                                </svg>
+                                Documentation
                             </li>
                             <li class="menu-item" data-tab="core-search">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -519,6 +569,20 @@
                                     <p class="category-card-desc">Keyboard hotkeys, privacy search history, animations,
                                         and dev configs.</p>
                                     <span class="category-card-tags">Keyboard • Privacy • Performance • Developer</span>
+                                </div>
+                            </div>
+
+                            <div class="category-card" data-category="widget-studio">
+                                <div class="category-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                    </svg>
+                                </div>
+                                <div class="category-card-info">
+                                    <h4 class="category-card-title">Widget Studio</h4>
+                                    <p class="category-card-desc">Design, script, code, manage, and pack custom environment-configurable widgets.</p>
+                                    <span class="category-card-tags">Manage • Import • Export • Build</span>
                                 </div>
                             </div>
 
@@ -1071,6 +1135,80 @@
                             <div class="setting-control">
                                 <button type="button" id="btn-reset-puff" class="action-btn">Reset Shell</button>
                             </div>
+                        </div>
+                    </section>
+
+                    <!-- Widget Studio Manage -->
+                    <section id="tab-widget-manage" class="settings-pane">
+                        <h3>Manage Custom Widgets</h3>
+                        <p class="setting-desc">View and manage custom widgets loaded from Widget Studio.</p>
+                        <div id="installed-widgets-list" class="widget-list-container">
+                            <div class="empty-state">No custom widgets installed. Build or import one to get started!</div>
+                        </div>
+                    </section>
+
+                    <!-- Widget Studio Import -->
+                    <section id="tab-widget-import" class="settings-pane">
+                        <h3>Import Custom Widget</h3>
+                        <p class="setting-desc">Upload a zipped widget file with the <code>.homewidget</code> extension.</p>
+                        
+                        <div class="setting-group-section">
+                            <div class="import-drag-zone" id="widget-import-dragzone">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem; opacity: 0.7;">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <span>Drag and drop <code>.homewidget</code> here or click to browse</span>
+                                <input type="file" id="widget-import-file-input" accept=".homewidget" class="hidden">
+                            </div>
+                            <div id="import-status-msg" class="import-status hidden"></div>
+                        </div>
+                    </section>
+
+                    <!-- Widget Studio Export -->
+                    <section id="tab-widget-export" class="settings-pane">
+                        <h3>Export Custom Widgets</h3>
+                        <p class="setting-desc">Download custom widgets as compressed <code>.homewidget</code> packages to share or back up.</p>
+                        <div id="export-widgets-list" class="widget-list-container">
+                            <div class="empty-state">No custom widgets available to export.</div>
+                        </div>
+                    </section>
+
+                    <!-- Widget Studio Build -->
+                    <section id="tab-widget-build" class="settings-pane">
+                        <h3>Widget Studio</h3>
+                        <p class="setting-desc">Design and code your own custom components with HTML, CSS, and JS using the standalone Builder Studio IDE.</p>
+                        <div class="setting-group-section" style="text-align: center; padding: 2rem 1rem;">
+                            <div class="studio-promo-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color, #3b82f6)" stroke-width="2" style="margin-bottom: 1rem;">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                </svg>
+                                <h4>Widget Studio Builder IDE</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+                                    Build sandboxed widgets, customizable sidebars, and desktop applications featuring real-time iframe previews.
+                                </p>
+                                <button type="button" id="btn-launch-widget-studio" class="action-btn primary-btn">Launch Widget Studio</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Widget Studio Docs -->
+                    <section id="tab-widget-docs" class="settings-pane">
+                        <h3>Widget Studio Documentation</h3>
+                        <p class="setting-desc" style="margin-bottom: 0px;">Learn how to build, run, configure, and sandbox custom widgets.</p>
+                        <div class="docs-layout" id="docs-layout-container">
+                            <aside class="docs-sidebar">
+                                <ul class="docs-nav-list" id="docs-nav-list">
+                                    <!-- Sidebar nav tree links -->
+                                </ul>
+                            </aside>
+                            <main class="docs-content-area" id="docs-content-area">
+                                <h4 class="docs-content-title" id="docs-content-title">Select a Topic</h4>
+                                <div class="docs-content-body" id="docs-content-body">
+                                    Select a topic from the sidebar navigation to read the documentation.
+                                </div>
+                            </main>
                         </div>
                     </section>
 
