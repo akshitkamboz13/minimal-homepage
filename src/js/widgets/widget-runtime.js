@@ -305,8 +305,10 @@ window.addEventListener('message', (e) => {
                 }
             }
             if (targetIframe) {
+                let matched = false;
                 for (const [widgetId, instance] of openAppInstances.entries()) {
                     if (instance.bodyEl.contains(targetIframe)) {
+                        matched = true;
                         if (data.type === 'resize-widget') {
                             // Cap dimensions to browser window size minus a safe padding offset
                             const maxW = window.innerWidth - 40;
@@ -325,6 +327,19 @@ window.addEventListener('message', (e) => {
                             appRegistry.updateAppState(widgetId, { isMinimized: true });
                         }
                         break;
+                    }
+                }
+
+                // If not matched in open window instances, check if it is a popup card panel
+                if (!matched) {
+                    const popupPanel = targetIframe.closest('.custom-popup-panel');
+                    if (popupPanel) {
+                        if (data.type === 'close-widget' || data.type === 'minimize-widget') {
+                            popupPanel.classList.remove('active');
+                            document.querySelectorAll('.custom-panel-btn').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                        }
                     }
                 }
             }
