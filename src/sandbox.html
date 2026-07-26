@@ -27,9 +27,8 @@
     <script>
         let activeAccentColor = '#3b82f6';
 
-        // Listen for initialization parameters securely
+        // Listen for initialization parameters
         window.addEventListener('message', (e) => {
-            if (e.source !== window.parent) return;
             const data = e.data;
             if (data && data.type === 'init') {
                 // Set environment variables

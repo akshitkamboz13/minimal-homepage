@@ -34,8 +34,5 @@
   ],
   "sandbox": {
     "pages": ["src/sandbox.html"]
-  },
-  "content_security_policy": {
-    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval'; worker-src 'self' 'unsafe-eval';"
   }
 }
