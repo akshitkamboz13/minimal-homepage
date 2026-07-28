@@ -127,7 +127,7 @@ export function initAutocomplete() {
             }, 150);
         });
 
-        searchInput.addEventListener('focus', () => {
+        const showSuggestionsImmediately = () => {
             const val = searchInput.value.trim();
             const historyLimit = userSettings.historyCount || 5;
             const searchHistory = getSearchHistory();
@@ -136,9 +136,19 @@ export function initAutocomplete() {
                     searchHistory.slice(0, historyLimit).map(q => ({ text: q, isHistory: true }))
                 );
             } else if (val) {
+                const historyMatches = searchHistory
+                    .filter(q => q.toLowerCase().includes(val.toLowerCase()))
+                    .map(q => ({ text: q, isHistory: true }));
+                
+                if (historyMatches.length > 0) {
+                    renderSuggestions(historyMatches.slice(0, historyLimit));
+                }
                 searchInput.dispatchEvent(new Event('input'));
             }
-        });
+        };
+
+        searchInput.addEventListener('focus', showSuggestionsImmediately);
+        searchInput.addEventListener('click', showSuggestionsImmediately);
 
         document.addEventListener('click', (e) => {
             if (searchForm && !searchForm.contains(e.target) && suggestionsBox) {

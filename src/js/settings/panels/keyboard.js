@@ -23,10 +23,12 @@ export function initKeyboard(modal) {
     
     // Focus search input automatically on load if enabled
     if (searchInput && userSettings.kbdAutofocus) {
-        // Use a tiny timeout to ensure styling and transitions are settled
-        setTimeout(() => {
-            searchInput.focus();
-        }, 50);
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                searchInput.focus();
+                searchInput.dispatchEvent(new Event('focus'));
+            }, 60);
+        });
     }
 
     // Register global keyboard listener for shortcuts

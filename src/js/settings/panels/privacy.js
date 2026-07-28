@@ -2,6 +2,15 @@ import { userSettings, saveSettings } from '../settings-state.js';
 import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function initPrivacy(modal) {
+    const toggleKbdAutofocus = document.getElementById('toggle-kbd-autofocus');
+    if (toggleKbdAutofocus) {
+        toggleKbdAutofocus.checked = !!userSettings.kbdAutofocus;
+        toggleKbdAutofocus.addEventListener('change', (e) => {
+            userSettings.kbdAutofocus = e.target.checked;
+            saveSettings();
+        });
+    }
+
     const toggleRememberSearch = document.getElementById('toggle-remember-search');
     if (toggleRememberSearch) {
         toggleRememberSearch.checked = userSettings.rememberSearchMode;
