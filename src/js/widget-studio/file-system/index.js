@@ -1,97 +1,31 @@
 /**
- * Widget Studio — Virtual File System
+ * Widget Studio — Virtual File System Class
  * Manages the file/folder tree for a widget project.
- * Default project: index.html (body-only editable), style.css, script.js
+ * Default project: index.html (body-only editable), style.css, script.js, manifest.json
  */
+import {
+    INDEX_LOCKED_HEAD,
+    INDEX_LOCKED_FOOT,
+    DEFAULT_HTML_BODY,
+    DEFAULT_CSS,
+    DEFAULT_JS
+} from './defaults.js';
 
-// ─── Locked HTML shell shown in the read-only head/foot zones of index.html ──
-export const INDEX_LOCKED_HEAD =
-`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <!-- Widget sandbox runtime injected by Widget Studio -->
-</head>
-<body class="widget">`;
+import {
+    detectLanguage,
+    buildManifestContent
+} from './manifest-helper.js';
 
-export const INDEX_LOCKED_FOOT = `\n</body>\n</html>`;
+// Re-export defaults and helpers
+export {
+    INDEX_LOCKED_HEAD,
+    INDEX_LOCKED_FOOT,
+    detectLanguage,
+    buildManifestContent
+};
 
-// ─── Default starter content ──────────────────────────────────────────────────
-const DEFAULT_HTML_BODY =
-`<div class="widget-container">
-    <div class="widget-header">
-        <h2>My Widget</h2>
-    </div>
-    <div class="widget-body">
-        <p id="widget-text">Hello, World!</p>
-        <button type="button" id="btn-click">Click Me</button>
-    </div>
-</div>`;
-
-const DEFAULT_CSS =
-`/* Widget Styles */
-.widget-container {
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.widget-header h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.widget-body {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#btn-click {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    background: #3b82f6;
-    color: white;
-    font-weight: 500;
-    transition: opacity 0.2s;
-}
-
-#btn-click:hover {
-    opacity: 0.85;
-}`;
-
-const DEFAULT_JS =
-`// Widget Script — runs in a sandboxed iframe
-const btn  = document.getElementById('btn-click');
-const text = document.getElementById('widget-text');
-let count = 0;
-
-if (btn && text) {
-    btn.addEventListener('click', () => {
-        count++;
-        text.textContent = \`Clicked \${count} time\${count !== 1 ? 's' : ''}!\`;
-    });
-}`;
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function genId() {
     return `fs_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-}
-
-export function detectLanguage(name) {
-    const ext = name.split('.').pop().toLowerCase();
-    return (
-        { html: 'html', htm: 'html', css: 'css', js: 'js', mjs: 'js',
-          cjs: 'js', json: 'json', md: 'markdown', txt: 'text' }[ext] || 'text'
-    );
 }
 
 // ─── FileSystem class ─────────────────────────────────────────────────────────
@@ -103,35 +37,47 @@ export class FileSystem {
 
     // ── Initialization ────────────────────────────────────────────────────────
 
-    /** Create the default 3-file starting project. */
+    /** Create the default 4-file starting project (index.html, style.css, script.js, manifest.json). */
     createDefaultProject() {
         this.nodes = [
-            { id: genId(), name: 'index.html', type: 'file', language: 'html',
-              content: DEFAULT_HTML_BODY, parentId: null, isHtmlRoot: true },
-            { id: genId(), name: 'style.css',  type: 'file', language: 'css',
-              content: DEFAULT_CSS,       parentId: null, isHtmlRoot: false },
-            { id: genId(), name: 'script.js',  type: 'file', language: 'js',
-              content: DEFAULT_JS,        parentId: null, isHtmlRoot: false },
+            { id: genId(), name: 'index.html',   type: 'file', language: 'html',
+              content: DEFAULT_HTML_BODY,         parentId: null, isHtmlRoot: true,  isManifest: false },
+            { id: genId(), name: 'style.css',    type: 'file', language: 'css',
+              content: DEFAULT_CSS,               parentId: null, isHtmlRoot: false, isManifest: false },
+            { id: genId(), name: 'script.js',    type: 'file', language: 'js',
+              content: DEFAULT_JS,                parentId: null, isHtmlRoot: false, isManifest: false },
+            { id: genId(), name: 'manifest.json', type: 'file', language: 'json',
+              content: buildManifestContent(),    parentId: null, isHtmlRoot: false, isManifest: true },
         ];
         return this;
     }
 
     /** Convert a legacy {html, css, js} widget into the file-system format. */
-    migrateFromLegacy({ html, css, js }) {
+    migrateFromLegacy({ html, css, js }, props = {}) {
         this.nodes = [
-            { id: genId(), name: 'index.html', type: 'file', language: 'html',
-              content: html || DEFAULT_HTML_BODY, parentId: null, isHtmlRoot: true },
-            { id: genId(), name: 'style.css',  type: 'file', language: 'css',
-              content: css  || DEFAULT_CSS,       parentId: null, isHtmlRoot: false },
-            { id: genId(), name: 'script.js',  type: 'file', language: 'js',
-              content: js   || DEFAULT_JS,        parentId: null, isHtmlRoot: false },
+            { id: genId(), name: 'index.html',   type: 'file', language: 'html',
+              content: html || DEFAULT_HTML_BODY, parentId: null, isHtmlRoot: true,  isManifest: false },
+            { id: genId(), name: 'style.css',    type: 'file', language: 'css',
+              content: css  || DEFAULT_CSS,       parentId: null, isHtmlRoot: false, isManifest: false },
+            { id: genId(), name: 'script.js',    type: 'file', language: 'js',
+              content: js   || DEFAULT_JS,        parentId: null, isHtmlRoot: false, isManifest: false },
+            { id: genId(), name: 'manifest.json', type: 'file', language: 'json',
+              content: buildManifestContent(props), parentId: null, isHtmlRoot: false, isManifest: true },
         ];
         return this;
     }
 
     /** Load nodes from a serialized array (e.g. from localStorage). */
-    loadFromArray(nodes) {
+    loadFromArray(nodes, props = {}) {
         this.nodes = nodes.map(n => ({ ...n }));
+        // Back-fill manifest.json if it is missing from older saved projects
+        if (!this.nodes.find(n => n.isManifest)) {
+            this.nodes.push({
+                id: genId(), name: 'manifest.json', type: 'file', language: 'json',
+                content: buildManifestContent(props), parentId: null,
+                isHtmlRoot: false, isManifest: true,
+            });
+        }
         return this;
     }
 
@@ -148,6 +94,11 @@ export class FileSystem {
 
     getChildren(parentId) {
         return this.nodes.filter(n => n.parentId === parentId);
+    }
+
+    /** Return the manifest.json node, or null if not present. */
+    getManifestNode() {
+        return this.nodes.find(n => n.isManifest) || null;
     }
 
     // ── Mutations ─────────────────────────────────────────────────────────────
@@ -219,6 +170,7 @@ export class FileSystem {
             html: htmlRoot ? htmlRoot.content : '',
             css:  cssNodes.map(n => `/* === ${n.name} === */\n${n.content}`).join('\n\n'),
             js:   jsNodes.map(n => `/* === ${n.name} === */\n${n.content}`).join('\n\n'),
+            files: this.toArray(),
         };
     }
 }

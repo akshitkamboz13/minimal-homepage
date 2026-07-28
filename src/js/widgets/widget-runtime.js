@@ -42,6 +42,7 @@ function setupSandboxIframe(iframe, widget) {
             html: widget.html || '',
             css: widget.css || '',
             js: widget.js || '',
+            files: widget.files || [],
             env: envObj,
             theme: document.body.getAttribute('data-theme') || 'dark',
             accentColor: accent

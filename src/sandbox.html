@@ -26,11 +26,222 @@
     <div id="widget-root"></div>
     <script>
         let activeAccentColor = '#3b82f6';
+        window.__VIRTUAL_FILES__ = {};
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+
+        // Build virtual file system path lookup map from files array
+        function buildVirtualFiles(files = []) {
+            const virtualMap = {};
+            if (!Array.isArray(files) || files.length === 0) return virtualMap;
+
+            const nodeMap = new Map();
+            files.forEach(f => nodeMap.set(f.id, f));
+
+            function getPath(node) {
+                const parts = [node.name];
+                let curr = node;
+                while (curr.parentId && nodeMap.has(curr.parentId)) {
+                    curr = nodeMap.get(curr.parentId);
+                    parts.unshift(curr.name);
+                }
+                return parts.join('/');
+            }
+
+            files.forEach(f => {
+                if (f.type === 'file') {
+                    const relPath = getPath(f);
+                    virtualMap[relPath] = f.content || '';
+                    virtualMap[relPath.toLowerCase()] = f.content || '';
+                    if (virtualMap[f.name] === undefined) {
+                        virtualMap[f.name] = f.content || '';
+                        virtualMap[f.name.toLowerCase()] = f.content || '';
+                    }
+                }
+            });
+            return virtualMap;
+        }
+
+        // Retrieve file content from virtual file system with relative path & fallback handling
+        function getVirtualFile(path) {
+            if (!path) return null;
+
+            let clean = path.split('?')[0].split('#')[0].trim();
+            try { clean = decodeURIComponent(clean); } catch(e) {}
+            // Strip leading relative path prefixes like ../ or ./ or /
+            clean = clean.replace(/^(\.\.\/|\.\/|\/)+/, '').trim();
+
+            const vMap = window.__VIRTUAL_FILES__ || {};
+
+            // 1. Direct match
+            if (vMap[clean] !== undefined) return vMap[clean];
+            if (vMap[clean.toLowerCase()] !== undefined) return vMap[clean.toLowerCase()];
+
+            // 2. Basename match (e.g. "../HTML file.html" -> "HTML file.html" or "index.html")
+            const baseName = clean.split('/').pop().trim();
+            if (baseName && vMap[baseName] !== undefined) return vMap[baseName];
+            if (baseName && vMap[baseName.toLowerCase()] !== undefined) return vMap[baseName.toLowerCase()];
+
+            // 3. Fallback: If path is index.html or root
+            if (clean === 'index.html' || clean === '' || clean === '/') {
+                const rootKey = Object.keys(vMap).find(k => k === 'index.html' || k.endsWith('/index.html'));
+                if (rootKey && vMap[rootKey] !== undefined) return vMap[rootKey];
+            }
+
+            // 4. Fallback for merged HTML files: If any .html or .htm page is requested (e.g. "../HTML file.html")
+            //    that was merged into index.html, return index.html content!
+            if (clean.endsWith('.html') || clean.endsWith('.htm')) {
+                const rootKey = Object.keys(vMap).find(k => k === 'index.html' || k.endsWith('/index.html'));
+                if (rootKey && vMap[rootKey] !== undefined) return vMap[rootKey];
+            }
+
+            return null;
+        }
+
+        // Render HTML page content & execute inline scripts
+        function renderHtmlPage(rawHtml) {
+            if (rawHtml === null || rawHtml === undefined) return;
+            
+            let bodyContent = rawHtml;
+            const bodyMatch = rawHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+            if (bodyMatch) {
+                bodyContent = bodyMatch[1];
+            }
+
+            const root = document.getElementById('widget-root');
+            if (root) {
+                root.innerHTML = bodyContent;
+
+                // Re-execute inline <script> blocks inside the navigated view
+                const scripts = root.querySelectorAll('script');
+                scripts.forEach(s => {
+                    if (s.textContent.trim()) {
+                        try {
+                            const runner = new Function(s.textContent);
+                            runner();
+                        } catch (err) {
+                            console.error('Page inline script execution error:', err);
+                        }
+                    }
+                });
+            }
+        }
+
+        // Intercept link clicks (<a href="...">) to prevent iframe location changes
+        document.addEventListener('click', (e) => {
+            const anchor = e.target.closest('a');
+            if (!anchor) return;
+
+            const href = anchor.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+            // Stop native browser iframe navigation (prevents "This page has been blocked by Brave")
+            e.preventDefault();
+            e.stopPropagation();
+
+            // External link -> open in new browser tab safely
+            if (/^(https?:|\/\/|mailto:|tel:)/i.test(href)) {
+                window.open(href, '_blank', 'noopener,noreferrer');
+                return;
+            }
+
+            // Relative link -> Multi-page Virtual File System navigation
+            const content = getVirtualFile(href);
+            if (content !== null) {
+                renderHtmlPage(content);
+            } else {
+                console.warn(`[Widget Sandbox] Virtual file not found for link: ${href}`);
+                const root = document.getElementById('widget-root');
+                if (root) {
+                    root.innerHTML = `<div style="padding: 16px; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: 8px; font-family: system-ui, sans-serif; font-size: 0.82rem; line-height: 1.5;">
+                        <div style="font-weight: 600; margin-bottom: 6px;">File Not Found</div>
+                        The requested page <code>"${escapeHTML(href)}"</code> does not exist in this widget project.
+                        <br><br>
+                        <button onclick="window.widget && window.widget.navigate('index.html')" style="padding: 5px 10px; background: #3b82f6; border: none; color: white; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-weight: 500;">Back to Home</button>
+                    </div>`;
+                }
+            }
+        }, true);
+
+        // Intercept form submission (<form action="...">)
+        document.addEventListener('submit', (e) => {
+            const form = e.target;
+            const action = form.getAttribute('action');
+            if (action && !/^(https?:|\/\/)/i.test(action)) {
+                e.preventDefault();
+                e.stopPropagation();
+                const content = getVirtualFile(action);
+                if (content !== null) {
+                    renderHtmlPage(content);
+                }
+            }
+        }, true);
+
+        // Virtual fetch interceptor for virtual files
+        const originalFetch = window.fetch;
+        window.fetch = function(input, init) {
+            let url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+            if (url && !/^(https?:|\/\/|blob:|data:)/i.test(url)) {
+                const content = getVirtualFile(url);
+                if (content !== null) {
+                    const cleanPath = url.split('?')[0].split('#')[0];
+                    const mime = cleanPath.endsWith('.json') ? 'application/json' :
+                                cleanPath.endsWith('.html') || cleanPath.endsWith('.htm') ? 'text/html' :
+                                cleanPath.endsWith('.css') ? 'text/css' :
+                                cleanPath.endsWith('.js') ? 'text/javascript' : 'text/plain';
+                    return Promise.resolve(new Response(content, {
+                        status: 200,
+                        statusText: 'OK',
+                        headers: { 'Content-Type': mime }
+                    }));
+                }
+            }
+            return originalFetch.apply(this, arguments);
+        };
+
+        // Virtual XMLHttpRequest interceptor for virtual files
+        const OriginalXHR = window.XMLHttpRequest;
+        window.XMLHttpRequest = function() {
+            const xhr = new OriginalXHR();
+            const originalOpen = xhr.open;
+            let targetUrl = '';
+            xhr.open = function(method, url) {
+                targetUrl = url;
+                return originalOpen.apply(this, arguments);
+            };
+            const originalSend = xhr.send;
+            xhr.send = function(body) {
+                if (targetUrl && !/^(https?:|\/\/|blob:|data:)/i.test(targetUrl)) {
+                    const content = getVirtualFile(targetUrl);
+                    if (content !== null) {
+                        Object.defineProperty(xhr, 'responseText', { value: content, writable: true });
+                        Object.defineProperty(xhr, 'response', { value: content, writable: true });
+                        Object.defineProperty(xhr, 'status', { value: 200, writable: true });
+                        Object.defineProperty(xhr, 'readyState', { value: 4, writable: true });
+                        setTimeout(() => {
+                            if (typeof xhr.onreadystatechange === 'function') xhr.onreadystatechange();
+                            if (typeof xhr.onload === 'function') xhr.onload();
+                        }, 0);
+                        return;
+                    }
+                }
+                return originalSend.apply(this, arguments);
+            };
+            return xhr;
+        };
 
         // Listen for initialization parameters
         window.addEventListener('message', (e) => {
             const data = e.data;
             if (data && data.type === 'init') {
+                // Initialize virtual file system lookup map
+                window.__VIRTUAL_FILES__ = buildVirtualFiles(data.files || []);
+
                 // Set environment variables
                 window.ENV = data.env || {};
                 window.process = { env: data.env || {} };
@@ -38,8 +249,8 @@
                 // Apply CSS
                 document.getElementById('widget-style').textContent = data.css || '';
 
-                // Inject HTML
-                document.getElementById('widget-root').innerHTML = data.html || '';
+                // Inject initial HTML
+                renderHtmlPage(data.html || '');
 
                 // Apply initial theme classes
                 const theme = data.theme || 'dark';
@@ -66,6 +277,15 @@
                             type: 'minimize-widget'
                         }, '*');
                     },
+                    navigate: (path) => {
+                        const content = getVirtualFile(path);
+                        if (content !== null) {
+                            renderHtmlPage(content);
+                        } else {
+                            console.error(`[Widget Sandbox] Navigation error: File "${path}" not found.`);
+                        }
+                    },
+                    getFile: (path) => getVirtualFile(path),
                     theme: theme,
                     accentColor: {
                         get: () => activeAccentColor
