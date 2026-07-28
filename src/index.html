@@ -2,6 +2,26 @@
 <html lang="en">
 
 <head>
+    <script>
+        (function() {
+            try {
+                var theme = 'dark';
+                var rawSettings = localStorage.getItem('startpage_settings');
+                if (rawSettings) {
+                    var parsed = JSON.parse(rawSettings);
+                    if (parsed && parsed.theme) {
+                        theme = parsed.theme;
+                    }
+                }
+                if (!theme || theme === 'system') {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.classList.remove('theme-dark', 'theme-light');
+                document.documentElement.classList.add(theme === 'dark' ? 'theme-dark' : 'theme-light');
+            } catch (e) {}
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home by si4k</title>
@@ -13,6 +33,12 @@
 </head>
 
 <body>
+    <!-- ===================================== -->
+    <!-- Initial Page Load Veil & Spinner -->
+    <!-- ===================================== -->
+    <div id="page-loader-overlay" class="page-loader-overlay">
+        <div class="page-loader-spinner"></div>
+    </div>
     <!-- ===================================== -->
     <!-- Background -->
     <!-- ===================================== -->

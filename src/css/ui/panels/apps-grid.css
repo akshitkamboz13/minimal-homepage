@@ -5,29 +5,33 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
     display: flex;
     align-items: flex-start;
     justify-content: center;
     z-index: 10000;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease, backdrop-filter 0.3s ease;
     padding: 0;
 }
 
 [data-theme="dark"] .apps-grid-overlay,
 body.dark-mode .apps-grid-overlay {
-    background: rgba(15, 23, 42, 0.94);
+    background: rgba(15, 23, 42, 0.92);
 }
 
-.apps-grid-overlay.hidden {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    display: none !important;
+.apps-grid-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.apps-grid-overlay.hidden:not(.is-open) {
+    display: none;
 }
 
 /* App Grid Glass Container - Whole Page */
@@ -46,8 +50,9 @@ body.dark-mode .apps-grid-overlay {
     gap: 2rem;
     overflow: hidden;
     color: #0f172a;
-    transform: scale(1) translateY(0);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.93) translateY(24px);
+    opacity: 0;
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
     box-sizing: border-box;
 }
 
@@ -57,8 +62,25 @@ body.dark-mode .apps-grid-container {
     color: #f8fafc;
 }
 
-.apps-grid-overlay.hidden .apps-grid-container {
-    transform: scale(0.92) translateY(20px);
+.apps-grid-overlay.is-open .apps-grid-container {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.apps-grid-overlay.is-closing .apps-grid-container {
+    transform: scale(0.95) translateY(16px);
+    opacity: 0;
+}
+
+@keyframes appTileEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(18px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 /* Header & Search Bar */

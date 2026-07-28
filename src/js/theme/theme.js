@@ -12,6 +12,9 @@ export function initTheme() {
             resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         document.body.setAttribute('data-theme', resolvedTheme);
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+        document.documentElement.classList.remove('theme-dark', 'theme-light');
+        document.documentElement.classList.add(resolvedTheme === 'dark' ? 'theme-dark' : 'theme-light');
         if (resolvedTheme === 'dark') {
             if (sunIcon) sunIcon.style.display = 'block';
             if (moonIcon) moonIcon.style.display = 'none';

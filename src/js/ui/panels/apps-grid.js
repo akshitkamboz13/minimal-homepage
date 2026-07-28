@@ -2,6 +2,8 @@ import { userSettings } from '../../settings/index.js';
 import { getFaviconUrl } from './dock.js';
 import { openAddSiteModal } from '../../settings/panels/panels.js';
 import { openPuffShell } from '../../puff/puff.js';
+import { createNoteWithData } from '../../notes/notes.js';
+import { animateOpenAppsGrid, animateCloseAppsGrid } from '../../animations/index.js';
 
 let appsOverlayEl = null;
 let appsContentEl = null;
@@ -16,7 +18,11 @@ const SYSTEM_APPS = [
         icon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><path d="M14 3v5h5"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>`,
         action: () => {
             const addBtn = document.getElementById('add-note-btn');
-            if (addBtn) addBtn.click();
+            if (addBtn) {
+                addBtn.click();
+            } else {
+                createNoteWithData({});
+            }
             closeAppsGrid();
         }
     },
@@ -64,7 +70,7 @@ export function initAppsGrid() {
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !appsOverlayEl.classList.contains('hidden')) {
+        if (e.key === 'Escape' && appsOverlayEl.classList.contains('is-open')) {
             closeAppsGrid();
         }
     });
@@ -97,22 +103,23 @@ export function initAppsGrid() {
 
 export function openAppsGrid() {
     if (!appsOverlayEl) return;
-    appsOverlayEl.classList.remove('hidden');
-    if (searchInputEl) {
-        searchInputEl.value = '';
-        setTimeout(() => searchInputEl.focus(), 100);
-    }
     renderAppsGrid();
+    animateOpenAppsGrid(appsOverlayEl, appsOverlayEl.querySelector('.apps-grid-container'), () => {
+        if (searchInputEl) {
+            searchInputEl.value = '';
+            setTimeout(() => searchInputEl.focus(), 50);
+        }
+    });
 }
 
 export function closeAppsGrid() {
     if (!appsOverlayEl) return;
-    appsOverlayEl.classList.add('hidden');
+    animateCloseAppsGrid(appsOverlayEl);
 }
 
 export function toggleAppsGrid() {
     if (!appsOverlayEl) return;
-    if (appsOverlayEl.classList.contains('hidden')) {
+    if (appsOverlayEl.classList.contains('hidden') || !appsOverlayEl.classList.contains('is-open')) {
         openAppsGrid();
     } else {
         closeAppsGrid();

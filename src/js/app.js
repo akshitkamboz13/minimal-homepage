@@ -10,6 +10,7 @@ import { initPuff } from './puff/puff.js';
 import { initLayoutManager } from './ui/panels/layout-manager.js';
 import { initContextMenu } from './ui/panels/context-menu.js';
 import { initWidgetRuntime } from './widgets/widget-runtime.js';
+import { dismissPageLoader } from './animations/index.js';
 
 export function initApp() {
     initTheme();
@@ -24,4 +25,7 @@ export function initApp() {
     initLayoutManager();
     initContextMenu();
     initWidgetRuntime();
+
+    // Smoothly dismiss page loader veil after initial components render
+    dismissPageLoader();
 }
