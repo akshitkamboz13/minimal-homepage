@@ -1,0 +1,64 @@
+/* Core Infrastructure for Web-App Window Management */
+
+/* Draggable Host Window Wrapper */
+.grid-window {
+    width: 360px;
+    height: 640px;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    display: flex;
+    flex-direction: column;
+    background: var(--glass-bg, rgba(20, 20, 32, 0.75));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 9005;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.grid-window:hover {
+    border-color: var(--glass-border-hover, rgba(255, 255, 255, 0.25));
+}
+
+.grid-window.window-active {
+    border-color: var(--accent-color, rgba(168, 85, 247, 0.6));
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--accent-color, rgba(168, 85, 247, 0.4));
+}
+
+/* Window Drag Bar / Header */
+.window-drag-header {
+    height: 38px;
+    min-height: 38px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary, #f3f4f6);
+    cursor: move;
+    user-select: none;
+    line-height: 38px;
+}
+
+.window-drag-header:active {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Sandboxed Guest Viewport */
+.app-viewport {
+    flex: 1;
+    width: 100%;
+    height: calc(100% - 38px);
+    border: none;
+    background: transparent;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Plus, Edit3, Trash2, CheckCircle, BarChart2, ShieldAlert, Award, FileText, Code2, FolderOpen, FilePlus, X, ChevronRight, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Plus, Edit3, Trash2, CheckCircle, BarChart2, ShieldAlert, Award, FileText, Code2, FolderOpen, FilePlus, FolderPlus, FolderInput, X, ChevronRight, ChevronDown } from 'lucide-react';
 
 const CATEGORIES = [
   'Productivity',
@@ -17,6 +17,31 @@ const CATEGORIES = [
   'AI',
   'Customization'
 ];
+
+const cleanPath = (path) => path.trim().replace(/^\/+|\/+$/g, '').replace(/\/+/g, '/');
+
+// Older packages could accidentally contain a placeholder folder ("html") and
+// a sibling file ("testing.html"). If the package already references
+// html/testing.html, preserve the intended package structure on import.
+function normalizePackageFiles(files) {
+  const sourceFiles = files.map(file => ({ ...file, name: cleanPath(file.name || '') })).filter(file => file.name);
+  const folderPlaceholders = sourceFiles.filter(file => !file.name.includes('/') && !file.name.includes('.'));
+  const consumedPlaceholders = new Set();
+
+  const normalized = sourceFiles.map(file => {
+    if (file.name.includes('/')) return file;
+    const folder = folderPlaceholders.find(candidate => {
+      const target = `${candidate.name}/${file.name}`;
+      return candidate.name !== file.name && sourceFiles.some(source => String(source.content || '').includes(target));
+    });
+
+    if (!folder) return file;
+    consumedPlaceholders.add(folder.name);
+    return { ...file, name: `${folder.name}/${file.name}` };
+  });
+
+  return normalized.filter(file => !consumedPlaceholders.has(file.name));
+}
 
 export default function DeveloperConsolePage() {
   const [session, setSession] = useState(null);
@@ -56,8 +81,12 @@ export default function DeveloperConsolePage() {
   ]);
   const [activeFileIdx, setActiveFileIdx] = useState(0);
   const [expandedFolders, setExpandedFolders] = useState({});
+  const [formFolders, setFormFolders] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState('');
   const [newFileName, setNewFileName] = useState('');
+  const [newEntryType, setNewEntryType] = useState('file');
   const [showNewFileInput, setShowNewFileInput] = useState(false);
+  const [fileEditorError, setFileEditorError] = useState('');
 
   // Version upgrade states for Edit mode
   const [editChangelogText, setEditChangelogText] = useState('');
@@ -143,7 +172,7 @@ export default function DeveloperConsolePage() {
 
       // Populate multi-file editor
       if (Array.isArray(widgetData.files) && widgetData.files.length > 0) {
-        setFormFiles(widgetData.files);
+        setFormFiles(normalizePackageFiles(widgetData.files));
       } else {
         // Legacy single-file format: reconstruct file array
         const legacyFiles = [];
@@ -332,7 +361,7 @@ export default function DeveloperConsolePage() {
     setFormRepoUrl(widget.repositoryUrl || '');
     // Multi-file editor: use files array if available, fallback to legacy
     if (Array.isArray(widget.files) && widget.files.length > 0) {
-      setFormFiles(widget.files);
+      setFormFiles(normalizePackageFiles(widget.files));
     } else {
       const legacyFiles = [];
       if (widget.html) legacyFiles.push({ name: 'index.html', content: widget.html });
@@ -346,6 +375,8 @@ export default function DeveloperConsolePage() {
       ]);
     }
     setActiveFileIdx(0);
+    setFormFolders([]);
+    setSelectedFolder('');
     setEditChangelogText('');
     setFormError('');
     setSecurityIssues([]);
@@ -373,7 +404,70 @@ export default function DeveloperConsolePage() {
       { name: 'app.js', content: '// JS code\nconsole.log("Ready");' },
     ]);
     setActiveFileIdx(0);
+    setFormFolders([]);
+    setSelectedFolder('');
+    setFileEditorError('');
     setEditChangelogText('');
+  }
+
+  function createEditorEntry() {
+    const enteredName = cleanPath(newFileName);
+    if (!enteredName) return;
+
+    setFileEditorError('');
+    if (newEntryType === 'folder') {
+      if (enteredName.split('/').some(segment => segment.includes('.'))) {
+        setFileEditorError('Folder names cannot contain a file extension.');
+        return;
+      }
+      if (formFolders.includes(enteredName)) {
+        setFileEditorError('That folder already exists.');
+        return;
+      }
+      setFormFolders(folders => [...folders, enteredName]);
+      setExpandedFolders(folders => ({ ...folders, [enteredName]: true }));
+      setSelectedFolder(enteredName);
+      setNewFileName('');
+      setShowNewFileInput(false);
+      return;
+    }
+
+    const name = enteredName.includes('/') || !selectedFolder
+      ? enteredName
+      : `${selectedFolder}/${enteredName}`;
+    const baseName = name.split('/').pop();
+    if (!baseName.includes('.')) {
+      setFileEditorError('Use “Add Folder” for folders, then add a file with an extension.');
+      return;
+    }
+    if (formFiles.some(file => file.name === name)) {
+      setFileEditorError('A file already exists at that path.');
+      return;
+    }
+    const ext = baseName.split('.').pop().toLowerCase();
+    const defaults = { html: '<!-- HTML content -->', css: '/* CSS content */', js: '// JS content', json: '{}', md: '# Readme', env: 'KEY=value' };
+    const newFiles = [...formFiles, { name, content: defaults[ext] || '' }];
+    setFormFiles(newFiles);
+    setActiveFileIdx(newFiles.length - 1);
+    setNewFileName('');
+    setShowNewFileInput(false);
+  }
+
+  function moveFileToSelectedFolder(idx) {
+    if (!selectedFolder) {
+      setFileEditorError('Select a folder in the explorer before moving a file.');
+      return;
+    }
+    const file = formFiles[idx];
+    const targetName = `${selectedFolder}/${file.name.split('/').pop()}`;
+    if (file.name === targetName) return;
+    if (formFiles.some((candidate, candidateIdx) => candidateIdx !== idx && candidate.name === targetName)) {
+      setFileEditorError(`“${targetName}” already exists.`);
+      return;
+    }
+    setFormFiles(files => files.map((candidate, candidateIdx) => candidateIdx === idx ? { ...candidate, name: targetName } : candidate));
+    setExpandedFolders(folders => ({ ...folders, [selectedFolder]: true }));
+    setFileEditorError('');
   }
 
   if (loadingSession) {
@@ -910,13 +1004,22 @@ export default function DeveloperConsolePage() {
                     {formFiles.length} file{formFiles.length !== 1 ? 's' : ''}
                   </span>
                 </h4>
-                <button
-                  type="button"
-                  onClick={() => setShowNewFileInput(v => !v)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--accent-color)', background: 'transparent', color: 'var(--accent-color)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: '600' }}
-                >
-                  <FilePlus size={14} /> Add File
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => { setNewEntryType('folder'); setNewFileName(''); setFileEditorError(''); setShowNewFileInput(true); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'transparent', color: 'var(--text-secondary)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: '600' }}
+                  >
+                    <FolderPlus size={14} /> Add Folder
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setNewEntryType('file'); setNewFileName(''); setFileEditorError(''); setShowNewFileInput(true); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--accent-color)', background: 'transparent', color: 'var(--accent-color)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: '600' }}
+                  >
+                    <FilePlus size={14} /> Add File
+                  </button>
+                </div>
               </div>
 
               {/* New file name input */}
@@ -929,21 +1032,11 @@ export default function DeveloperConsolePage() {
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        const name = newFileName.trim();
-                        if (!name) return;
-                        if (formFiles.find(f => f.name === name)) return;
-                        const ext = name.split('.').pop().toLowerCase();
-                        const defaults = { html: '<!-- HTML content -->', css: '/* CSS content */', js: '// JS content', json: '{}', md: '# Readme', env: 'KEY=value' };
-                        const content = defaults[ext] || '';
-                        const newFiles = [...formFiles, { name, content }];
-                        setFormFiles(newFiles);
-                        setActiveFileIdx(newFiles.length - 1);
-                        setNewFileName('');
-                        setShowNewFileInput(false);
+                        createEditorEntry();
                       }
                       if (e.key === 'Escape') { setShowNewFileInput(false); setNewFileName(''); }
                     }}
-                    placeholder="e.g. html/popup.html, js/utils.js, manifest.json"
+                    placeholder={newEntryType === 'folder' ? 'e.g. html or assets/images' : selectedFolder ? `File will be added to ${selectedFolder}/` : 'e.g. html/popup.html, js/utils.js, manifest.json'}
                     autoFocus
                     className="form-input"
                     style={{ fontFamily: 'monospace', fontSize: '0.85rem', flex: 1, height: '36px' }}
@@ -951,27 +1044,20 @@ export default function DeveloperConsolePage() {
                   <button
                     type="button"
                     onClick={() => {
-                      const name = newFileName.trim();
-                      if (!name) return;
-                      if (formFiles.find(f => f.name === name)) return;
-                      const ext = name.split('.').pop().toLowerCase();
-                      const defaults = { html: '<!-- HTML content -->', css: '/* CSS content */', js: '// JS content', json: '{}', md: '# Readme', env: 'KEY=value' };
-                      const content = defaults[ext] || '';
-                      const newFiles = [...formFiles, { name, content }];
-                      setFormFiles(newFiles);
-                      setActiveFileIdx(newFiles.length - 1);
-                      setNewFileName('');
-                      setShowNewFileInput(false);
+                      createEditorEntry();
                     }}
                     className="btn btn-primary"
                     style={{ height: '36px', padding: '0 14px', fontSize: '0.82rem' }}
                   >Create</button>
                   <button
                     type="button"
-                    onClick={() => { setShowNewFileInput(false); setNewFileName(''); }}
+                    onClick={() => { setShowNewFileInput(false); setNewFileName(''); setFileEditorError(''); }}
                     style={{ height: '36px', padding: '0 10px', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}
                   ><X size={14} /></button>
                 </div>
+              )}
+              {fileEditorError && (
+                <p role="alert" style={{ color: 'var(--error-color)', fontSize: '0.78rem', margin: '-0.5rem 0 1rem' }}>{fileEditorError}</p>
               )}
 
               {/* File editor split: tree + code area */}
@@ -984,8 +1070,15 @@ export default function DeveloperConsolePage() {
                   </div>
                   {(() => {
                     // Build a recursive N-level folder tree from flat file paths
-                    function buildTree(files) {
+                    function buildTree(files, folders) {
                       const tree = { __files: [] };
+                      folders.forEach(folderPath => {
+                        let node = tree;
+                        folderPath.split('/').forEach(segment => {
+                          if (!node[segment]) node[segment] = { __files: [] };
+                          node = node[segment];
+                        });
+                      });
                       files.forEach(({ file, idx }) => {
                         const parts = file.name.split('/');
                         let node = tree;
@@ -999,7 +1092,7 @@ export default function DeveloperConsolePage() {
                       return tree;
                     }
 
-                    const tree = buildTree(formFiles.map((file, idx) => ({ file, idx })));
+                    const tree = buildTree(formFiles.map((file, idx) => ({ file, idx })), formFolders);
 
                     const getFileIcon = (name) => {
                       const ext = name.split('.').pop().toLowerCase();
@@ -1007,7 +1100,7 @@ export default function DeveloperConsolePage() {
                       return icons[ext] || '📄';
                     };
 
-                    const FileRow = ({ file, idx, label }) => (
+                    const FileRow = ({ file, idx, label, depth = 0 }) => (
                       <div
                         onClick={() => setActiveFileIdx(idx)}
                         style={{
@@ -1015,6 +1108,7 @@ export default function DeveloperConsolePage() {
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           padding: '4px 10px',
+                          paddingLeft: `${10 + depth * 16}px`,
                           cursor: 'pointer',
                           fontSize: '0.78rem',
                           background: activeFileIdx === idx ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
@@ -1029,6 +1123,16 @@ export default function DeveloperConsolePage() {
                           <span style={{ fontSize: '0.85em', flexShrink: 0 }}>{getFileIcon(label || file.name)}</span>
                           <span title={file.name} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{label || file.name}</span>
                         </span>
+                        {formFiles.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={e => { e.stopPropagation(); moveFileToSelectedFolder(idx); }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: selectedFolder ? 0.7 : 0.35, padding: '0 2px', color: 'inherit', flexShrink: 0, lineHeight: 1 }}
+                            title={selectedFolder ? `Move to ${selectedFolder}` : 'Select a folder to move this file'}
+                          >
+                            <FolderInput size={11} />
+                          </button>
+                        )}
                         {formFiles.length > 1 && (
                           <button
                             type="button"
@@ -1049,7 +1153,7 @@ export default function DeveloperConsolePage() {
                     );
 
                     // Recursively render a tree node
-                    function RenderNode({ node, path = [] }) {
+                    function RenderNode({ node, path = [], depth = 0 }) {
                       const folderKeys = Object.keys(node).filter(k => k !== '__files');
                       const files = node.__files || [];
                       return (
@@ -1063,16 +1167,17 @@ export default function DeveloperConsolePage() {
                               <div key={folderName}>
                                 {/* Folder header */}
                                 <div
-                                  onClick={() => setExpandedFolders(ef => ({ ...ef, [folderPath]: !isExpanded }))}
+                                  onClick={() => { setSelectedFolder(folderPath); setExpandedFolders(ef => ({ ...ef, [folderPath]: !isExpanded })); }}
                                   style={{
                                     display: 'flex', alignItems: 'center', gap: '4px',
-                                    padding: '4px 10px', paddingLeft: `${10 + path.length * 14}px`,
+                                    padding: '4px 10px', paddingLeft: `${10 + depth * 16}px`,
                                     cursor: 'pointer', fontSize: '0.78rem',
-                                    color: 'var(--text-secondary)', userSelect: 'none',
+                                    color: selectedFolder === folderPath ? 'var(--text-primary)' : 'var(--text-secondary)', userSelect: 'none',
+                                    background: selectedFolder === folderPath ? 'rgba(139, 92, 246, 0.12)' : 'transparent',
                                     transition: 'background 0.1s'
                                   }}
                                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                  onMouseLeave={e => { e.currentTarget.style.background = selectedFolder === folderPath ? 'rgba(139, 92, 246, 0.12)' : 'transparent'; }}
                                 >
                                   <span style={{ color: 'rgba(255,255,255,0.3)', flexShrink: 0, display: 'flex' }}>
                                     {isExpanded ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
@@ -1091,14 +1196,12 @@ export default function DeveloperConsolePage() {
                                   <div style={{ position: 'relative' }}>
                                     <div style={{
                                       position: 'absolute',
-                                      left: `${16 + path.length * 14}px`,
+                                      left: `${16 + depth * 16}px`,
                                       top: 0, bottom: 0,
                                       width: '1px',
                                       background: 'rgba(255,255,255,0.08)'
                                     }} />
-                                    <div style={{ paddingLeft: `${14}px` }}>
-                                      <RenderNode node={node[folderName]} path={[...path, folderName]} />
-                                    </div>
+                                    <RenderNode node={node[folderName]} path={[...path, folderName]} depth={depth + 1} />
                                   </div>
                                 )}
                               </div>
@@ -1107,9 +1210,7 @@ export default function DeveloperConsolePage() {
 
                           {/* Files at this level */}
                           {files.map(({ file, idx, shortName }) => (
-                            <div key={idx} style={{ paddingLeft: `${path.length * 14}px` }}>
-                              <FileRow file={file} idx={idx} label={shortName} />
-                            </div>
+                            <FileRow key={idx} file={file} idx={idx} label={shortName} depth={depth} />
                           ))}
                         </div>
                       );
