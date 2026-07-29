@@ -9,12 +9,16 @@ async function compressString(str) {
     return await response.blob();
 }
 
-// Native Gzip Decompression
+// Native Gzip Decompression (with fallback for plain JSON .homewidget files)
 async function decompressBlob(blob) {
-    const decompressionStream = new DecompressionStream('gzip');
-    const decompressedStream = blob.stream().pipeThrough(decompressionStream);
-    const response = new Response(decompressedStream);
-    return await response.text();
+    try {
+        const decompressionStream = new DecompressionStream('gzip');
+        const decompressedStream = blob.stream().pipeThrough(decompressionStream);
+        const response = new Response(decompressedStream);
+        return await response.text();
+    } catch (e) {
+        return await blob.text();
+    }
 }
 
 function getWidgetIconMarkup(icon, name, size = 22) {
