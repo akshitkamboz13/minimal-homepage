@@ -273,8 +273,8 @@ async function handleImportFile(file, successCallback, statusElement) {
         const decompressedText = await decompressBlob(file);
         const widget = JSON.parse(decompressedText);
 
-        // Basic Schema Validation
-        if (!widget.id || !widget.name || !widget.type || widget.html === undefined) {
+        // Basic Schema Validation (supports legacy html string as well as multi-file package files)
+        if (!widget.id || !widget.name || !widget.type || (widget.html === undefined && (!Array.isArray(widget.files) || widget.files.length === 0))) {
             showStatus(statusElement, 'Error: Invalid widget package metadata format.', 'error');
             return;
         }

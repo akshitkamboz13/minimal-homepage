@@ -41,7 +41,9 @@
             if (!Array.isArray(files) || files.length === 0) return virtualMap;
 
             const nodeMap = new Map();
-            files.forEach(f => nodeMap.set(f.id, f));
+            files.forEach(f => {
+                if (f && f.id) nodeMap.set(f.id, f);
+            });
 
             function getPath(node) {
                 const parts = [node.name];
@@ -54,13 +56,18 @@
             }
 
             files.forEach(f => {
-                if (f.type === 'file') {
-                    const relPath = getPath(f);
-                    virtualMap[relPath] = f.content || '';
-                    virtualMap[relPath.toLowerCase()] = f.content || '';
-                    if (virtualMap[f.name] === undefined) {
-                        virtualMap[f.name] = f.content || '';
-                        virtualMap[f.name.toLowerCase()] = f.content || '';
+                if (!f) return;
+                // Support Studio nodes (type === 'file') as well as webstore package files ({ name, content })
+                if (f.type === 'file' || (!f.type && f.name)) {
+                    const relPath = (f.parentId && nodeMap.has(f.parentId)) ? getPath(f) : f.name;
+                    if (relPath) {
+                        virtualMap[relPath] = f.content || '';
+                        virtualMap[relPath.toLowerCase()] = f.content || '';
+                        const baseName = relPath.split('/').pop();
+                        if (baseName && virtualMap[baseName] === undefined) {
+                            virtualMap[baseName] = f.content || '';
+                            virtualMap[baseName.toLowerCase()] = f.content || '';
+                        }
                     }
                 }
             });
@@ -103,7 +110,7 @@
             return null;
         }
 
-        // Render HTML page content & execute inline scripts
+        // Render HTML page content & execute inline / virtual external scripts
         function renderHtmlPage(rawHtml) {
             if (rawHtml === null || rawHtml === undefined) return;
             
@@ -113,22 +120,57 @@
                 bodyContent = bodyMatch[1];
             }
 
+            // Extract and inject virtual stylesheets from <link rel="stylesheet" href="..."> in rawHtml
+            const linkMatches = rawHtml.matchAll(/<link[^>]+href=["']([^"']+)["'][^>]*>/gi);
+            let virtualCss = '';
+            for (const match of linkMatches) {
+                const href = match[1];
+                if (href) {
+                    const content = getVirtualFile(href);
+                    if (content) {
+                        virtualCss += `\n/* Virtual CSS: ${href} */\n` + content;
+                    }
+                }
+            }
+
+            if (virtualCss) {
+                let styleEl = document.getElementById('virtual-injected-style');
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = 'virtual-injected-style';
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = virtualCss;
+            }
+
             const root = document.getElementById('widget-root');
             if (root) {
                 root.innerHTML = bodyContent;
 
-                // Re-execute inline <script> blocks inside the navigated view
-                const scripts = root.querySelectorAll('script');
-                scripts.forEach(s => {
-                    if (s.textContent.trim()) {
-                        try {
-                            const runner = new Function(s.textContent);
-                            runner();
-                        } catch (err) {
-                            console.error('Page inline script execution error:', err);
+                // Collect scripts from rawHtml (<head> + <body>) to ensure external and inline scripts execute
+                const scriptTagMatches = rawHtml.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi);
+                for (const match of scriptTagMatches) {
+                    const attrs = match[1] || '';
+                    const inlineCode = match[2] || '';
+                    const srcMatch = attrs.match(/src=["']([^"']+)["']/i);
+                    let code = inlineCode.trim();
+
+                    if (srcMatch && srcMatch[1]) {
+                        const virtualCode = getVirtualFile(srcMatch[1]);
+                        if (virtualCode) {
+                            code = virtualCode;
                         }
                     }
-                });
+
+                    if (code) {
+                        try {
+                            const runner = new Function(code);
+                            runner();
+                        } catch (err) {
+                            console.error(`Page script execution error (${srcMatch ? srcMatch[1] : 'inline'}):`, err);
+                        }
+                    }
+                }
             }
         }
 
@@ -246,11 +288,29 @@
                 window.ENV = data.env || {};
                 window.process = { env: data.env || {} };
 
+                // Auto-resolve index.html from virtual files if data.html is empty
+                let htmlContent = data.html || '';
+                if (!htmlContent.trim()) {
+                    htmlContent = getVirtualFile('index.html') || getVirtualFile('home.html') || getVirtualFile('game.html') || '';
+                }
+
+                // Auto-resolve CSS from virtual files if data.css is empty
+                let cssContent = data.css || '';
+                if (!cssContent.trim()) {
+                    cssContent = getVirtualFile('style.css') || getVirtualFile('styles.css') || getVirtualFile('css/style.css') || '';
+                }
+
+                // Auto-resolve JS from virtual files if data.js is empty
+                let jsContent = data.js || '';
+                if (!jsContent.trim()) {
+                    jsContent = getVirtualFile('app.js') || getVirtualFile('script.js') || getVirtualFile('js/app.js') || '';
+                }
+
                 // Apply CSS
-                document.getElementById('widget-style').textContent = data.css || '';
+                document.getElementById('widget-style').textContent = cssContent;
 
                 // Inject initial HTML
-                renderHtmlPage(data.html || '');
+                renderHtmlPage(htmlContent);
 
                 // Apply initial theme classes
                 const theme = data.theme || 'dark';

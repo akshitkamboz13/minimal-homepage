@@ -119,14 +119,17 @@ export default function WidgetDetailsPage() {
         id: widget.identifier,
         name: widget.name,
         version: widget.version,
-        author: widget.author.username,
+        author: widget.author?.username || widget.author || 'si4k',
         type: widgetType,
         icon: widget.screenshots[0] || '',
-        html: widget.html,
-        css: widget.css,
-        js: widget.js,
-        env: widget.env,
-        permissions: widget.permissions,
+        html: widget.html || '',
+        css: widget.css || '',
+        js: widget.js || '',
+        env: widget.env || '',
+        files: widget.files || [],
+        cli: widget.cli || '',
+        isFirefoxApp: !!widget.isFirefoxApp,
+        permissions: widget.permissions || [],
         category: widget.category
       };
 
