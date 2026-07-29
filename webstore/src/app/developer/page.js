@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Plus, Edit3, Trash2, CheckCircle, BarChart2, ShieldAlert, Award, FileText, Code2 } from 'lucide-react';
+import { LayoutDashboard, Plus, Edit3, Trash2, CheckCircle, BarChart2, ShieldAlert, Award, FileText, Code2, FolderOpen, FilePlus, X, ChevronRight, ChevronDown } from 'lucide-react';
 
 const CATEGORIES = [
   'Productivity',
@@ -48,11 +48,16 @@ export default function DeveloperConsolePage() {
   const [formCli, setFormCli] = useState('');
   const [formIsFirefoxApp, setFormIsFirefoxApp] = useState(false);
   
-  // Widget Source Code Form states
-  const [formHtml, setFormHtml] = useState('');
-  const [formCss, setFormCss] = useState('');
-  const [formJs, setFormJs] = useState('');
-  const [formEnv, setFormEnv] = useState('');
+  // Multi-file editor state
+  const [formFiles, setFormFiles] = useState([
+    { name: 'index.html', content: '<!-- HTML code -->\n<div class="hello">Hello World</div>' },
+    { name: 'style.css', content: '/* CSS code */\n.hello { color: red; }' },
+    { name: 'app.js', content: '// JS code\nconsole.log("Ready");' },
+  ]);
+  const [activeFileIdx, setActiveFileIdx] = useState(0);
+  const [expandedFolders, setExpandedFolders] = useState({});
+  const [newFileName, setNewFileName] = useState('');
+  const [showNewFileInput, setShowNewFileInput] = useState(false);
 
   // Version upgrade states for Edit mode
   const [editChangelogText, setEditChangelogText] = useState('');
@@ -124,9 +129,11 @@ export default function DeveloperConsolePage() {
 
       // Populate form state fields
       if (widgetData.name) setFormName(widgetData.name);
-      if (widgetData.id) setFormIdentifier(widgetData.id);
+      if (widgetData.identifier || widgetData.id) setFormIdentifier(widgetData.identifier || widgetData.id);
       if (widgetData.description) setFormDescription(widgetData.description);
       if (widgetData.version) setFormVersion(widgetData.version);
+      if (widgetData.cli) setFormCli(widgetData.cli);
+      if (widgetData.isFirefoxApp) setFormIsFirefoxApp(!!widgetData.isFirefoxApp);
 
       if (widgetData.category) {
         setFormCategory(widgetData.category);
@@ -134,10 +141,19 @@ export default function DeveloperConsolePage() {
         setFormCategory('Customization');
       }
 
-      if (widgetData.html !== undefined) setFormHtml(widgetData.html);
-      if (widgetData.css !== undefined) setFormCss(widgetData.css);
-      if (widgetData.js !== undefined) setFormJs(widgetData.js);
-      if (widgetData.env !== undefined) setFormEnv(widgetData.env);
+      // Populate multi-file editor
+      if (Array.isArray(widgetData.files) && widgetData.files.length > 0) {
+        setFormFiles(widgetData.files);
+      } else {
+        // Legacy single-file format: reconstruct file array
+        const legacyFiles = [];
+        if (widgetData.html !== undefined) legacyFiles.push({ name: 'index.html', content: widgetData.html });
+        if (widgetData.css !== undefined) legacyFiles.push({ name: 'style.css', content: widgetData.css });
+        if (widgetData.js !== undefined) legacyFiles.push({ name: 'app.js', content: widgetData.js });
+        if (widgetData.env !== undefined) legacyFiles.push({ name: '.env', content: widgetData.env });
+        if (legacyFiles.length > 0) setFormFiles(legacyFiles);
+      }
+      setActiveFileIdx(0);
 
       const perms = widgetData.permissions || [];
       setFormPermissions({
@@ -174,6 +190,12 @@ export default function DeveloperConsolePage() {
       return;
     }
 
+    // Derive legacy html/css/js/env from files array for backward compat
+    const htmlFile = formFiles.find(f => f.name === 'index.html' || f.name.endsWith('.html'));
+    const cssFile = formFiles.find(f => f.name === 'style.css' || f.name.endsWith('.css'));
+    const jsFile = formFiles.find(f => f.name === 'app.js' || (f.name.endsWith('.js') && !f.name.includes('/')));
+    const envFile = formFiles.find(f => f.name === '.env' || f.name === 'env');
+
     const payload = {
       name: formName,
       identifier: formIdentifier,
@@ -188,10 +210,11 @@ export default function DeveloperConsolePage() {
       screenshots: screenshotsArray,
       openSource: formOpenSource,
       repositoryUrl: formRepoUrl,
-      html: formHtml,
-      css: formCss,
-      js: formJs,
-      env: formEnv,
+      files: formFiles,
+      html: htmlFile?.content || '',
+      css: cssFile?.content || '',
+      js: jsFile?.content || '',
+      env: envFile?.content || '',
     };
 
     try {
@@ -227,6 +250,12 @@ export default function DeveloperConsolePage() {
     const tagsArray = formTags.split(',').map(t => t.trim()).filter(Boolean);
     const screenshotsArray = formScreenshots.split('\n').map(s => s.trim()).filter(Boolean);
 
+    // Derive legacy html/css/js/env from files array for backward compat
+    const htmlFile = formFiles.find(f => f.name === 'index.html' || f.name.endsWith('.html'));
+    const cssFile = formFiles.find(f => f.name === 'style.css' || f.name.endsWith('.css'));
+    const jsFile = formFiles.find(f => f.name === 'app.js' || (f.name.endsWith('.js') && !f.name.includes('/')));
+    const envFile = formFiles.find(f => f.name === '.env' || f.name === 'env');
+
     const payload = {
       name: formName,
       description: formDescription,
@@ -240,10 +269,11 @@ export default function DeveloperConsolePage() {
       screenshots: screenshotsArray,
       openSource: formOpenSource,
       repositoryUrl: formRepoUrl,
-      html: formHtml,
-      css: formCss,
-      js: formJs,
-      env: formEnv,
+      files: formFiles,
+      html: htmlFile?.content || '',
+      css: cssFile?.content || '',
+      js: jsFile?.content || '',
+      env: envFile?.content || '',
       changes: editChangelogText.split('\n').map(c => c.trim()).filter(Boolean),
     };
 
@@ -300,10 +330,22 @@ export default function DeveloperConsolePage() {
     setFormScreenshots(widget.screenshots.join('\n'));
     setFormOpenSource(widget.openSource);
     setFormRepoUrl(widget.repositoryUrl || '');
-    setFormHtml(widget.html || '');
-    setFormCss(widget.css || '');
-    setFormJs(widget.js || '');
-    setFormEnv(widget.env || '');
+    // Multi-file editor: use files array if available, fallback to legacy
+    if (Array.isArray(widget.files) && widget.files.length > 0) {
+      setFormFiles(widget.files);
+    } else {
+      const legacyFiles = [];
+      if (widget.html) legacyFiles.push({ name: 'index.html', content: widget.html });
+      if (widget.css) legacyFiles.push({ name: 'style.css', content: widget.css });
+      if (widget.js) legacyFiles.push({ name: 'app.js', content: widget.js });
+      if (widget.env) legacyFiles.push({ name: '.env', content: widget.env });
+      setFormFiles(legacyFiles.length > 0 ? legacyFiles : [
+        { name: 'index.html', content: '' },
+        { name: 'style.css', content: '' },
+        { name: 'app.js', content: '' },
+      ]);
+    }
+    setActiveFileIdx(0);
     setEditChangelogText('');
     setFormError('');
     setSecurityIssues([]);
@@ -323,10 +365,14 @@ export default function DeveloperConsolePage() {
     setFormScreenshots('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400');
     setFormOpenSource(false);
     setFormRepoUrl('');
-    setFormHtml('<!-- HTML code -->\n<div class="hello">Hello</div>');
-    setFormCss('/* CSS code */\n.hello { color: red; }');
-    setFormJs('// JS code\nconsole.log("Ready");');
-    setFormEnv('API_KEY=your_key');
+    setFormCli('');
+    setFormIsFirefoxApp(false);
+    setFormFiles([
+      { name: 'index.html', content: '<!-- HTML code -->\n<div class="hello">Hello World</div>' },
+      { name: 'style.css', content: '/* CSS code */\n.hello { color: red; }' },
+      { name: 'app.js', content: '// JS code\nconsole.log("Ready");' },
+    ]);
+    setActiveFileIdx(0);
     setEditChangelogText('');
   }
 
@@ -854,60 +900,263 @@ export default function DeveloperConsolePage() {
               </div>
             )}
 
-            {/* Source Code Files tab section */}
+            {/* Multi-File Widget Editor */}
             <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
-              <h4 style={{ fontSize: '1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Code2 size={18} style={{ color: 'var(--accent-color)' }} />
-                <span>Widget Code Assets</span>
-              </h4>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                <div>
-                  <label className="form-label">HTML Code</label>
-                  <textarea
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Code2 size={18} style={{ color: 'var(--accent-color)' }} />
+                  <span>Widget Package Files</span>
+                  <span style={{ fontSize: '0.72rem', background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '1px 8px', borderRadius: '10px', fontWeight: '600', fontFamily: 'monospace' }}>
+                    {formFiles.length} file{formFiles.length !== 1 ? 's' : ''}
+                  </span>
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => setShowNewFileInput(v => !v)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--accent-color)', background: 'transparent', color: 'var(--accent-color)', fontSize: '0.82rem', cursor: 'pointer', fontWeight: '600' }}
+                >
+                  <FilePlus size={14} /> Add File
+                </button>
+              </div>
+
+              {/* New file name input */}
+              {showNewFileInput && (
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    value={newFileName}
+                    onChange={e => setNewFileName(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const name = newFileName.trim();
+                        if (!name) return;
+                        if (formFiles.find(f => f.name === name)) return;
+                        const ext = name.split('.').pop().toLowerCase();
+                        const defaults = { html: '<!-- HTML content -->', css: '/* CSS content */', js: '// JS content', json: '{}', md: '# Readme', env: 'KEY=value' };
+                        const content = defaults[ext] || '';
+                        const newFiles = [...formFiles, { name, content }];
+                        setFormFiles(newFiles);
+                        setActiveFileIdx(newFiles.length - 1);
+                        setNewFileName('');
+                        setShowNewFileInput(false);
+                      }
+                      if (e.key === 'Escape') { setShowNewFileInput(false); setNewFileName(''); }
+                    }}
+                    placeholder="e.g. html/popup.html, js/utils.js, manifest.json"
+                    autoFocus
                     className="form-input"
-                    value={formHtml}
-                    onChange={(e) => setFormHtml(e.target.value)}
-                    rows={8}
-                    style={{ fontFamily: 'monospace', fontSize: '0.8rem', resize: 'vertical' }}
-                    required
+                    style={{ fontFamily: 'monospace', fontSize: '0.85rem', flex: 1, height: '36px' }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const name = newFileName.trim();
+                      if (!name) return;
+                      if (formFiles.find(f => f.name === name)) return;
+                      const ext = name.split('.').pop().toLowerCase();
+                      const defaults = { html: '<!-- HTML content -->', css: '/* CSS content */', js: '// JS content', json: '{}', md: '# Readme', env: 'KEY=value' };
+                      const content = defaults[ext] || '';
+                      const newFiles = [...formFiles, { name, content }];
+                      setFormFiles(newFiles);
+                      setActiveFileIdx(newFiles.length - 1);
+                      setNewFileName('');
+                      setShowNewFileInput(false);
+                    }}
+                    className="btn btn-primary"
+                    style={{ height: '36px', padding: '0 14px', fontSize: '0.82rem' }}
+                  >Create</button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowNewFileInput(false); setNewFileName(''); }}
+                    style={{ height: '36px', padding: '0 10px', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}
+                  ><X size={14} /></button>
+                </div>
+              )}
+
+              {/* File editor split: tree + code area */}
+              <div style={{ display: 'flex', gap: '0', border: '1px solid var(--card-border)', borderRadius: '12px', overflow: 'hidden', minHeight: '420px' }}>
+
+                {/* File Tree Sidebar */}
+                <div style={{ width: '200px', flexShrink: 0, background: 'rgba(0,0,0,0.15)', borderRight: '1px solid var(--card-border)', overflowY: 'auto' }}>
+                  <div style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-secondary)', borderBottom: '1px solid var(--card-border)' }}>
+                    File Explorer
+                  </div>
+                  {(() => {
+                    // Build folder tree from flat file list
+                    const folders = {};
+                    const rootFiles = [];
+                    formFiles.forEach((file, idx) => {
+                      const parts = file.name.split('/');
+                      if (parts.length === 1) {
+                        rootFiles.push({ file, idx });
+                      } else {
+                        const folder = parts[0];
+                        if (!folders[folder]) folders[folder] = [];
+                        folders[folder].push({ file, idx, shortName: parts.slice(1).join('/') });
+                      }
+                    });
+
+                    const getFileIcon = (name) => {
+                      const ext = name.split('.').pop().toLowerCase();
+                      const icons = { html: '🌐', css: '🎨', js: '⚡', json: '📋', md: '📝', env: '🔑', png: '🖼', jpg: '🖼', svg: '🎭' };
+                      return icons[ext] || '📄';
+                    };
+
+                    const FileRow = ({ file, idx, label }) => (
+                      <div
+                        key={idx}
+                        onClick={() => setActiveFileIdx(idx)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '5px 10px',
+                          cursor: 'pointer',
+                          fontSize: '0.78rem',
+                          background: activeFileIdx === idx ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
+                          borderLeft: activeFileIdx === idx ? '2px solid var(--accent-color)' : '2px solid transparent',
+                          color: activeFileIdx === idx ? 'var(--text-primary)' : 'var(--text-secondary)',
+                          transition: 'all 0.15s'
+                        }}
+                      >
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                          <span style={{ fontSize: '0.9em' }}>{getFileIcon(file.name)}</span>
+                          <span title={file.name}>{label || file.name}</span>
+                        </span>
+                        {formFiles.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={e => {
+                              e.stopPropagation();
+                              const updated = formFiles.filter((_, i) => i !== idx);
+                              setFormFiles(updated);
+                              setActiveFileIdx(Math.min(activeFileIdx, updated.length - 1));
+                            }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0.5, padding: '0 2px', color: 'inherit', flexShrink: 0, lineHeight: 1 }}
+                            title="Remove file"
+                          >
+                            <X size={10} />
+                          </button>
+                        )}
+                      </div>
+                    );
+
+                    return (
+                      <div>
+                        {/* Folders */}
+                        {Object.entries(folders).map(([folder, files]) => (
+                          <div key={folder}>
+                            <div
+                              onClick={() => setExpandedFolders(ef => ({ ...ef, [folder]: !ef[folder] }))}
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '5px 10px', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-secondary)', userSelect: 'none' }}
+                            >
+                              {expandedFolders[folder] ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
+                              <FolderOpen size={12} style={{ color: '#facc15' }} />
+                              <span style={{ fontWeight: '600' }}>{folder}</span>
+                            </div>
+                            {(expandedFolders[folder] !== false) && files.map(({ file, idx, shortName }) => (
+                              <div key={idx} style={{ paddingLeft: '14px' }}>
+                                <FileRow file={file} idx={idx} label={shortName} />
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                        {/* Root files */}
+                        {rootFiles.map(({ file, idx }) => (
+                          <FileRow key={idx} file={file} idx={idx} />
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
 
-                <div>
-                  <label className="form-label">CSS Code</label>
-                  <textarea
-                    className="form-input"
-                    value={formCss}
-                    onChange={(e) => setFormCss(e.target.value)}
-                    rows={8}
-                    style={{ fontFamily: 'monospace', fontSize: '0.8rem', resize: 'vertical' }}
-                  />
-                </div>
+                {/* Code Editor Panel */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  {formFiles[activeFileIdx] ? (
+                    <>
+                      {/* Tab bar */}
+                      <div style={{ padding: '6px 12px 0', background: 'rgba(0,0,0,0.1)', borderBottom: '1px solid var(--card-border)', display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto' }}>
+                        {formFiles.map((file, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setActiveFileIdx(idx)}
+                            style={{
+                              padding: '4px 12px',
+                              borderRadius: '6px 6px 0 0',
+                              border: '1px solid var(--card-border)',
+                              borderBottom: activeFileIdx === idx ? '1px solid transparent' : '1px solid var(--card-border)',
+                              background: activeFileIdx === idx ? 'var(--card-bg)' : 'transparent',
+                              color: activeFileIdx === idx ? 'var(--text-primary)' : 'var(--text-secondary)',
+                              fontSize: '0.75rem',
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap',
+                              fontFamily: 'monospace',
+                              marginBottom: activeFileIdx === idx ? '-1px' : '0'
+                            }}
+                          >
+                            {file.name.split('/').pop()}
+                          </button>
+                        ))}
+                      </div>
 
-                <div>
-                  <label className="form-label">JavaScript Logic</label>
-                  <textarea
-                    className="form-input"
-                    value={formJs}
-                    onChange={(e) => setFormJs(e.target.value)}
-                    rows={8}
-                    style={{ fontFamily: 'monospace', fontSize: '0.8rem', resize: 'vertical' }}
-                  />
-                </div>
+                      {/* File path breadcrumb */}
+                      <div style={{ padding: '4px 12px', fontSize: '0.7rem', color: 'var(--text-secondary)', fontFamily: 'monospace', background: 'rgba(0,0,0,0.05)', borderBottom: '1px solid var(--card-border)' }}>
+                        📁 {formFiles[activeFileIdx].name}
+                      </div>
 
-                <div>
-                  <label className="form-label">Environment Variables Template (.env format)</label>
-                  <textarea
-                    className="form-input"
-                    value={formEnv}
-                    onChange={(e) => setFormEnv(e.target.value)}
-                    rows={8}
-                    style={{ fontFamily: 'monospace', fontSize: '0.8rem', resize: 'vertical' }}
-                    placeholder="API_KEY=xxx&#10;DEFAULT_LIMIT=10"
-                  />
+                      {/* Code textarea */}
+                      <textarea
+                        value={formFiles[activeFileIdx].content}
+                        onChange={e => {
+                          const updated = [...formFiles];
+                          updated[activeFileIdx] = { ...updated[activeFileIdx], content: e.target.value };
+                          setFormFiles(updated);
+                        }}
+                        style={{
+                          flex: 1,
+                          width: '100%',
+                          minHeight: '340px',
+                          padding: '12px 16px',
+                          fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                          fontSize: '0.82rem',
+                          lineHeight: '1.6',
+                          resize: 'none',
+                          border: 'none',
+                          outline: 'none',
+                          background: 'var(--card-bg)',
+                          color: 'var(--text-primary)',
+                          tabSize: 2
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = e.target.selectionStart;
+                            const end = e.target.selectionEnd;
+                            const val = e.target.value;
+                            const updated = [...formFiles];
+                            updated[activeFileIdx] = { ...updated[activeFileIdx], content: val.substring(0, start) + '  ' + val.substring(end) };
+                            setFormFiles(updated);
+                            setTimeout(() => { e.target.selectionStart = e.target.selectionEnd = start + 2; }, 0);
+                          }
+                        }}
+                        spellCheck={false}
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                      />
+                    </>
+                  ) : (
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5, fontSize: '0.9rem' }}>
+                      Select or create a file to start editing
+                    </div>
+                  )}
                 </div>
               </div>
+
+              <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                Tip: Use paths like <code>html/popup.html</code>, <code>js/utils.js</code>, <code>assets/icon.svg</code> to create subfolders. Press <kbd>Tab</kbd> for indentation.
+              </p>
             </div>
 
             {/* Actions button row */}
