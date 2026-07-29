@@ -286,7 +286,55 @@ export default function ExplorePage() {
                   </div>
                 </div>
 
-                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.4rem', fontWeight: 'bold' }}>{widget.name}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', marginBottom: '0.4rem' }}>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 'bold', margin: 0 }}>{widget.name}</h3>
+                  {widget.isVerified && (
+                    <span style={{
+                      fontSize: '0.68rem',
+                      background: 'rgba(59, 130, 246, 0.15)',
+                      color: '#60a5fa',
+                      border: '1px solid rgba(59, 130, 246, 0.3)',
+                      padding: '1px 6px',
+                      borderRadius: '10px',
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '3px'
+                    }}>
+                      ✔ Verified
+                    </span>
+                  )}
+                  {widget.isFirefoxApp && (
+                    <span style={{
+                      fontSize: '0.68rem',
+                      background: 'rgba(249, 115, 22, 0.15)',
+                      color: '#fb923c',
+                      border: '1px solid rgba(249, 115, 22, 0.3)',
+                      padding: '1px 6px',
+                      borderRadius: '10px',
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '3px'
+                    }}>
+                      🔥 Firefox App
+                    </span>
+                  )}
+                  {widget.cli && (
+                    <span style={{
+                      fontSize: '0.68rem',
+                      background: 'rgba(168, 85, 247, 0.15)',
+                      color: '#c084fc',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      padding: '1px 6px',
+                      borderRadius: '10px',
+                      fontFamily: 'monospace',
+                      fontWeight: '600'
+                    }}>
+                      &gt;_ {widget.cli}
+                    </span>
+                  )}
+                </div>
                 <p style={{
                   fontSize: '0.85rem',
                   color: 'var(--text-secondary)',

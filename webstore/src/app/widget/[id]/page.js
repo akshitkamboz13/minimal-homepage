@@ -253,6 +253,47 @@ export default function WidgetDetailsPage() {
                   fontSize: '0.75rem',
                   color: 'var(--text-secondary)'
                 }}>{widget.category}</span>
+
+                {widget.isVerified && (
+                  <span style={{
+                    fontSize: '0.72rem',
+                    background: 'rgba(59, 130, 246, 0.15)',
+                    color: '#60a5fa',
+                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    fontWeight: '600'
+                  }}>
+                    ✔ Verified
+                  </span>
+                )}
+                {widget.isFirefoxApp && (
+                  <span style={{
+                    fontSize: '0.72rem',
+                    background: 'rgba(249, 115, 22, 0.15)',
+                    color: '#fb923c',
+                    border: '1px solid rgba(249, 115, 22, 0.3)',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    fontWeight: '600'
+                  }}>
+                    🔥 Firefox App
+                  </span>
+                )}
+                {widget.cli && (
+                  <span style={{
+                    fontSize: '0.72rem',
+                    background: 'rgba(168, 85, 247, 0.15)',
+                    color: '#c084fc',
+                    border: '1px solid rgba(168, 85, 247, 0.3)',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    fontFamily: 'monospace',
+                    fontWeight: '600'
+                  }}>
+                    &gt;_ {widget.cli}
+                  </span>
+                )}
               </div>
 
               <div style={{
@@ -393,6 +434,18 @@ export default function WidgetDetailsPage() {
                 <span style={{ color: 'var(--text-secondary)' }}>Category</span>
                 <span>{widget.category}</span>
               </div>
+              {widget.cli && (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>CLI Trigger</span>
+                  <span style={{ fontFamily: 'monospace', color: '#c084fc', fontWeight: 'bold' }}>&gt;_ {widget.cli}</span>
+                </div>
+              )}
+              {widget.files && widget.files.length > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Package Structure</span>
+                  <span style={{ fontWeight: '500' }}>{widget.files.length} Files</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Open Source</span>
                 <span>{widget.openSource ? '✓ Yes' : 'No'}</span>

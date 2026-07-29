@@ -48,6 +48,10 @@ export async function GET() {
         author: seedDev._id,
         entryPoint: 'index.html',
         category: 'Customization',
+        cli: 'aurora',
+        isVerified: true,
+        isFirefoxApp: true,
+        badges: ['Verified', 'Firefox App'],
         tags: ['aurora', 'particles', 'canvas', 'interactive', 'animated', 'relaxing'],
         permissions: ['storage'],
         downloadsCount: 1420,
@@ -210,6 +214,9 @@ document.getElementById('btn-aurora-color').addEventListener('click', () => {
         author: seedDev._id,
         entryPoint: 'index.html',
         category: 'Productivity',
+        cli: 'pomo',
+        isVerified: true,
+        badges: ['Verified'],
         tags: ['productivity', 'pomodoro', 'timer', 'focus', 'utility'],
         permissions: ['notifications'],
         downloadsCount: 850,
@@ -403,6 +410,10 @@ updateProgress();
         author: seedDev._id,
         entryPoint: 'index.html',
         category: 'Weather',
+        cli: 'weather',
+        isVerified: true,
+        isFirefoxApp: true,
+        badges: ['Verified', 'Firefox App'],
         tags: ['weather', 'forecast', 'utility', 'glassmorphism', 'icons'],
         permissions: ['fetch'],
         downloadsCount: 1950,
@@ -704,16 +715,20 @@ try {
   font-size: 10px;
   opacity: 0.7;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.78rem;
+  opacity: 0.7;
+  line-height: 1.3;
+}
+.hidden {
+  display: none !important;
 }
         `,
         js: `
-const input = document.getElementById('github-username');
-const btn = document.getElementById('btn-fetch-github');
-const list = document.getElementById('github-repos');
-const loader = document.getElementById('github-loading');
-const errorDiv = document.getElementById('github-error');
+const btn = document.getElementById('btn-fetch');
+const input = document.getElementById('gh-username');
+const list = document.getElementById('repo-list');
+const loader = document.getElementById('loader');
+const errorDiv = document.getElementById('error');
 
 async function fetchRepos() {
   const username = input.value.trim();
@@ -724,16 +739,16 @@ async function fetchRepos() {
   list.innerHTML = '';
 
   try {
-    const res = await fetch(\`https://api.github.com/users/\${username}/repos?sort=updated&per_page=6\`);
+    const res = await fetch(\`https://api.github.com/users/\${username}/repos?sort=updated&per_page=5\`);
     loader.classList.add('hidden');
 
     if (!res.ok) {
-      throw new Error(\`GitHub API error: \${res.status} \${res.statusText}\`);
+      throw new Error(\`Failed to fetch (\${res.status})\`);
     }
 
     const data = await res.json();
     if (data.length === 0) {
-      list.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 20px; font-size: 11px;">No public repositories found.</div>';
+      list.innerHTML = '<div style="text-align: center; opacity: 0.5; padding: 12px; font-size: 0.8rem;">No public repositories found.</div>';
       return;
     }
 
@@ -753,13 +768,10 @@ async function fetchRepos() {
     loader.classList.add('hidden');
     errorDiv.textContent = err.message;
     errorDiv.classList.remove('hidden');
-    list.innerHTML = '<div style="text-align: center; opacity: 0.4; padding: 20px; font-size: 11px;">Failed to load.</div>';
   }
 }
 
 btn.addEventListener('click', fetchRepos);
-
-// Trigger fetch automatically on load
 fetchRepos();
         `
       }
@@ -767,6 +779,28 @@ fetchRepos();
 
     // Seed widgets
     for (const widgetData of widgetsToSeed) {
+      if (!widgetData.files || widgetData.files.length === 0) {
+        widgetData.files = [
+          { name: 'index.html', content: widgetData.html || '' },
+          { name: 'style.css', content: widgetData.css || '' },
+          { name: 'app.js', content: widgetData.js || '' },
+          {
+            name: 'manifest.json',
+            content: JSON.stringify({
+              name: widgetData.name,
+              identifier: widgetData.identifier,
+              version: widgetData.version,
+              description: widgetData.description,
+              cli: widgetData.cli || '',
+              entryPoint: widgetData.entryPoint || 'index.html',
+              category: widgetData.category,
+              isVerified: !!widgetData.isVerified,
+              isFirefoxApp: !!widgetData.isFirefoxApp,
+            }, null, 2)
+          }
+        ];
+      }
+
       const createdWidget = await Widget.create(widgetData);
       
       // Seed a few reviews for it

@@ -60,6 +60,29 @@ const WidgetSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    cli: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: '',
+    },
+    files: {
+      type: [
+        {
+          name: { type: String, required: true },
+          content: { type: String, default: '' },
+        },
+      ],
+      default: [],
+    },
+    isFirefoxApp: {
+      type: Boolean,
+      default: false,
+    },
+    badges: {
+      type: [String],
+      default: [],
+    },
     permissions: {
       type: [String],
       default: [],
@@ -134,4 +157,5 @@ const WidgetSchema = new mongoose.Schema(
 // Indexing for search
 WidgetSchema.index({ name: 'text', description: 'text', tags: 'text' });
 
-export default mongoose.models.Widget || mongoose.model('Widget', WidgetSchema);
+delete mongoose.models.Widget;
+export default mongoose.model('Widget', WidgetSchema);

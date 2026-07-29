@@ -45,6 +45,8 @@ export default function DeveloperConsolePage() {
   const [formScreenshots, setFormScreenshots] = useState('');
   const [formOpenSource, setFormOpenSource] = useState(false);
   const [formRepoUrl, setFormRepoUrl] = useState('');
+  const [formCli, setFormCli] = useState('');
+  const [formIsFirefoxApp, setFormIsFirefoxApp] = useState(false);
   
   // Widget Source Code Form states
   const [formHtml, setFormHtml] = useState('');
@@ -179,6 +181,8 @@ export default function DeveloperConsolePage() {
       longDescription: formLongDesc,
       version: formVersion,
       category: formCategory,
+      cli: formCli,
+      isFirefoxApp: formIsFirefoxApp,
       permissions: activePermissions,
       tags: tagsArray,
       screenshots: screenshotsArray,
@@ -229,6 +233,8 @@ export default function DeveloperConsolePage() {
       longDescription: formLongDesc,
       version: formVersion,
       category: formCategory,
+      cli: formCli,
+      isFirefoxApp: formIsFirefoxApp,
       permissions: activePermissions,
       tags: tagsArray,
       screenshots: screenshotsArray,
@@ -282,6 +288,8 @@ export default function DeveloperConsolePage() {
     setFormLongDesc(widget.longDescription || '');
     setFormVersion(widget.version);
     setFormCategory(widget.category);
+    setFormCli(widget.cli || '');
+    setFormIsFirefoxApp(!!widget.isFirefoxApp);
     setFormPermissions({
       fetch: widget.permissions.includes('fetch'),
       clipboard: widget.permissions.includes('clipboard'),
@@ -718,6 +726,20 @@ export default function DeveloperConsolePage() {
               </div>
 
               <div>
+                <label className="form-label" htmlFor="w-cli">CLI Command Alias (unique shortcut, e.g. &apos;gh&apos;, &apos;weather&apos;)</label>
+                <input
+                  type="text"
+                  id="w-cli"
+                  className="form-input"
+                  value={formCli}
+                  onChange={(e) => setFormCli(e.target.value)}
+                  placeholder="e.g. pomo, weather, gh"
+                  style={{ fontFamily: 'monospace' }}
+                />
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Must be unique across all published webstore widgets if provided.</span>
+              </div>
+
+              <div>
                 <label className="form-label" htmlFor="w-tags">Tags (comma-separated, max 10)</label>
                 <input
                   type="text"
@@ -727,6 +749,18 @@ export default function DeveloperConsolePage() {
                   onChange={(e) => setFormTags(e.target.value)}
                   placeholder="focus, study, timer, productivity"
                 />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '1.2rem' }}>
+                <input
+                  type="checkbox"
+                  id="w-firefox"
+                  checked={formIsFirefoxApp}
+                  onChange={(e) => setFormIsFirefoxApp(e.target.checked)}
+                />
+                <label htmlFor="w-firefox" style={{ fontSize: '0.85rem', cursor: 'pointer' }}>
+                  Mark as Firefox App / Compatible
+                </label>
               </div>
             </div>
 

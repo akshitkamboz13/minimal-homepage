@@ -82,6 +82,10 @@ export async function PUT(request, { params }) {
       css,
       js,
       env,
+      cli,
+      files,
+      isFirefoxApp,
+      badges,
       permissions,
       category,
       tags,
@@ -91,13 +95,32 @@ export async function PUT(request, { params }) {
       changes, // list of items changed for version updates
     } = data;
 
+    const filesList = Array.isArray(files) ? files : widget.files;
+
     // Security validation on code modifications
-    const securityCheck = validateWidgetSecurity(js || widget.js, html || widget.html);
+    const securityCheck = validateWidgetSecurity(js || widget.js, html || widget.html, filesList);
     if (!securityCheck.valid) {
       return NextResponse.json(
         { error: 'Security validation failed.', issues: securityCheck.issues },
         { status: 400 }
       );
+    }
+
+    // CLI Command Uniqueness Check
+    if (cli !== undefined && cli !== null) {
+      const trimmedCli = cli.toLowerCase().trim();
+      if (trimmedCli && trimmedCli !== widget.cli) {
+        const existingCli = await Widget.findOne({ cli: trimmedCli, _id: { $ne: widget._id } });
+        if (existingCli) {
+          return NextResponse.json(
+            { error: `CLI command alias '${trimmedCli}' is already registered by widget '${existingCli.name}'.` },
+            { status: 400 }
+          );
+        }
+        widget.cli = trimmedCli;
+      } else if (!trimmedCli) {
+        widget.cli = '';
+      }
     }
 
     // Enforce tag limits
@@ -128,6 +151,9 @@ export async function PUT(request, { params }) {
     if (css !== undefined) widget.css = css;
     if (js !== undefined) widget.js = js;
     if (env !== undefined) widget.env = env;
+    if (files !== undefined) widget.files = filesList;
+    if (isFirefoxApp !== undefined) widget.isFirefoxApp = !!isFirefoxApp;
+    if (badges !== undefined && Array.isArray(badges)) widget.badges = badges;
     if (permissions !== undefined) widget.permissions = permissions;
     if (category) widget.category = category;
     widget.tags = tagsList;

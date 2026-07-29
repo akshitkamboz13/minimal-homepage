@@ -5,32 +5,41 @@ import User from '@/models/User';
 import { getSessionUser } from '@/lib/auth';
 
 // Helper to run security checks on widget code
-function validateWidgetSecurity(jsCode, htmlCode) {
+function validateWidgetSecurity(jsCode, htmlCode, files = []) {
   const issues = [];
-  const lowercaseJs = (jsCode || '').toLowerCase();
-  const lowercaseHtml = (htmlCode || '').toLowerCase();
+  
+  const checkCode = (code, type) => {
+    if (!code) return;
+    const lower = code.toLowerCase();
+    if (lower.includes('chrome.')) {
+      issues.push(`Forbidden access to Chrome Extension APIs ('chrome.*') detected in ${type}.`);
+    }
+    if (lower.includes('parent.') || lower.includes('window.parent')) {
+      issues.push(`Forbidden attempts to access parent DOM context ('parent') detected in ${type}.`);
+    }
+    if (lower.includes('top.') || lower.includes('window.top')) {
+      issues.push(`Forbidden attempts to access top DOM context ('top') detected in ${type}.`);
+    }
+    if (lower.includes('eval(')) {
+      issues.push(`Dynamic script execution using 'eval()' is forbidden in ${type}.`);
+    }
+    if (type.endsWith('.html') || type === 'HTML') {
+      if (lower.includes('<script')) {
+        issues.push(`Dynamic script tags '<script>' are forbidden inside HTML code (${type}).`);
+      }
+    }
+  };
 
-  // Banned Chrome extension APIs
-  if (lowercaseJs.includes('chrome.')) {
-    issues.push("Forbidden access to Chrome Extension APIs ('chrome.*') detected.");
-  }
+  checkCode(jsCode, 'main.js');
+  checkCode(htmlCode, 'index.html');
 
-  // Parent/top window access checks
-  if (lowercaseJs.includes('parent.') || lowercaseJs.includes('window.parent')) {
-    issues.push("Forbidden attempts to access parent DOM context ('parent') detected.");
-  }
-  if (lowercaseJs.includes('top.') || lowercaseJs.includes('window.top')) {
-    issues.push("Forbidden attempts to access top DOM context ('top') detected.");
-  }
-
-  // Dynamic code injection checks
-  if (lowercaseJs.includes('eval(')) {
-    issues.push("Dynamic script execution using 'eval()' is forbidden for safety.");
-  }
-
-  // HTML dynamic script tags checks
-  if (lowercaseHtml.includes('<script')) {
-    issues.push("Dynamic script tags '<script>' are forbidden inside the HTML code. Place logic in the JS code editor instead.");
+  if (Array.isArray(files)) {
+    files.forEach(file => {
+      const ext = (file.name || '').split('.').pop().toLowerCase();
+      if (['js', 'mjs', 'cjs', 'html', 'htm'].includes(ext)) {
+        checkCode(file.content, file.name);
+      }
+    });
   }
 
   return {
@@ -49,29 +58,59 @@ export async function POST(request) {
     await dbConnect();
     const data = await request.json();
 
+    let filesList = Array.isArray(data.files) ? data.files : [];
+    
+    // Auto-extract manifest.json from files if present
+    let manifestData = {};
+    const manifestFile = filesList.find(f => (f.name || '').toLowerCase() === 'manifest.json');
+    if (manifestFile && manifestFile.content) {
+      try {
+        manifestData = JSON.parse(manifestFile.content);
+      } catch (err) {}
+    } else if (data.manifest) {
+      try {
+        manifestData = typeof data.manifest === 'object' ? data.manifest : JSON.parse(data.manifest);
+      } catch (err) {}
+    }
+
+    // Merge payload data with extracted manifest data
+    const name = data.name || manifestData.name;
+    const identifier = data.identifier || manifestData.identifier;
+    const description = data.description || manifestData.description;
+    const longDescription = data.longDescription || manifestData.longDescription;
+    const version = data.version || manifestData.version || '1.0.0';
+    const entryPoint = data.entryPoint || manifestData.entryPoint || 'index.html';
+    const category = data.category || manifestData.category;
+    const env = data.env || manifestData.env || '';
+    const permissions = data.permissions || manifestData.permissions || [];
+    const cli = (data.cli || manifestData.cli || '').toLowerCase().trim();
+    const isFirefoxApp = !!(data.isFirefoxApp || manifestData.isFirefoxApp);
+    const badges = Array.isArray(data.badges) ? data.badges : (Array.isArray(manifestData.badges) ? manifestData.badges : []);
+
     const {
-      name,
-      identifier,
-      description,
-      longDescription,
-      version,
-      entryPoint,
       html,
       css,
       js,
-      env,
-      permissions,
-      category,
       tags,
       screenshots,
       openSource,
       repositoryUrl,
     } = data;
 
+    // Build files array if empty but html/css/js passed
+    if (filesList.length === 0) {
+      if (html) filesList.push({ name: 'index.html', content: html });
+      if (css) filesList.push({ name: 'style.css', content: css });
+      if (js) filesList.push({ name: 'app.js', content: js });
+      if (manifestData && Object.keys(manifestData).length > 0) {
+        filesList.push({ name: 'manifest.json', content: JSON.stringify(manifestData, null, 2) });
+      }
+    }
+
     // 1. Mandatory manifest validation
     if (!name || !identifier || !description || !version || !category) {
       return NextResponse.json(
-        { error: 'Name, identifier, description, version, and category are required fields.' },
+        { error: 'Name, identifier, description, version, and category are required fields (provided in form or manifest.json).' },
         { status: 400 }
       );
     }
@@ -95,7 +134,7 @@ export async function POST(request) {
     }
 
     // 3. Security checks
-    const securityCheck = validateWidgetSecurity(js, html);
+    const securityCheck = validateWidgetSecurity(js, html, filesList);
     if (!securityCheck.valid) {
       return NextResponse.json(
         { error: 'Security verification failed.', issues: securityCheck.issues },
@@ -120,13 +159,24 @@ export async function POST(request) {
           .slice(0, 10)
       : [];
 
-    // Check if identifier is already taken
+    // 6. Check if identifier is already taken
     const existingWidget = await Widget.findOne({ identifier: identifier.toLowerCase().trim() });
     if (existingWidget) {
       return NextResponse.json(
         { error: `A widget with identifier '${identifier}' already exists.` },
         { status: 400 }
       );
+    }
+
+    // 7. Enforce CLI Command Uniqueness
+    if (cli) {
+      const existingCli = await Widget.findOne({ cli: cli });
+      if (existingCli) {
+        return NextResponse.json(
+          { error: `CLI command alias '${cli}' is already registered by widget '${existingCli.name}'. Please choose a unique CLI command alias.` },
+          { status: 400 }
+        );
+      }
     }
 
     // Create the widget listing
@@ -141,6 +191,10 @@ export async function POST(request) {
       css: css || '',
       js: js || '',
       env: env || '',
+      cli: cli || '',
+      files: filesList,
+      isFirefoxApp: isFirefoxApp,
+      badges: badges,
       permissions: Array.isArray(permissions) ? permissions : [],
       category,
       tags: tagsList,
