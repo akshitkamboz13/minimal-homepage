@@ -983,19 +983,23 @@ export default function DeveloperConsolePage() {
                     File Explorer
                   </div>
                   {(() => {
-                    // Build folder tree from flat file list
-                    const folders = {};
-                    const rootFiles = [];
-                    formFiles.forEach((file, idx) => {
-                      const parts = file.name.split('/');
-                      if (parts.length === 1) {
-                        rootFiles.push({ file, idx });
-                      } else {
-                        const folder = parts[0];
-                        if (!folders[folder]) folders[folder] = [];
-                        folders[folder].push({ file, idx, shortName: parts.slice(1).join('/') });
-                      }
-                    });
+                    // Build a recursive N-level folder tree from flat file paths
+                    function buildTree(files) {
+                      const tree = { __files: [] };
+                      files.forEach(({ file, idx }) => {
+                        const parts = file.name.split('/');
+                        let node = tree;
+                        for (let i = 0; i < parts.length - 1; i++) {
+                          const seg = parts[i];
+                          if (!node[seg]) node[seg] = { __files: [] };
+                          node = node[seg];
+                        }
+                        node.__files.push({ file, idx, shortName: parts[parts.length - 1] });
+                      });
+                      return tree;
+                    }
+
+                    const tree = buildTree(formFiles.map((file, idx) => ({ file, idx })));
 
                     const getFileIcon = (name) => {
                       const ext = name.split('.').pop().toLowerCase();
@@ -1005,24 +1009,25 @@ export default function DeveloperConsolePage() {
 
                     const FileRow = ({ file, idx, label }) => (
                       <div
-                        key={idx}
                         onClick={() => setActiveFileIdx(idx)}
                         style={{
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          padding: '5px 10px',
+                          padding: '4px 10px',
                           cursor: 'pointer',
                           fontSize: '0.78rem',
                           background: activeFileIdx === idx ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
                           borderLeft: activeFileIdx === idx ? '2px solid var(--accent-color)' : '2px solid transparent',
                           color: activeFileIdx === idx ? 'var(--text-primary)' : 'var(--text-secondary)',
-                          transition: 'all 0.15s'
+                          transition: 'all 0.12s'
                         }}
+                        onMouseEnter={e => { if (activeFileIdx !== idx) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+                        onMouseLeave={e => { if (activeFileIdx !== idx) e.currentTarget.style.background = 'transparent'; }}
                       >
                         <span style={{ display: 'flex', alignItems: 'center', gap: '5px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
-                          <span style={{ fontSize: '0.9em' }}>{getFileIcon(file.name)}</span>
-                          <span title={file.name}>{label || file.name}</span>
+                          <span style={{ fontSize: '0.85em', flexShrink: 0 }}>{getFileIcon(label || file.name)}</span>
+                          <span title={file.name} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{label || file.name}</span>
                         </span>
                         {formFiles.length > 1 && (
                           <button
@@ -1033,7 +1038,8 @@ export default function DeveloperConsolePage() {
                               setFormFiles(updated);
                               setActiveFileIdx(Math.min(activeFileIdx, updated.length - 1));
                             }}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0.5, padding: '0 2px', color: 'inherit', flexShrink: 0, lineHeight: 1 }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0, padding: '0 2px', color: 'inherit', flexShrink: 0, lineHeight: 1, transition: 'opacity 0.15s' }}
+                            className="file-row-delete"
                             title="Remove file"
                           >
                             <X size={10} />
@@ -1042,32 +1048,81 @@ export default function DeveloperConsolePage() {
                       </div>
                     );
 
-                    return (
-                      <div>
-                        {/* Folders */}
-                        {Object.entries(folders).map(([folder, files]) => (
-                          <div key={folder}>
-                            <div
-                              onClick={() => setExpandedFolders(ef => ({ ...ef, [folder]: !ef[folder] }))}
-                              style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '5px 10px', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-secondary)', userSelect: 'none' }}
-                            >
-                              {expandedFolders[folder] ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
-                              <FolderOpen size={12} style={{ color: '#facc15' }} />
-                              <span style={{ fontWeight: '600' }}>{folder}</span>
-                            </div>
-                            {(expandedFolders[folder] !== false) && files.map(({ file, idx, shortName }) => (
-                              <div key={idx} style={{ paddingLeft: '14px' }}>
-                                <FileRow file={file} idx={idx} label={shortName} />
+                    // Recursively render a tree node
+                    function RenderNode({ node, path = [] }) {
+                      const folderKeys = Object.keys(node).filter(k => k !== '__files');
+                      const files = node.__files || [];
+                      return (
+                        <div>
+                          {/* Sub-folders */}
+                          {folderKeys.map(folderName => {
+                            const folderPath = [...path, folderName].join('/');
+                            const isExpanded = expandedFolders[folderPath] !== false;
+                            const childFileCount = countFiles(node[folderName]);
+                            return (
+                              <div key={folderName}>
+                                {/* Folder header */}
+                                <div
+                                  onClick={() => setExpandedFolders(ef => ({ ...ef, [folderPath]: !isExpanded }))}
+                                  style={{
+                                    display: 'flex', alignItems: 'center', gap: '4px',
+                                    padding: '4px 10px', paddingLeft: `${10 + path.length * 14}px`,
+                                    cursor: 'pointer', fontSize: '0.78rem',
+                                    color: 'var(--text-secondary)', userSelect: 'none',
+                                    transition: 'background 0.1s'
+                                  }}
+                                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                >
+                                  <span style={{ color: 'rgba(255,255,255,0.3)', flexShrink: 0, display: 'flex' }}>
+                                    {isExpanded ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
+                                  </span>
+                                  <span style={{ fontSize: '0.85em', flexShrink: 0 }}>
+                                    {isExpanded ? '📂' : '📁'}
+                                  </span>
+                                  <span style={{ fontWeight: '600', fontFamily: 'monospace', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {folderName}
+                                  </span>
+                                  <span style={{ fontSize: '0.65rem', opacity: 0.4, flexShrink: 0 }}>{childFileCount}</span>
+                                </div>
+
+                                {/* Children — indented with a subtle vertical guide line */}
+                                {isExpanded && (
+                                  <div style={{ position: 'relative' }}>
+                                    <div style={{
+                                      position: 'absolute',
+                                      left: `${16 + path.length * 14}px`,
+                                      top: 0, bottom: 0,
+                                      width: '1px',
+                                      background: 'rgba(255,255,255,0.08)'
+                                    }} />
+                                    <div style={{ paddingLeft: `${14}px` }}>
+                                      <RenderNode node={node[folderName]} path={[...path, folderName]} />
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                            ))}
-                          </div>
-                        ))}
-                        {/* Root files */}
-                        {rootFiles.map(({ file, idx }) => (
-                          <FileRow key={idx} file={file} idx={idx} />
-                        ))}
-                      </div>
-                    );
+                            );
+                          })}
+
+                          {/* Files at this level */}
+                          {files.map(({ file, idx, shortName }) => (
+                            <div key={idx} style={{ paddingLeft: `${path.length * 14}px` }}>
+                              <FileRow file={file} idx={idx} label={shortName} />
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    function countFiles(node) {
+                      if (!node) return 0;
+                      let n = (node.__files || []).length;
+                      Object.keys(node).filter(k => k !== '__files').forEach(k => { n += countFiles(node[k]); });
+                      return n;
+                    }
+
+                    return <RenderNode node={tree} />;
                   })()}
                 </div>
 
