@@ -15,7 +15,8 @@ export async function GET() {
       'com.akshit.aurora',
       'com.minimalist.pomodoro',
       'com.glassy.weather',
-      'com.dev.github-analytics'
+      'com.dev.github-analytics',
+      'com.bahanix.calculator'
     ]}});
 
     let seedDev = await User.findOne({ username: 'Akshit' });
@@ -776,6 +777,47 @@ fetchRepos();
         `
       }
     ];
+
+    // Also append dynamically packaged Firefox OS Calculator if available
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const calcPath = path.resolve(process.cwd(), '../firefox-apps/calculator.homewidget');
+      if (fs.existsSync(calcPath)) {
+        const calcPkg = JSON.parse(fs.readFileSync(calcPath, 'utf8'));
+        widgetsToSeed.push({
+          name: calcPkg.name,
+          identifier: calcPkg.identifier,
+          description: calcPkg.description,
+          longDescription: calcPkg.longDescription,
+          version: calcPkg.version,
+          author: seedDev._id,
+          entryPoint: 'index.html',
+          category: 'Utilities',
+          cli: 'calc',
+          isVerified: true,
+          isFirefoxApp: true,
+          badges: ['Verified', 'Firefox App'],
+          tags: calcPkg.tags,
+          permissions: calcPkg.permissions,
+          downloadsCount: 890,
+          averageRating: 4.9,
+          ratingsCount: 14,
+          screenshots: [
+            'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=400'
+          ],
+          openSource: true,
+          repositoryUrl: 'https://github.com/Bahanix/ffos-calculator',
+          html: calcPkg.html,
+          css: calcPkg.css,
+          js: calcPkg.js,
+          files: calcPkg.files,
+          status: 'approved'
+        });
+      }
+    } catch (err) {
+      console.error('Error loading dynamic seed widget:', err);
+    }
 
     // Seed widgets
     for (const widgetData of widgetsToSeed) {
