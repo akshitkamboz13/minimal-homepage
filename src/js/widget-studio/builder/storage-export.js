@@ -33,8 +33,10 @@ export function showAlert(text, type) {
     setTimeout(() => alertEl.classList.remove('show'), 3000);
 }
 
+export const ALL_PERMISSIONS = ['fetch', 'notifications', 'clipboard', 'storage', 'popups'];
+
 export function getSelectedPermissions() {
-    return ['fetch', 'notifications', 'clipboard', 'storage'].filter(p =>
+    return ALL_PERMISSIONS.filter(p =>
         document.getElementById(`perm-${p}`)?.checked
     );
 }

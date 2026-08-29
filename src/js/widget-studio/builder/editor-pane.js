@@ -22,6 +22,8 @@ export function saveCurrentEditorContent() {
     // Dynamic import to avoid circular dependency loop with manifest-sync.js
     if (node.isManifest) {
         import('./manifest-sync.js').then(m => m.syncFormFromManifest());
+    } else {
+        import('./manifest-sync.js').then(m => m.autoDetectPermissionsFromCode());
     }
 }
 

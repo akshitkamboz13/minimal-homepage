@@ -4,6 +4,7 @@
 import { state } from './state.js';
 import { saveCurrentEditorContent } from './editor-pane.js';
 import { getSelectedPermissions } from './storage-export.js';
+import { autoDetectPermissionsFromCode } from './manifest-sync.js';
 
 export function resolveAccentColor() {
     try {
@@ -37,6 +38,7 @@ export function runPreview() {
     if (!previewIframe) return;
 
     saveCurrentEditorContent();
+    autoDetectPermissionsFromCode();
     const { html, css, js, files } = state.fs.getAggregatedSources();
 
     const envObj = {};
@@ -91,6 +93,12 @@ export function initPreviewRunner() {
             if (container) {
                 container.style.width  = `${Math.min(Math.max(data.width,  100), window.innerWidth  - 40)}px`;
                 container.style.height = `${Math.min(Math.max(data.height, 100), window.innerHeight - 40)}px`;
+            }
+        } else if (data?.type === 'open-external-url' && data.url) {
+            if (window.chrome && chrome.tabs && chrome.tabs.create) {
+                chrome.tabs.create({ url: data.url });
+            } else {
+                window.open(data.url, '_blank', 'noopener,noreferrer');
             }
         }
     });

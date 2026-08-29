@@ -91,7 +91,7 @@ export function launchCustomApp(widget) {
 
     // Create Iframe Sandbox inside the window body
     const iframe = document.createElement('iframe');
-    iframe.setAttribute('sandbox', 'allow-scripts');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms');
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.border = 'none';
@@ -173,7 +173,7 @@ export function loadActiveWidgets() {
             });
 
             const iframe = document.createElement('iframe');
-            iframe.setAttribute('sandbox', 'allow-scripts');
+            iframe.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms');
             iframe.style.width = '100%';
             iframe.style.height = '100%';
             iframe.style.border = 'none';
@@ -329,6 +329,12 @@ window.addEventListener('message', (e) => {
                     }
                 }
             }
+        } else if (data.type === 'open-external-url' && data.url) {
+            if (window.chrome && chrome.tabs && chrome.tabs.create) {
+                chrome.tabs.create({ url: data.url });
+            } else {
+                window.open(data.url, '_blank', 'noopener,noreferrer');
+            }
         }
     }
 });
@@ -385,7 +391,7 @@ function toggleCustomPopupPanel(widget, triggerBtn) {
     body.className = 'custom-popup-body';
     
     const iframe = document.createElement('iframe');
-    iframe.setAttribute('sandbox', 'allow-scripts');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms');
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.border = 'none';

@@ -99,6 +99,10 @@
                         <input type="checkbox" id="perm-storage">
                         <span>storage</span>
                     </label>
+                    <label class="perm-item">
+                        <input type="checkbox" id="perm-popups">
+                        <span>popups / links</span>
+                    </label>
                 </div>
             </div>
 
@@ -230,7 +234,7 @@
                         <div class="preview-dot green"></div>
                         <div class="preview-frame-title">sandbox://widget-preview</div>
                     </div>
-                    <iframe sandbox="allow-scripts" id="preview-iframe"
+                    <iframe sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms" id="preview-iframe"
                             title="Widget Sandbox Preview"
                             style="background:transparent;"></iframe>
                 </div>

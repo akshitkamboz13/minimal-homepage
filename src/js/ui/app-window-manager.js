@@ -41,7 +41,7 @@ export function spawnAppInstance(appId, appPath) {
   appViewport.className = 'app-viewport';
   
   // Security Sandbox: Allow execution but block top-level navigation breakouts
-  appViewport.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+  appViewport.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
   
   const targetUrl = (typeof chrome !== 'undefined' && chrome.runtime?.getURL)
     ? chrome.runtime.getURL(appPath)

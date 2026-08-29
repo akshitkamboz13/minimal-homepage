@@ -1,0 +1,94 @@
+:root {
+    /* Light Theme Variables */
+    --text-color: #1e293b;
+    --text-secondary: #64748b;
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.6);
+    --accent-color: #3b82f6;
+    --notes-font-family: inherit;
+    
+    /* Mesh Gradients */
+    --blob-1: #ffb6ff;
+    --blob-2: #b3c5ff;
+    --blob-3: #ffd4b3;
+    --bg-base: #f8fafc;
+    
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+    /* Dark Theme Variables */
+    --text-color: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --glass-highlight: rgba(255, 255, 255, 0.15);
+    --accent-color: #60a5fa;
+    
+    /* Mesh Gradients */
+    --blob-1: #4c1d95;
+    --blob-2: #1e3a8a;
+    --blob-3: #831843;
+    --bg-base: #0f172a;
+}
+
+/* Accent Color Mappings */
+body[data-accent="blue"] { --accent-color: #3b82f6; }
+body[data-accent="purple"] { --accent-color: #a855f7; }
+body[data-accent="emerald"] { --accent-color: #10b981; }
+body[data-accent="amber"] { --accent-color: #f59e0b; }
+body[data-accent="rose"] { --accent-color: #f43f5e; }
+
+[data-theme="dark"] body[data-accent="blue"] { --accent-color: #60a5fa; }
+[data-theme="dark"] body[data-accent="purple"] { --accent-color: #c084fc; }
+[data-theme="dark"] body[data-accent="emerald"] { --accent-color: #34d399; }
+[data-theme="dark"] body[data-accent="amber"] { --accent-color: #fbbf24; }
+[data-theme="dark"] body[data-accent="rose"] { --accent-color: #fb7185; }
+
+
+/* Mesh Color Variations */
+body[data-mesh="aurora"] {
+    --blob-1: #a7f3d0;
+    --blob-2: #99f6e4;
+    --blob-3: #bae6fd;
+}
+[data-theme="dark"] body[data-mesh="aurora"] {
+    --blob-1: #064e3b;
+    --blob-2: #115e59;
+    --blob-3: #0c4a6e;
+}
+
+body[data-mesh="sunset"] {
+    --blob-1: #fecdd3;
+    --blob-2: #fed7aa;
+    --blob-3: #fef08a;
+}
+[data-theme="dark"] body[data-mesh="sunset"] {
+    --blob-1: #881337;
+    --blob-2: #7c2d12;
+    --blob-3: #713f12;
+}
+
+body[data-mesh="midnight"] {
+    --blob-1: #ddd6fe;
+    --blob-2: #c7d2fe;
+    --blob-3: #f5d0fe;
+}
+[data-theme="dark"] body[data-mesh="midnight"] {
+    --blob-1: #2e1065;
+    --blob-2: #1e1b4b;
+    --blob-3: #4a044e;
+}
+
+/* Performance - Reduce Motion utility */
+body.reduce-motion .blob {
+    animation: none !important;
+}
+body.reduce-motion * {
+    transition-duration: 0.01s !important;
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+}

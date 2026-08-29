@@ -278,8 +278,9 @@ body.dark-mode .search-suggestions {
 }
 
 .search-suggestions.hidden {
+    display: none !important;
     opacity: 0;
-    pointer-events: none;
+    pointer-events: none !important;
     transform: translateY(-10px);
 }
 

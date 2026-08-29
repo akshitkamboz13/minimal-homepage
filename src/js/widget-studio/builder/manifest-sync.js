@@ -3,7 +3,55 @@
  */
 import { state } from './state.js';
 import { buildManifestContent } from '../file-system/index.js';
-import { getSelectedPermissions } from './storage-export.js';
+import { getSelectedPermissions, ALL_PERMISSIONS } from './storage-export.js';
+
+export function autoDetectPermissionsFromCode() {
+    if (!state.fs) return [];
+    let aggregatedCode = '';
+    try {
+        const { html, css, js, files } = state.fs.getAggregatedSources();
+        aggregatedCode = (html || '') + ' ' + (css || '') + ' ' + (js || '');
+        if (Array.isArray(files)) {
+            files.forEach(f => {
+                if (f && f.content) aggregatedCode += ' ' + f.content;
+            });
+        }
+    } catch (_) {
+        return [];
+    }
+
+    const detected = [];
+    if (/\b(fetch|XMLHttpRequest|\$\.ajax|axios)\b|https?:\/\//i.test(aggregatedCode)) {
+        detected.push('fetch');
+    }
+    if (/\b(Notification|showNotification)\b/i.test(aggregatedCode)) {
+        detected.push('notifications');
+    }
+    if (/\b(navigator\.clipboard|execCommand)\b/i.test(aggregatedCode)) {
+        detected.push('clipboard');
+    }
+    if (/\b(localStorage|sessionStorage|indexedDB|chrome\.storage|widget\.storage)\b/i.test(aggregatedCode)) {
+        detected.push('storage');
+    }
+    if (/(<a\s|href=|window\.open|target=["']_blank["']|window\.location|open-external-url)/i.test(aggregatedCode)) {
+        detected.push('popups');
+    }
+
+    let changed = false;
+    detected.forEach(p => {
+        const el = document.getElementById(`perm-${p}`);
+        if (el && !el.checked) {
+            el.checked = true;
+            changed = true;
+        }
+    });
+
+    if (changed && !state.suppressManifestSync) {
+        syncManifestFromForm();
+    }
+
+    return detected;
+}
 
 export function syncManifestFromForm() {
     const manifestNode = state.fs.getManifestNode();
@@ -103,7 +151,7 @@ export function syncFormFromManifest() {
     if (inputMaxH && d.maxH     != null) inputMaxH.value = d.maxH;
 
     const perms = Array.isArray(manifest.permissions) ? manifest.permissions : [];
-    ['fetch', 'notifications', 'clipboard', 'storage'].forEach(p => {
+    ALL_PERMISSIONS.forEach(p => {
         const el = document.getElementById(`perm-${p}`);
         if (el) el.checked = perms.includes(p);
     });
@@ -111,6 +159,7 @@ export function syncFormFromManifest() {
     if (projectNameEl) projectNameEl.textContent = (manifest.name || '').trim() || 'widget';
 
     state.suppressManifestSync = false;
+    autoDetectPermissionsFromCode();
 }
 
 export function initManifestSync() {
@@ -132,7 +181,7 @@ export function initManifestSync() {
 
     document.getElementById('widget-type')?.addEventListener('change', onFormChange);
 
-    ['fetch', 'notifications', 'clipboard', 'storage'].forEach(p => {
+    ALL_PERMISSIONS.forEach(p => {
         document.getElementById(`perm-${p}`)?.addEventListener('change', onFormChange);
     });
 

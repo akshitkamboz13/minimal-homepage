@@ -7,7 +7,7 @@ import { state } from './state.js';
 import { getCustomWidgets, saveCustomWidgets, showAlert, compressString, getSelectedPermissions } from './storage-export.js';
 import { renderFileTree, promptNewFile, promptNewFolder, showCtxMenu, startInlineRename, deleteNode, getCtxParentId, initExplorerResize } from './file-tree-view.js';
 import { openFile, saveCurrentEditorContent } from './editor-pane.js';
-import { initManifestSync } from './manifest-sync.js';
+import { initManifestSync, autoDetectPermissionsFromCode } from './manifest-sync.js';
 import { initImportManager, triggerImportFolder } from './import-manager.js';
 import { initPreviewRunner, resolveAccentColor } from './preview-runner.js';
 
@@ -74,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         state.fs.createDefaultProject();
     }
+
+    autoDetectPermissionsFromCode();
 
     function loadWidgetIntoForm(widget) {
         if (inputName)    inputName.value    = widget.name        || '';

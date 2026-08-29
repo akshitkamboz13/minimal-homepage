@@ -8,6 +8,11 @@ export function initAutocomplete() {
     const searchForm = document.getElementById('search-form');
 
     let currentFocus = -1;
+    let isInitialPageLoad = true;
+    let suggestionsShownTime = 0;
+
+    // Suppress initial focus suggestions on page load / refresh
+    setTimeout(() => { isInitialPageLoad = false; }, 400);
 
     // Auto-focus search on global type
     document.addEventListener('keydown', (e) => {
@@ -60,7 +65,13 @@ export function initAutocomplete() {
             div.appendChild(textSpan);
             div.appendChild(typeSpan);
 
-            div.addEventListener('click', () => {
+            div.addEventListener('click', (e) => {
+                // Prevent accidental click execution if suggestions popped up less than 250ms ago
+                if (Date.now() - suggestionsShownTime < 250) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
                 if (searchInput) searchInput.value = item.text;
                 doSearch(item.text);
             });
@@ -68,6 +79,7 @@ export function initAutocomplete() {
             suggestionsBox.appendChild(div);
         });
 
+        suggestionsShownTime = Date.now();
         suggestionsBox.classList.remove('hidden');
     };
 
@@ -128,6 +140,7 @@ export function initAutocomplete() {
         });
 
         const showSuggestionsImmediately = () => {
+            if (isInitialPageLoad) return;
             const val = searchInput.value.trim();
             const historyLimit = userSettings.historyCount || 5;
             const searchHistory = getSearchHistory();
@@ -147,11 +160,14 @@ export function initAutocomplete() {
             }
         };
 
-        searchInput.addEventListener('focus', showSuggestionsImmediately);
-        searchInput.addEventListener('click', showSuggestionsImmediately);
+        searchInput.addEventListener('click', (e) => {
+            if (e.target === searchInput) {
+                showSuggestionsImmediately();
+            }
+        });
 
         document.addEventListener('click', (e) => {
-            if (searchForm && !searchForm.contains(e.target) && suggestionsBox) {
+            if (suggestionsBox && e.target !== searchInput && !suggestionsBox.contains(e.target)) {
                 suggestionsBox.classList.add('hidden');
             }
         });

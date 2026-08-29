@@ -188,7 +188,11 @@
 
             // External link -> open in new browser tab safely
             if (/^(https?:|\/\/|mailto:|tel:)/i.test(href)) {
-                window.open(href, '_blank', 'noopener,noreferrer');
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ type: 'open-external-url', url: href }, '*');
+                } else {
+                    window.open(href, '_blank', 'noopener,noreferrer');
+                }
                 return;
             }
 
