@@ -50,8 +50,10 @@ body[data-container-width="contained"] .bookmarks-container {
     padding: 1.5rem;
     transition: var(--transition-smooth);
     width: 260px; /* ~6.8cm */
-    flex: 0 0 260px; 
+    flex: 0 0 260px;
     scroll-snap-align: start;
+    height: var(--dashboard-card-height);
+    overflow: hidden;
 }
 
 /* Bookmark Tiles Auto Width Override */
@@ -173,6 +175,7 @@ body[data-tile-width="auto"] .bookmark-link span {
 
 /* Dashboard Widgets Wrapper Container for side-by-side flex */
 .dashboard-widgets-container {
+    --dashboard-card-height: 244px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -224,9 +227,9 @@ body .dashboard-widgets-container .bookmarks-container[data-folders-visible="tru
     justify-content: flex-start;
 }
 
-/* Custom dashboard widget height locking to match bookmark cards */
+/* Dashboard cards (custom widgets + native tracker) share bookmark height */
 .custom-dashboard-widget {
-    height: 244px !important;
+    height: var(--dashboard-card-height) !important;
 }
 
 /* Settings Page Drag & Drop List Items */

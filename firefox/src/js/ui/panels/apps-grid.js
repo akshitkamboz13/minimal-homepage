@@ -171,8 +171,28 @@ function renderAppsGrid() {
         });
     } catch (err) {}
 
-    // Combine Sticky Notes, Settings, Pinned Dock Shortcuts, and Custom App Widgets
-    let allApps = [...systemApps, ...pinnedDockApps, ...customWidgets];
+    // Load monthly trackers with app placement
+    const trackerApps = [];
+    try {
+        const trackers = JSON.parse(localStorage.getItem('startpage_trackers') || '[]');
+        trackers.forEach(t => {
+            if (t.placement === 'app' && t.enabled !== false) {
+                trackerApps.push({
+                    id: 'tracker_app_' + t.id,
+                    name: t.name,
+                    category: 'custom',
+                    icon: `<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/><line x1="15" y1="4" x2="15" y2="9"/></svg>`,
+                    action: () => {
+                        window.dispatchEvent(new CustomEvent('launch-tracker-app', { detail: { id: t.id } }));
+                        closeAppsGrid();
+                    }
+                });
+            }
+        });
+    } catch (err) {}
+
+    // Combine Sticky Notes, Settings, Pinned Dock Shortcuts, Custom App Widgets, and Trackers
+    let allApps = [...systemApps, ...pinnedDockApps, ...customWidgets, ...trackerApps];
 
     // Filter by Category
     if (currentCategory !== 'all') {

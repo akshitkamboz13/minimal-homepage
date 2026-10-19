@@ -12,6 +12,7 @@ import { initContextMenu } from './ui/panels/context-menu.js';
 import { initWidgetRuntime } from './widgets/widget-runtime.js';
 import { initAppWindowManager } from './ui/app-window-manager.js';
 import { dismissPageLoader } from './animations/index.js';
+import { initTracker } from './tracker/tracker.js';
 
 export function initApp() {
     initTheme();
@@ -27,6 +28,7 @@ export function initApp() {
     initContextMenu();
     initWidgetRuntime();
     initAppWindowManager();
+    initTracker();
 
     // Smoothly dismiss page loader veil after initial components render
     dismissPageLoader();

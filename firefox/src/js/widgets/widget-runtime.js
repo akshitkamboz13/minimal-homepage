@@ -168,7 +168,6 @@ export function loadActiveWidgets() {
                 id: `layout_widget_${widget.id}`,
                 title: widget.name,
                 width: widget.defaultW || 400,
-                height: 244,
                 className: 'custom-dashboard-widget'
             });
 

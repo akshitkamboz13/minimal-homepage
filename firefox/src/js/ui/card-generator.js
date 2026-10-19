@@ -3,7 +3,7 @@ export function createGlassCard(options = {}) {
         id,
         title = '',
         width = 400,
-        height = 244,
+        height = null,
         className = ''
     } = options;
 
@@ -11,7 +11,9 @@ export function createGlassCard(options = {}) {
     if (id) cardEl.id = id;
     cardEl.className = `glass-card-wrapper glass-panel ${className}`.trim();
     cardEl.style.width = typeof width === 'number' ? `${width}px` : width;
-    cardEl.style.height = typeof height === 'number' ? `${height}px` : height;
+    if (height != null) {
+        cardEl.style.height = typeof height === 'number' ? `${height}px` : height;
+    }
 
     if (title) {
         const headerEl = document.createElement('div');

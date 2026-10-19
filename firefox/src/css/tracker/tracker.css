@@ -1,0 +1,808 @@
+/* ─── Habit Tracker Widget ─────────────────────────────────────────────────── */
+
+.tracker-widget {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: inherit;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* ── Header ── */
+.tracker-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tracker-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tracker-name-col {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.tracker-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tracker-streak-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 6px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .tracker-streak-pill {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+/* View Switcher Segmented Control */
+.tracker-view-toggle {
+    display: flex;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.tracker-toggle-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+
+.tracker-toggle-btn:hover {
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tracker-toggle-btn.active {
+    background: var(--glass-highlight);
+    color: var(--accent-color);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Body Container ── */
+.tracker-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tracker-view-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+/* ── Navigation Controls ── */
+.tracker-nav-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 1px 3px;
+}
+
+.tracker-nav-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 3px;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.tracker-nav-btn:hover {
+    color: var(--text-color);
+    background: var(--glass-highlight);
+}
+
+.tracker-nav-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-color);
+    padding: 0 4px;
+    user-select: none;
+}
+
+.tracker-nav-label.has-offset {
+    color: var(--accent-color);
+    cursor: pointer;
+}
+
+.tracker-nav-label.has-offset:hover {
+    text-decoration: underline;
+}
+
+.tracker-nav-subheader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── 1. TODAY VIEW ── */
+.tracker-today-container {
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.tracker-today-action-row {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    max-height: 96px;
+}
+
+.tracker-big-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 12px;
+    border: 1.5px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: inherit;
+    padding: 10px;
+}
+
+.tracker-big-btn:hover {
+    transform: translateY(-2px);
+    background: var(--glass-highlight);
+}
+
+.tracker-big-btn-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.tracker-btn-done.active {
+    background: rgba(34, 197, 94, 0.2) !important;
+    border-color: #22c55e !important;
+    color: #16a34a !important;
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.25);
+}
+
+[data-theme="dark"] .tracker-btn-done.active {
+    color: #4ade80 !important;
+    background: rgba(74, 222, 128, 0.18) !important;
+    border-color: #4ade80 !important;
+}
+
+.tracker-btn-missed.active {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: #ef4444 !important;
+    color: #dc2626 !important;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.25);
+}
+
+[data-theme="dark"] .tracker-btn-missed.active {
+    color: #f87171 !important;
+    background: rgba(248, 113, 113, 0.18) !important;
+    border-color: #f87171 !important;
+}
+
+/* Recent Strip */
+.tracker-recent-strip {
+    display: flex;
+    gap: 4px;
+    justify-content: space-between;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 6px 8px;
+    flex-shrink: 0;
+}
+
+.tracker-mini-pill {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 3px 2px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.tracker-mini-pill:hover {
+    background: var(--glass-highlight);
+}
+
+.tracker-mini-pill .pill-day {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.tracker-mini-pill .pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--glass-border);
+}
+
+.tracker-mini-pill.is-today .pill-day {
+    color: var(--accent-color);
+}
+
+.tracker-mini-pill.state-done .pill-dot {
+    background: #22c55e;
+    border-color: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
+.tracker-mini-pill.state-missed .pill-dot {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+/* ── 2. WEEK VIEW ── */
+.tracker-week-container {
+    gap: 6px;
+    justify-content: space-between;
+}
+
+.tracker-week-subheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.tracker-week-stats-pill {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.tracker-week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
+}
+
+.tracker-week-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 2px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.tracker-week-col:hover:not(.is-future) {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+    background: var(--glass-highlight);
+}
+
+.tracker-week-col.is-today {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+.tracker-week-col.is-today .week-col-name {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.tracker-week-col.is-future {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.tracker-week-col.is-done {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: #22c55e;
+}
+
+.tracker-week-col.is-missed {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+.week-col-name {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.week-col-num {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.week-col-indicator {
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tracker-week-col.is-done .week-col-indicator {
+    color: #22c55e;
+}
+
+.tracker-week-col.is-missed .week-col-indicator {
+    color: #ef4444;
+}
+
+.tracker-week-quickbar {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tracker-btn.compact {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.15s ease;
+}
+
+.tracker-btn.compact:hover {
+    background: var(--glass-highlight);
+}
+
+/* ── 3. MONTH VIEW ── */
+.tracker-month-container {
+    gap: 4px;
+}
+
+.tracker-month-subheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.tracker-month-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.tracker-mini-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.tracker-btn-mini {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+}
+
+.tracker-btn-mini:hover {
+    color: var(--text-color);
+    background: var(--glass-highlight);
+}
+
+.tracker-btn-mini.btn-done.active {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+.tracker-btn-mini.btn-missed.active {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.tracker-dow-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.tracker-dow-label {
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    flex: 1;
+    min-height: 0;
+}
+
+.tracker-cell {
+    border-radius: 3px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    user-select: none;
+    transition: all 0.1s ease;
+}
+
+.tracker-cell:hover:not(.tracker-cell-future):not(.tracker-cell-empty) {
+    border-color: var(--accent-color);
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+.tracker-cell-empty {
+    background: transparent;
+    border-color: transparent;
+    cursor: default;
+    pointer-events: none;
+}
+
+.tracker-cell-future {
+    opacity: 0.25;
+    cursor: default;
+    pointer-events: none;
+}
+
+.tracker-cell-today {
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+    font-weight: 700;
+    box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+.tracker-cell-done {
+    background: rgba(34, 197, 94, 0.45) !important;
+    border-color: #22c55e !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .tracker-cell-done {
+    background: rgba(74, 222, 128, 0.35) !important;
+    border-color: #4ade80 !important;
+    color: #ffffff !important;
+}
+
+.tracker-cell-missed {
+    background: rgba(239, 68, 68, 0.4) !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+/* ── 4. YEAR VIEW ── */
+.tracker-year-container {
+    gap: 4px;
+}
+
+.tracker-year-subheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.tracker-year-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.tracker-year-stats-pill {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.tracker-year-months-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
+}
+
+.tracker-year-month-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 3px 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.tracker-year-month-card.is-current-month {
+    border-color: var(--accent-color);
+}
+
+.year-month-title {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.tracker-year-month-card.is-current-month .year-month-title {
+    color: var(--accent-color);
+}
+
+.year-month-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5px;
+    align-content: flex-start;
+    flex: 1;
+    overflow: hidden;
+    margin: 2px 0;
+}
+
+.year-dot {
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 1px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.year-dot.is-done {
+    background: #22c55e;
+}
+
+.year-dot.is-missed {
+    background: #ef4444;
+}
+
+.year-dot.is-today {
+    box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+.year-month-bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.year-month-progress {
+    height: 100%;
+    background: #22c55e;
+    border-radius: 2px;
+}
+
+/* ── Container Overrides for Zero Scroll ── */
+.tracker-dashboard-card {
+    overflow: hidden !important;
+}
+
+.tracker-card-inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden !important;
+}
+
+.tracker-window-body {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden !important;
+}
+
+.tracker-popup {
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.tracker-popup.active {
+    display: flex;
+}
+
+.tracker-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.tracker-popup-header h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.tracker-popup-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    border-radius: 5px;
+    transition: background 0.15s;
+}
+
+.tracker-popup-close:hover {
+    background: var(--glass-highlight);
+}
+
+.tracker-popup-body {
+    flex: 1;
+    overflow: hidden !important;
+}
+
+.tracker-panel-btn.active {
+    color: var(--accent-color);
+}
+
+/* ── Settings Panel Styles ── */
+.tracker-settings-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    margin-bottom: 8px;
+}
+
+.tracker-settings-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tracker-settings-item-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.tracker-settings-item-kind {
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-weight: 500;
+    background: var(--glass-highlight);
+    color: var(--text-secondary);
+}
+
+.tracker-settings-item-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.tracker-settings-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tracker-settings-item-row label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.tracker-empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    padding: 24px 0;
+}
+
+.tracker-create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    margin-bottom: 12px;
+}
+
+.tracker-create-form h4 {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.tracker-create-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}

@@ -384,6 +384,17 @@
                                 </svg>
                                 Puff Terminal
                             </li>
+                            <li class="menu-item" data-tab="tracker">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                    <line x1="3" y1="9" x2="21" y2="9"/>
+                                    <line x1="9" y1="4" x2="9" y2="9"/>
+                                    <line x1="15" y1="4" x2="15" y2="9"/>
+                                </svg>
+                                Habit Tracker
+                            </li>
                             <li class="menu-item" data-tab="widget-manage">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
@@ -569,9 +580,9 @@
                                 </div>
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">Widgets & Panels</h4>
-                                    <p class="category-card-desc">Manage panel action bars, clock format, notes autosave, and bookmarks
-                                        directory tiles.</p>
-                                    <span class="category-card-tags">Panels & Bars • Clock & Apps • Notes • Bookmarks</span>
+                                    <p class="category-card-desc">Manage panel action bars, clock format, notes autosave, bookmarks,
+                                        and habit trackers.</p>
+                                    <span class="category-card-tags">Panels & Bars • Clock & Apps • Notes • Bookmarks • Tracker</span>
                                 </div>
                             </div>
 
@@ -1185,6 +1196,43 @@
                                 <button type="button" id="btn-reset-puff" class="action-btn">Reset Shell</button>
                             </div>
                         </div>
+                    </section>
+
+                    <!-- Habit Tracker -->
+                    <section id="tab-tracker" class="settings-pane">
+                        <h3>Habit Tracker</h3>
+                        <p class="setting-desc" style="display:block;margin-bottom:1rem;">Visual habit tracking with Day, Week, Month, and Annual Year views. Positive habits use Done / Missed; negative habits use Protect / Missed.</p>
+
+                        <div class="tracker-create-form">
+                            <h4>Create New Habit</h4>
+                            <div class="tracker-create-row">
+                                <input type="text" id="tracker-new-name" class="custom-input" placeholder="Habit name (e.g. Workout, No Smoking, Meditate)" style="flex:1;min-width:160px;">
+                            </div>
+                            <div class="tracker-create-row">
+                                <select id="tracker-new-kind" class="custom-select" style="flex:1;min-width:140px;">
+                                    <option value="positive">Positive (habit — Done / Missed)</option>
+                                    <option value="negative">Negative (protect — Protect / Missed)</option>
+                                </select>
+                                <select id="tracker-new-view" class="custom-select" style="flex:1;min-width:130px;">
+                                    <option value="week" selected>Week view (7 days)</option>
+                                    <option value="today">Today view (Big focus)</option>
+                                    <option value="month">Month view (Calendar)</option>
+                                    <option value="year">Year view (Annual heatmap)</option>
+                                </select>
+                                <select id="tracker-new-placement" class="custom-select" style="flex:1;min-width:130px;">
+                                    <option value="dashboard">Dashboard card</option>
+                                    <option value="app">Window app (apps grid)</option>
+                                    <option value="vertical">Vertical panel button</option>
+                                    <option value="horizontal">Horizontal panel button</option>
+                                </select>
+                            </div>
+                            <div class="tracker-create-row">
+                                <button type="button" id="btn-create-tracker" class="action-btn">Create Habit Tracker</button>
+                            </div>
+                        </div>
+
+                        <h4 class="section-title" style="margin-bottom:0.75rem;">Your Habits</h4>
+                        <div id="tracker-settings-list"></div>
                     </section>
 
                     <!-- Widget Studio Manage -->
@@ -2227,7 +2275,7 @@
                             <h4 class="about-app-title">Home by si4k</h4>
                             <span class="about-app-version">v2.2.0</span>
                             <p class="about-app-desc">A beautiful, high-performance, and feature-rich new tab override
-                                extension for Mozilla Firefox.</p>
+                                extension for Google Chrome.</p>
 
                             <div class="about-app-author-wrapper"
                                 style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
