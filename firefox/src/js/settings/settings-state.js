@@ -72,7 +72,7 @@ const defaults = {
     voiceLang: 'en-US',
     voiceAutoSubmit: true,
     visualProvider: 'google', // 'google' | 'bing' | 'yandex'
-    kbdAutofocus: false,
+    kbdAutofocus: true,
     kbdEscClear: true,
     historyCount: 5,
     suggestionsLimit: 5,
