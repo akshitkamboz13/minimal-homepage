@@ -17,11 +17,10 @@ export function initLayoutManager() {
 
     window.addEventListener('start-rearrange-layout', () => enableRearrangeMode(true));
     window.addEventListener('reset-screen-layout',    () => resetLayoutPositions());
-    
+
     window.addEventListener('layout-targets-changed', () => {
         applyLayoutPositions();
-        const toolbar = document.getElementById('layout-rearrange-toolbar');
-        if (toolbar && !toolbar.classList.contains('hidden')) {
+        if (isRearrangeActive) {
             setupDragHandlers();
         }
     });
@@ -93,6 +92,7 @@ export function applyLayoutPositions() {
     const targets = getLayoutTargets();
 
     if (!userSettings.freeformLayout || !userSettings.layoutPositions) {
+        document.body.classList.remove('freeform-layout');
         targets.forEach(el => {
             restoreToOriginalParent(el);
             el.style.removeProperty('position');
@@ -104,10 +104,15 @@ export function applyLayoutPositions() {
             el.style.removeProperty('z-index');
             el.style.removeProperty('bottom');
             el.style.removeProperty('right');
+            el.style.removeProperty('width');
+            el.style.removeProperty('max-width');
+            el.style.removeProperty('overflow-x');
             el.classList.remove('freeform-placed');
         });
         return;
     }
+
+    document.body.classList.add('freeform-layout');
 
     targets.forEach(el => {
         const id = el.id;
@@ -123,6 +128,23 @@ export function applyLayoutPositions() {
             el.style.right      = 'auto';
             el.style.zIndex     = '90';
             el.classList.add('freeform-placed');
+
+            // If bookmarks container, preserve visible folder limit
+            if (el.id === 'bookmarks-container' || el.classList.contains('bookmarks-container')) {
+                const limit = parseInt(userSettings.bookmarkFoldersLimit, 10);
+                if (limit > 0) {
+                    el.style.setProperty('--bookmark-folders-visible', limit);
+                    el.setAttribute('data-folders-visible', 'true');
+                    el.style.width = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                    el.style.maxWidth = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                    el.style.overflowX = 'auto';
+                } else {
+                    el.style.removeProperty('--bookmark-folders-visible');
+                    el.removeAttribute('data-folders-visible');
+                    el.style.removeProperty('width');
+                    el.style.removeProperty('max-width');
+                }
+            }
 
             // Ensure element is a direct body child so .container's
             // animation containing-block doesn't trap it
@@ -167,11 +189,13 @@ export function enableRearrangeMode(enable) {
     let toolbar = document.getElementById('rearrange-toolbar');
 
     if (enable) {
+        document.body.classList.add('rearrange-active');
+
         // Automatically enable Full Screen Width setting when layout editing is enabled
         userSettings.containerWidth = 'full';
         const toggleWidth = document.getElementById('toggle-container-width');
         if (toggleWidth) toggleWidth.checked = true;
-        saveSettings();
+        saveSettings({ notify: false });
 
         // Show 3x3 alignment grid overlay
         toggleGridOverlay(true);
@@ -212,6 +236,7 @@ export function enableRearrangeMode(enable) {
         setupDragHandlers();
 
     } else {
+        document.body.classList.remove('rearrange-active');
         if (toolbar) toolbar.classList.add('hidden');
         toggleGridOverlay(false);
         teardownDragHandlers();
@@ -220,6 +245,8 @@ export function enableRearrangeMode(enable) {
 }
 
 export function resetLayoutPositions() {
+    document.body.classList.remove('rearrange-active');
+    document.body.classList.remove('freeform-layout');
     // Restore all elements to original DOM positions before clearing state
     getLayoutTargets().forEach(el => restoreToOriginalParent(el));
     userSettings.freeformLayout  = false;
@@ -228,21 +255,74 @@ export function resetLayoutPositions() {
     applyLayoutPositions();
 }
 
-// ─── Target elements (Strictly main-header, hero-clock, search, bookmarks, quick-actions-fab, custom-dashboard-widgets) ───
+// ─── Target elements (Auto-identifies every movable screen element) ───
 function getLayoutTargets() {
-    const hero = document.querySelector('.hero-section');
-    const search = document.getElementById('search-form');
-    const bookmarks = document.getElementById('bookmarks-container');
-    const mainHeader = document.getElementById('main-header');
-    const fabContainer = document.querySelector('.fab-container');
-    
-    if (hero && !hero.id) hero.id = 'hero-clock-section';
-    if (mainHeader && !mainHeader.id) mainHeader.id = 'main-header';
-    if (fabContainer && !fabContainer.id) fabContainer.id = 'quick-actions-fab';
+    const targets = [];
+    const seen = new Set();
 
-    const customWidgets = Array.from(document.querySelectorAll('.custom-dashboard-widget'));
+    const addTarget = (el, fallbackId) => {
+        if (!el || seen.has(el)) return;
+        if (!el.id && fallbackId) el.id = fallbackId;
+        if (!el.id) {
+            el.id = 'layout-item-' + (el.className || 'elem').replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 24);
+        }
+        seen.add(el);
+        targets.push(el);
+    };
 
-    return [hero, search, bookmarks, mainHeader, fabContainer, ...customWidgets].filter(Boolean);
+    // 1. Core Header
+    const mainHeader = document.getElementById('main-header') || document.querySelector('header');
+    addTarget(mainHeader, 'main-header');
+
+    // 2. Hero Clock & Greeting Section
+    const hero = document.querySelector('.hero-section') || document.getElementById('hero-clock-section');
+    addTarget(hero, 'hero-clock-section');
+
+    // 3. Search Bar Container
+    const search = document.getElementById('search-form') || document.querySelector('.search-container');
+    addTarget(search, 'search-form');
+
+    // 4. Bookmarks Bar
+    const bookmarks = document.getElementById('bookmarks-container') || document.querySelector('.bookmarks-container');
+    addTarget(bookmarks, 'bookmarks-container');
+
+    // 5. Quick Actions FAB
+    const fabContainer = document.querySelector('.fab-container') || document.getElementById('quick-actions-fab');
+    addTarget(fabContainer, 'quick-actions-fab');
+
+    // 6. Application Dock (if present)
+    const dock = document.getElementById('glass-dock') || document.querySelector('.glass-dock');
+    if (dock) {
+        addTarget(dock, 'glass-dock');
+    }
+
+    // 7. Custom Studio Widgets
+    document.querySelectorAll('.custom-dashboard-widget, .studio-custom-widget').forEach((w, idx) => {
+        addTarget(w, `custom-widget-${idx}`);
+    });
+
+    // 8. Native Dashboard Cards & any children inside dashboard-widgets-container
+    const widgetsContainer = document.getElementById('dashboard-widgets-container');
+    if (widgetsContainer) {
+        Array.from(widgetsContainer.children).forEach((child, idx) => {
+            if (child.id === 'bookmarks-container' || child.classList.contains('bookmarks-container')) return;
+            addTarget(child, `dashboard-card-${idx}`);
+        });
+    }
+
+    // 9. Floating Notes Container if present
+    const notesContainer = document.getElementById('notes-container');
+    if (notesContainer && notesContainer.children.length > 0) {
+        addTarget(notesContainer, 'notes-container');
+    }
+
+    // 10. Any already freeform placed or draggable items
+    document.querySelectorAll('.freeform-placed, .draggable-layout-item').forEach(el => {
+        if (el.classList.contains('layout-drag-badge') || el.id === 'rearrange-toolbar') return;
+        addTarget(el);
+    });
+
+    return targets;
 }
 
 let activeDragCleanup = [];
@@ -293,18 +373,36 @@ function setupDragHandlers() {
         el.style.right      = 'auto';
         el.style.zIndex     = '90';
 
-        // ── State vars — identical to notes.js ──
+        // Preserve bookmark visible folder limit if bookmarks container
+        if (el.id === 'bookmarks-container' || el.classList.contains('bookmarks-container')) {
+            const limit = parseInt(userSettings.bookmarkFoldersLimit, 10);
+            if (limit > 0) {
+                el.style.setProperty('--bookmark-folders-visible', limit);
+                el.setAttribute('data-folders-visible', 'true');
+                el.style.width = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                el.style.maxWidth = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                el.style.overflowX = 'auto';
+            } else {
+                el.style.removeProperty('--bookmark-folders-visible');
+                el.removeAttribute('data-folders-visible');
+                el.style.removeProperty('width');
+                el.style.removeProperty('max-width');
+            }
+        }
+
         let isDragging = false;
         let currentX   = xOffset;
         let currentY   = yOffset;
-        let initialX;
-        let initialY;
+        let initialX   = 0;
+        let initialY   = 0;
 
         const dragStart = (e) => {
             if (e.target.closest('input, textarea, select')) return;
             const isInteractive = e.target.closest('a, button');
             const isBadge = e.target.closest('.layout-drag-badge');
             if (isInteractive && !isBadge) return;
+
+            e.stopPropagation();
 
             const liveRect = el.getBoundingClientRect();
             xOffset = liveRect.left;
@@ -321,17 +419,19 @@ function setupDragHandlers() {
             if (!isDragging) return;
             e.preventDefault();
 
-            currentX = e.clientX - initialX;
-            currentY = e.clientY - initialY;
+            let targetX = e.clientX - initialX;
+            let targetY = e.clientY - initialY;
 
             // Viewport bounds
             const width  = el.offsetWidth;
             const height = el.offsetHeight;
-            currentX = Math.max(0, Math.min(currentX, window.innerWidth  - width));
-            currentY = Math.max(0, Math.min(currentY, window.innerHeight - height));
+            const maxX = Math.max(0, window.innerWidth  - width);
+            const maxY = Math.max(0, window.innerHeight - height);
+            targetX = Math.max(0, Math.min(targetX, maxX));
+            targetY = Math.max(0, Math.min(targetY, maxY));
 
-            // ── Magnetic Snapping to 3 Vertical & 3 Horizontal Lines ──
-            const SNAP_THRESHOLD = 16;
+            // Magnetic Snapping
+            const SNAP_THRESHOLD = 14;
             const vLines = [
                 { pos: window.innerWidth * 0.25, el: gridOverlay?.querySelector('.v1') },
                 { pos: window.innerWidth * 0.50, el: gridOverlay?.querySelector('.v2') },
@@ -347,54 +447,54 @@ function setupDragHandlers() {
             vLines.forEach(l => l.el?.classList.remove('snapped'));
             hLines.forEach(l => l.el?.classList.remove('snapped'));
 
-            // Snap X (Vertical lines: check left edge, center, right edge)
+            // Snap X: check center first, then left edge, then right edge
             for (const line of vLines) {
-                const targetX = line.pos;
-                // Left edge snap
-                if (Math.abs(currentX - targetX) <= SNAP_THRESHOLD) {
-                    currentX = targetX;
+                const lineX = line.pos;
+                const centerSnap = lineX - width / 2;
+                if (Math.abs(targetX - centerSnap) <= SNAP_THRESHOLD && centerSnap >= 0 && centerSnap <= maxX) {
+                    targetX = centerSnap;
                     line.el?.classList.add('snapped');
                     break;
                 }
-                // Center snap
-                if (Math.abs((currentX + width / 2) - targetX) <= SNAP_THRESHOLD) {
-                    currentX = targetX - width / 2;
+                const leftSnap = lineX;
+                if (Math.abs(targetX - leftSnap) <= SNAP_THRESHOLD && leftSnap >= 0 && leftSnap <= maxX) {
+                    targetX = leftSnap;
                     line.el?.classList.add('snapped');
                     break;
                 }
-                // Right edge snap
-                if (Math.abs((currentX + width) - targetX) <= SNAP_THRESHOLD) {
-                    currentX = targetX - width;
+                const rightSnap = lineX - width;
+                if (Math.abs(targetX - rightSnap) <= SNAP_THRESHOLD && rightSnap >= 0 && rightSnap <= maxX) {
+                    targetX = rightSnap;
                     line.el?.classList.add('snapped');
                     break;
                 }
             }
 
-            // Snap Y (Horizontal lines: check top edge, middle, bottom edge)
+            // Snap Y: check top edge first, then center, then bottom edge
             for (const line of hLines) {
-                const targetY = line.pos;
-                // Top edge snap
-                if (Math.abs(currentY - targetY) <= SNAP_THRESHOLD) {
-                    currentY = targetY;
+                const lineY = line.pos;
+                const topSnap = lineY;
+                if (Math.abs(targetY - topSnap) <= SNAP_THRESHOLD && topSnap >= 0 && topSnap <= maxY) {
+                    targetY = topSnap;
                     line.el?.classList.add('snapped');
                     break;
                 }
-                // Middle snap
-                if (Math.abs((currentY + height / 2) - targetY) <= SNAP_THRESHOLD) {
-                    currentY = targetY - height / 2;
+                const centerSnapY = lineY - height / 2;
+                if (Math.abs(targetY - centerSnapY) <= SNAP_THRESHOLD && centerSnapY >= 0 && centerSnapY <= maxY) {
+                    targetY = centerSnapY;
                     line.el?.classList.add('snapped');
                     break;
                 }
-                // Bottom edge snap
-                if (Math.abs((currentY + height) - targetY) <= SNAP_THRESHOLD) {
-                    currentY = targetY - height;
+                const bottomSnap = lineY - height;
+                if (Math.abs(targetY - bottomSnap) <= SNAP_THRESHOLD && bottomSnap >= 0 && bottomSnap <= maxY) {
+                    targetY = bottomSnap;
                     line.el?.classList.add('snapped');
                     break;
                 }
             }
 
-            xOffset = currentX;
-            yOffset = currentY;
+            currentX = targetX;
+            currentY = targetY;
 
             el.style.left = `${currentX}px`;
             el.style.top  = `${currentY}px`;
@@ -413,7 +513,7 @@ function setupDragHandlers() {
             el.style.left = `${currentX}px`;
             el.style.top  = `${currentY}px`;
 
-            // Persist per-drop so elements stay visually in place
+            // Persist per-drop silently so widgets don't unmount mid-rearrange
             if (!userSettings.layoutPositions) userSettings.layoutPositions = {};
             const existing = userSettings.layoutPositions[id] || {};
             userSettings.layoutPositions[id] = {
@@ -423,7 +523,7 @@ function setupDragHandlers() {
                 h: existing.h
             };
             userSettings.freeformLayout = true;
-            saveSettings();
+            saveSettings({ notify: false });
         };
 
         el.addEventListener('mousedown', dragStart);

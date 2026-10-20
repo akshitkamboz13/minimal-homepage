@@ -142,8 +142,8 @@ export function launchCustomApp(widget) {
 
 // Main loader function
 export function loadActiveWidgets() {
-    // 1. Cleanup previously active custom widgets
-    const oldWidgets = document.querySelectorAll('.custom-dashboard-widget');
+    // 1. Cleanup previously active custom studio widgets
+    const oldWidgets = document.querySelectorAll('.studio-custom-widget, [id^="layout_widget_"]');
     oldWidgets.forEach(el => el.remove());
 
     const oldPanelBtns = document.querySelectorAll('.custom-panel-btn');
@@ -180,7 +180,8 @@ export function loadActiveWidgets() {
                 id: `layout_widget_${widget.id}`,
                 title: widget.name,
                 width: widget.defaultW || 400,
-                className: 'custom-dashboard-widget'
+                className: 'custom-dashboard-widget studio-custom-widget',
+                editUrl: `widget-studio.html?edit=${encodeURIComponent(widget.id)}`
             });
 
             const iframe = document.createElement('iframe');

@@ -152,10 +152,13 @@ export function onSettingsChanged(callback) {
     changeCallbacks.push(callback);
 }
 
-export function saveSettings() {
+export function saveSettings(options = {}) {
     localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
     if (window.chrome && chrome.storage && chrome.storage.local) {
         chrome.storage.local.set({ startpage_settings: userSettings });
+    }
+    if (options && options.notify === false) {
+        return;
     }
     changeCallbacks.forEach(cb => cb(userSettings));
 }

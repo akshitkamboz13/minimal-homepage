@@ -2,12 +2,22 @@ import { userSettings } from '../settings/index.js';
 
 export function renderBookmarksGrid(folders, bookmarksContainer) {
     if (bookmarksContainer) {
-        if (userSettings.bookmarkFoldersLimit > 0) {
-            bookmarksContainer.style.setProperty('--bookmark-folders-visible', userSettings.bookmarkFoldersLimit);
+        const limit = parseInt(userSettings.bookmarkFoldersLimit, 10);
+        if (limit > 0) {
+            bookmarksContainer.style.setProperty('--bookmark-folders-visible', limit);
             bookmarksContainer.setAttribute('data-folders-visible', 'true');
+            if (userSettings.freeformLayout || bookmarksContainer.classList.contains('freeform-placed') || bookmarksContainer.classList.contains('draggable-layout-item')) {
+                bookmarksContainer.style.width = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                bookmarksContainer.style.maxWidth = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                bookmarksContainer.style.overflowX = 'auto';
+            }
         } else {
             bookmarksContainer.style.removeProperty('--bookmark-folders-visible');
             bookmarksContainer.removeAttribute('data-folders-visible');
+            if (userSettings.freeformLayout || bookmarksContainer.classList.contains('freeform-placed') || bookmarksContainer.classList.contains('draggable-layout-item')) {
+                bookmarksContainer.style.width = 'auto';
+                bookmarksContainer.style.maxWidth = '95vw';
+            }
         }
     }
 

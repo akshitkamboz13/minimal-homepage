@@ -656,9 +656,16 @@
     border-radius: 2px;
 }
 
-/* ── Container Overrides for Zero Scroll ── */
+/* ── Container Overrides for Zero Scroll & Freeform Compact Height ── */
 .tracker-dashboard-card {
     overflow: hidden !important;
+}
+
+body.freeform-layout .tracker-dashboard-card,
+body.rearrange-active .tracker-dashboard-card,
+.tracker-dashboard-card.freeform-placed,
+.tracker-dashboard-card.draggable-layout-item {
+    height: 180px !important;
 }
 
 .tracker-card-inner {

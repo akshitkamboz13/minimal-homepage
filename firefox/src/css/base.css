@@ -322,9 +322,14 @@ body {
     gap: 0.5rem;
 }
 
+body.rearrange-active iframe {
+    pointer-events: none !important;
+}
+
 .draggable-layout-item,
 .freeform-placed {
     transition: none !important;
+    margin: 0 !important;
 }
 
 .draggable-layout-item {
@@ -365,16 +370,32 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+#main-header.freeform-placed,
+#main-header.draggable-layout-item,
 #top-header-bar.freeform-placed,
 #top-header-bar.draggable-layout-item,
 #quick-actions-fab.freeform-placed,
 #quick-actions-fab.draggable-layout-item,
 .fab-container.freeform-placed,
-.fab-container.draggable-layout-item {
+.fab-container.draggable-layout-item,
+#glass-dock.freeform-placed,
+#glass-dock.draggable-layout-item,
+.glass-dock.freeform-placed,
+.glass-dock.draggable-layout-item {
     width: fit-content !important;
     height: fit-content !important;
     bottom: auto !important;
     right: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+}
+
+#search-form.freeform-placed,
+#search-form.draggable-layout-item,
+.search-container.freeform-placed,
+.search-container.draggable-layout-item {
+    margin: 0 !important;
+    transform: none !important;
 }
 
 .labs-badge {

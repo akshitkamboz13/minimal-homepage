@@ -217,14 +217,35 @@ body:not([data-container-width="contained"]) .dashboard-widgets-container {
     mask-image: none;
 }
 
-/* Constrain bookmarks width if folders visibility limit is active */
-body .dashboard-widgets-container .bookmarks-container[data-folders-visible="true"] {
+/* Freeform and draggable bookmark base placement overrides */
+.bookmarks-container.freeform-placed,
+.bookmarks-container.draggable-layout-item {
+    position: fixed !important;
+    left: auto;
+    right: auto;
+    margin: 0 !important;
+    transform: none !important;
+    padding: 0 0.5rem 1rem 0.5rem !important;
+    width: auto;
+    max-width: 95vw;
+    overflow-x: auto !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    justify-content: flex-start !important;
+}
+
+/* Constrain bookmarks width when visible folder limit is active (default, in widgets container, and in freeform) */
+.bookmarks-container[data-folders-visible="true"],
+.bookmarks-container.freeform-placed[data-folders-visible="true"],
+.bookmarks-container.draggable-layout-item[data-folders-visible="true"],
+body.freeform-layout .bookmarks-container[data-folders-visible="true"] {
     --visible-count: var(--bookmark-folders-visible, 3);
-    width: 100%;
-    max-width: calc(var(--visible-count) * 260px + (var(--visible-count) - 1) * 1.5rem + 2rem);
-    padding-left: 1rem;
-    padding-right: 1rem;
-    justify-content: flex-start;
+    width: calc(var(--visible-count) * 260px + (var(--visible-count) - 1) * 1.5rem + 1rem) !important;
+    max-width: calc(var(--visible-count) * 260px + (var(--visible-count) - 1) * 1.5rem + 1rem) !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
 }
 
 /* Dashboard cards (custom widgets + native tracker) share bookmark height */
