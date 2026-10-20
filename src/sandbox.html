@@ -281,9 +281,32 @@
             return xhr;
         };
 
+        let activeAccentColor = '#3b82f6';
+        const mediaPendingRequests = new Map();
+        let mediaReqCounter = 0;
+        const mediaChangeListeners = new Set();
+
         // Listen for initialization parameters
         window.addEventListener('message', (e) => {
             const data = e.data;
+            if (!data) return;
+
+            if (data.type === 'media-api-response') {
+                const resolver = mediaPendingRequests.get(data.reqId);
+                if (resolver) {
+                    resolver(data.result);
+                    mediaPendingRequests.delete(data.reqId);
+                }
+                return;
+            }
+
+            if (data.type === 'media-state-broadcast') {
+                mediaChangeListeners.forEach(cb => {
+                    try { cb(data.state); } catch (err) {}
+                });
+                return;
+            }
+
             if (data && data.type === 'init') {
                 // Initialize virtual file system lookup map
                 window.__VIRTUAL_FILES__ = buildVirtualFiles(data.files || []);
@@ -353,6 +376,47 @@
                     theme: theme,
                     accentColor: {
                         get: () => activeAccentColor
+                    },
+                    // Safe Audio / Video Media Controller API
+                    media: {
+                        getAudibleTabs: () => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'get-tabs', reqId }, '*');
+                        }),
+                        getState: () => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'get-state', reqId }, '*');
+                        }),
+                        togglePlayPause: (tabId) => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'play-pause', tabId, reqId }, '*');
+                        }),
+                        nextTrack: (tabId) => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'next', tabId, reqId }, '*');
+                        }),
+                        prevTrack: (tabId) => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'prev', tabId, reqId }, '*');
+                        }),
+                        toggleMute: (tabId) => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'toggle-mute', tabId, reqId }, '*');
+                        }),
+                        focusTab: (tabId) => new Promise((resolve) => {
+                            const reqId = ++mediaReqCounter;
+                            mediaPendingRequests.set(reqId, resolve);
+                            window.parent.postMessage({ type: 'media-api-request', action: 'focus-tab', tabId, reqId }, '*');
+                        }),
+                        onMediaChanged: (callback) => {
+                            if (typeof callback === 'function') mediaChangeListeners.add(callback);
+                        }
                     }
                 };
 

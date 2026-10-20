@@ -13,6 +13,8 @@ import { initWidgetRuntime } from './widgets/widget-runtime.js';
 import { initAppWindowManager } from './ui/app-window-manager.js';
 import { dismissPageLoader } from './animations/index.js';
 import { initTracker } from './tracker/tracker.js';
+import { initTodo } from './todo/todo.js';
+import { initMediaController } from './media/media-controller.js';
 
 export function initApp() {
     initTheme();
@@ -29,6 +31,8 @@ export function initApp() {
     initWidgetRuntime();
     initAppWindowManager();
     initTracker();
+    initTodo();
+    initMediaController();
 
     // Smoothly dismiss page loader veil after initial components render
     dismissPageLoader();

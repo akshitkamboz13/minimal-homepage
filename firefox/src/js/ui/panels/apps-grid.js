@@ -191,8 +191,47 @@ function renderAppsGrid() {
         });
     } catch (err) {}
 
-    // Combine Sticky Notes, Settings, Pinned Dock Shortcuts, Custom App Widgets, and Trackers
-    let allApps = [...systemApps, ...pinnedDockApps, ...customWidgets, ...trackerApps];
+    // Load todo lists with app placement
+    const todoApps = [];
+    try {
+        const todosData = JSON.parse(localStorage.getItem('startpage_todos') || '{}');
+        const lists = todosData.lists || [];
+        lists.forEach(l => {
+            if (l.placement === 'app' && l.enabled !== false) {
+                todoApps.push({
+                    id: 'todo_app_' + l.id,
+                    name: l.name,
+                    category: 'custom',
+                    icon: `<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>`,
+                    action: () => {
+                        window.dispatchEvent(new CustomEvent('launch-todo-app', { detail: { id: l.id } }));
+                        closeAppsGrid();
+                    }
+                });
+            }
+        });
+    } catch (err) {}
+
+    // Load media controller with app placement
+    const mediaApps = [];
+    try {
+        const mediaConfig = JSON.parse(localStorage.getItem('startpage_media_settings') || '{}');
+        if (mediaConfig.placement === 'app' && mediaConfig.enabled !== false) {
+            mediaApps.push({
+                id: 'media_app_controller',
+                name: 'Music & Media',
+                category: 'custom',
+                icon: `<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
+                action: () => {
+                    window.dispatchEvent(new CustomEvent('launch-media-app'));
+                    closeAppsGrid();
+                }
+            });
+        }
+    } catch (err) {}
+
+    // Combine Sticky Notes, Settings, Pinned Dock Shortcuts, Custom App Widgets, Trackers, Todos, and Media
+    let allApps = [...systemApps, ...pinnedDockApps, ...customWidgets, ...trackerApps, ...todoApps, ...mediaApps];
 
     // Filter by Category
     if (currentCategory !== 'all') {

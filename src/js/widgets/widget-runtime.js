@@ -3,6 +3,7 @@ import { createGlassWindow } from '../ui/window-generator.js';
 import { createGlassCard } from '../ui/card-generator.js';
 import { applyDashboardOrder } from '../settings/panels/dashboard-layout.js';
 import { userSettings, onSettingsChanged } from '../settings/index.js';
+import { executeMediaAction, refreshAudibleTabs, getMediaControllerState } from '../media/media-controller.js';
 
 // Map to hold open custom app instances
 const openAppInstances = new Map();
@@ -334,8 +335,62 @@ window.addEventListener('message', (e) => {
             } else {
                 window.open(data.url, '_blank', 'noopener,noreferrer');
             }
+        } else if (data.type === 'media-api-request') {
+            const reqId = data.reqId;
+            const sourceWindow = e.source;
+            (async () => {
+                try {
+                    let result = null;
+                    if (data.action === 'get-tabs') {
+                        const tabs = await refreshAudibleTabs();
+                        result = (tabs || []).map(t => ({
+                            id: t.id,
+                            title: t.title || '',
+                            url: t.url || '',
+                            favIconUrl: t.favIconUrl || '',
+                            audible: !!t.audible,
+                            muted: !!(t.mutedInfo && t.mutedInfo.muted)
+                        }));
+                    } else if (data.action === 'get-state') {
+                        result = getMediaControllerState();
+                    } else if (['play-pause', 'next', 'prev', 'toggle-mute', 'focus-tab'].includes(data.action)) {
+                        result = await executeMediaAction(data.action, data.tabId);
+                    } else {
+                        result = { success: false, error: 'Unknown media action' };
+                    }
+                    if (sourceWindow) {
+                        sourceWindow.postMessage({
+                            type: 'media-api-response',
+                            reqId,
+                            result
+                        }, '*');
+                    }
+                } catch (err) {
+                    if (sourceWindow) {
+                        sourceWindow.postMessage({
+                            type: 'media-api-response',
+                            reqId,
+                            result: { success: false, error: err.message }
+                        }, '*');
+                    }
+                }
+            })();
         }
     }
+});
+
+// Broadcast media state updates to all sandboxed widget iframes
+window.addEventListener('media-state-updated', (e) => {
+    const state = e.detail;
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+        try {
+            iframe.contentWindow.postMessage({
+                type: 'media-state-broadcast',
+                state
+            }, '*');
+        } catch(err) {}
+    });
 });
 
 function toggleCustomPopupPanel(widget, triggerBtn) {

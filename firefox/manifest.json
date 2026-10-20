@@ -33,7 +33,8 @@
     "declarativeNetRequest",
     "contextMenus",
     "activeTab",
-    "tabs"
+    "tabs",
+    "scripting"
   ],
   "host_permissions": [
     "*://suggestqueries.google.com/*",

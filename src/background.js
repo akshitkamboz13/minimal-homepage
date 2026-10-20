@@ -1,7 +1,7 @@
 // background.js — service worker that bridges offscreen doc ↔ new tab page
 
 // Forward all voice messages between offscreen doc and the active tab
-chrome.runtime.onMessage.addListener((msg, sender) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === 'voice-start' || msg.type === 'voice-stop') {
         // From new-tab page → forward to offscreen document
         ensureOffscreen().then(() => {
@@ -11,15 +11,114 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
         // From offscreen doc → forward to the active new-tab page
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs[0]) {
-                // Can't sendMessage to a new-tab override page via tabs.sendMessage,
-                // but runtime.sendMessage broadcasts to all extension pages including the new tab
-                // The offscreen doc already sends via runtime.sendMessage, so the new tab page
-                // will receive it if it's also listening on runtime.onMessage.
-                // No need to re-forward — the new tab page listens on runtime.onMessage directly.
+                // Runtime broadcast
             }
         });
+    } else if (msg.type === 'media-control-action') {
+        handleMediaControl(msg.action, msg.tabId).then(res => {
+            sendResponse(res);
+        }).catch(err => {
+            sendResponse({ success: false, error: err.message });
+        });
+        return true; // Keep message channel open for async response
     }
 });
+
+// Helper function to execute media control on target tab
+async function handleMediaControl(action, targetTabId) {
+    let tabId = targetTabId;
+    if (!tabId) {
+        // Find first audible or active media tab
+        const audibleTabs = await chrome.tabs.query({ audible: true });
+        if (audibleTabs && audibleTabs.length > 0) {
+            tabId = audibleTabs[0].id;
+        }
+    }
+    if (!tabId) return { success: false, reason: 'No active media tab found' };
+
+    if (action === 'toggle-mute') {
+        const tab = await chrome.tabs.get(tabId);
+        const newMuted = !(tab.mutedInfo && tab.mutedInfo.muted);
+        await chrome.tabs.update(tabId, { muted: newMuted });
+        return { success: true, muted: newMuted };
+    }
+
+    if (action === 'focus-tab') {
+        const tab = await chrome.tabs.get(tabId);
+        await chrome.tabs.update(tabId, { active: true });
+        if (tab.windowId) await chrome.windows.update(tab.windowId, { focused: true });
+        return { success: true };
+    }
+
+    // Playback control via chrome.scripting
+    if (chrome.scripting && chrome.scripting.executeScript) {
+        try {
+            const results = await chrome.scripting.executeScript({
+                target: { tabId },
+                func: (act) => {
+                    // 1. YouTube specific
+                    if (location.hostname.includes('youtube.com')) {
+                        if (act === 'play-pause') {
+                            const btn = document.querySelector('.ytp-play-button');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'next') {
+                            const btn = document.querySelector('.ytp-next-button');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'prev') {
+                            const btn = document.querySelector('.ytp-prev-button');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        }
+                    }
+
+                    // 2. Spotify Web specific
+                    if (location.hostname.includes('spotify.com')) {
+                        if (act === 'play-pause') {
+                            const btn = document.querySelector('[data-testid="control-button-playpause"]');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'next') {
+                            const btn = document.querySelector('[data-testid="control-button-skip-forward"]');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'prev') {
+                            const btn = document.querySelector('[data-testid="control-button-skip-back"]');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        }
+                    }
+
+                    // 3. Generic HTML5 Video / Audio
+                    const mediaEls = Array.from(document.querySelectorAll('video, audio'));
+                    if (mediaEls.length > 0) {
+                        // Pick first playing or first available
+                        const playing = mediaEls.find(m => !m.paused);
+                        const target = playing || mediaEls[0];
+
+                        if (act === 'play-pause') {
+                            if (target.paused) {
+                                target.play();
+                            } else {
+                                target.pause();
+                            }
+                            return { handled: true, paused: target.paused };
+                        } else if (act === 'next') {
+                            target.currentTime = Math.min(target.duration || target.currentTime + 10, target.currentTime + 10);
+                            return { handled: true };
+                        } else if (act === 'prev') {
+                            target.currentTime = Math.max(0, target.currentTime - 10);
+                            return { handled: true };
+                        }
+                    }
+
+                    return { handled: false };
+                },
+                args: [action]
+            });
+            return { success: true, result: results?.[0]?.result };
+        } catch (e) {
+            return { success: false, error: e.message };
+        }
+    }
+
+    return { success: false, reason: 'Scripting API not available' };
+}
 
 let creating = null;
 

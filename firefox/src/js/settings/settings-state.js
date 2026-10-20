@@ -1,7 +1,7 @@
 let userSettings = JSON.parse(localStorage.getItem('startpage_settings')) || {};
 
 const defaults = {
-    showBookmarks: true,
+    showBookmarks: false,
     showDashboardWidgets: true, // Toggle dashboard widgets visibility
     dashboardOrder: [], // Sequence list of dashboard layout container children IDs
     containerWidth: 'full', // 'full' | 'contained'

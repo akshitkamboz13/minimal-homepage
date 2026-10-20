@@ -395,6 +395,25 @@
                                 </svg>
                                 Habit Tracker
                             </li>
+                            <li class="menu-item" data-tab="todo">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                </svg>
+                                Todo List
+                            </li>
+                            <li class="menu-item" data-tab="media">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="sidebar-icon">
+                                    <path d="M9 18V5l12-2v13"></path>
+                                    <circle cx="6" cy="18" r="3"></circle>
+                                    <circle cx="18" cy="16" r="3"></circle>
+                                </svg>
+                                Music & Media
+                            </li>
                             <li class="menu-item" data-tab="widget-manage">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" class="sidebar-icon">
@@ -581,8 +600,8 @@
                                 <div class="category-card-info">
                                     <h4 class="category-card-title">Widgets & Panels</h4>
                                     <p class="category-card-desc">Manage panel action bars, clock format, notes autosave, bookmarks,
-                                        and habit trackers.</p>
-                                    <span class="category-card-tags">Panels & Bars • Clock & Apps • Notes • Bookmarks • Tracker</span>
+                                        habit trackers, todo lists, and media controls.</p>
+                                    <span class="category-card-tags">Panels & Bars • Clock & Apps • Notes • Bookmarks • Tracker • Todo • Media</span>
                                 </div>
                             </div>
 
@@ -1233,6 +1252,79 @@
 
                         <h4 class="section-title" style="margin-bottom:0.75rem;">Your Habits</h4>
                         <div id="tracker-settings-list"></div>
+                    </section>
+
+                    <!-- Todo List -->
+                    <section id="tab-todo" class="settings-pane">
+                        <h3>Todo List Widget</h3>
+                        <p class="setting-desc" style="display:block;margin-bottom:1rem;">Manage your tasks, checklists, and priorities across customizable lists. Place them on your dashboard, in the apps grid, or as quick panel popups.</p>
+
+                        <div class="todo-create-form">
+                            <h4>Create New Todo List</h4>
+                            <div class="todo-create-row">
+                                <input type="text" id="todo-new-name" class="custom-input" placeholder="List name (e.g. Daily Tasks, Groceries, Project Roadmap)" style="flex:1;min-width:180px;">
+                                <select id="todo-new-placement" class="custom-select" style="min-width:140px;">
+                                    <option value="dashboard" selected>Dashboard card</option>
+                                    <option value="app">Window app (apps grid)</option>
+                                    <option value="vertical">Vertical panel button</option>
+                                    <option value="horizontal">Horizontal panel button</option>
+                                </select>
+                                <button type="button" id="btn-create-todo-list" class="action-btn">Create Todo List</button>
+                            </div>
+                        </div>
+
+                        <h4 class="section-title" style="margin-bottom:0.75rem;">Your Todo Lists</h4>
+                        <div id="todo-settings-list"></div>
+                    </section>
+
+                    <!-- Music & Media Controls -->
+                    <section id="tab-media" class="settings-pane">
+                        <h3>Music & Media Controller</h3>
+                        <p class="setting-desc" style="display:block;margin-bottom:1rem;">Control active browser audio and video playback across YouTube, Spotify, and streaming sites. Choose where the player widget appears and when it is visible.</p>
+
+                        <div class="setting-group-section">
+                            <div class="setting-item">
+                                <div class="setting-label-group">
+                                    <label class="setting-title" for="media-toggle-enabled">Enable Media Controller</label>
+                                    <span class="setting-desc">Show the audio and video playback controller widget.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="media-toggle-enabled" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label-group">
+                                    <label class="setting-title" for="media-setting-placement">Widget Placement</label>
+                                    <span class="setting-desc">Choose where the media widget is mounted.</span>
+                                </div>
+                                <select id="media-setting-placement" class="custom-select">
+                                    <option value="vertical" selected>Vertical apps (FAB action bar)</option>
+                                    <option value="dashboard">Dashboard card</option>
+                                    <option value="app">Window app (apps grid)</option>
+                                    <option value="horizontal">Horizontal header bar</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label-group">
+                                    <label class="setting-title" for="media-setting-mode">Display Mode</label>
+                                    <span class="setting-desc">Control when the widget button or card is shown.</span>
+                                </div>
+                                <select id="media-setting-mode" class="custom-select">
+                                    <option value="always" selected>Always there (always visible)</option>
+                                    <option value="when_playing">Only when audio/video played (auto-hide when idle)</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label-group">
+                                    <label class="setting-title">Live Browser Status</label>
+                                    <span id="media-live-status-desc" class="setting-desc">Detecting active browser media...</span>
+                                </div>
+                            </div>
+                        </div>
                     </section>
 
                     <!-- Widget Studio Manage -->

@@ -47,6 +47,40 @@ export function renderWidgetsOrderList() {
             name: w.name || 'Custom Widget'
         });
     });
+
+    // Native Habit Trackers placed on dashboard
+    try {
+        const trackers = JSON.parse(localStorage.getItem('startpage_trackers')) || [];
+        trackers.filter(t => t.enabled !== false && (t.placement || 'dashboard') === 'dashboard').forEach(t => {
+            items.push({
+                id: `tracker-card-${t.id}`,
+                name: `Habit: ${t.name || 'Habit'}`
+            });
+        });
+    } catch (e) {}
+
+    // Native Todo Lists placed on dashboard
+    try {
+        const todosData = JSON.parse(localStorage.getItem('startpage_todos')) || {};
+        const todoLists = todosData.lists || [];
+        todoLists.filter(l => l.enabled !== false && (l.placement || 'dashboard') === 'dashboard').forEach(l => {
+            items.push({
+                id: `todo-card-${l.id}`,
+                name: `Todo: ${l.name || 'Tasks'}`
+            });
+        });
+    } catch (e) {}
+
+    // Native Media Controller placed on dashboard
+    try {
+        const mediaConfig = JSON.parse(localStorage.getItem('startpage_media_settings')) || {};
+        if (mediaConfig.enabled !== false && mediaConfig.placement === 'dashboard') {
+            items.push({
+                id: 'media-dashboard-card',
+                name: 'Music & Media Controller'
+            });
+        }
+    } catch (e) {}
     
     // 2. Sort items by userSettings.dashboardOrder
     const order = userSettings.dashboardOrder || [];

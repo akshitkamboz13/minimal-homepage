@@ -1,5 +1,6 @@
 import { userSettings, saveSettings } from '../settings/index.js';
 import { createNoteWithData, deleteNoteById, deleteAllNotes, getNotesList, updateNoteData } from './notes.js';
+import { isMarkdownTitle } from './markdown.js';
 
 export function handleNotesCLI(rawTokens = []) {
     if (!rawTokens || rawTokens.length === 0) {
@@ -14,7 +15,7 @@ export function handleNotesCLI(rawTokens = []) {
   notes                             List all active sticky notes
   notes -h, --help                  Show this help guide
   notes "content text"              Create a new note with content
-  notes -t "title" "content text"   Create a new note with title and content
+  notes -t "title" "content text"   Create a new note with title (end in .md for Markdown)
   notes -t "title"                  Create a blank note with title
   notes -d <id|all>                 Delete note by ID or delete all notes
   notes -c <id> <yellow|blue|green|pink> Change note color theme
@@ -93,7 +94,8 @@ function listNotes() {
         const title = n.title ? `'${n.title}'` : '(Untitled)';
         const snippet = n.text ? ` - "${n.text.substring(0, 30)}${n.text.length > 30 ? '...' : ''}"` : '';
         const status = n.isMinimized ? ' [minimized]' : '';
-        out += `  [${n.id}] ${title}${snippet}${status}\n`;
+        const mdTag = isMarkdownTitle(n.title) ? ' [markdown]' : '';
+        out += `  [${n.id}] ${title}${snippet}${status}${mdTag}\n`;
     });
     return { output: out.trimEnd() };
 }

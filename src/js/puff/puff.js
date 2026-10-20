@@ -3,6 +3,8 @@ import { appRegistry } from '../ui/app-registry.js';
 import { createGlassWindow } from '../ui/window-generator.js';
 import { handleNotesCLI } from '../notes/note-cli.js';
 import { handleSearchCLI } from '../search/search-cli.js';
+import { handleTodoCLI } from '../todo/todo-cli.js';
+import { handleMediaCLI } from '../media/media-cli.js';
 
 let puffInstance = null;
 let puffWindow = null;
@@ -228,7 +230,7 @@ function tokenizeCommand(str) {
     return tokens;
 }
 
-function executePuffCommand(rawCmd) {
+async function executePuffCommand(rawCmd) {
     if (!puffOutputHistory) return;
 
     const tokens = tokenizeCommand(rawCmd.trim());
@@ -256,6 +258,8 @@ function executePuffCommand(rawCmd) {
   gpt "query"    Quick ChatGPT AI search (e.g. gpt "HTTP/3 guide")
   ai "query"     Quick AI search (e.g. ai "Explain CAP theorem")
   notes [args]   Sticky Notes CLI (type 'notes -h' for flags)
+  todo [args]    Todo List CLI (type 'todo -h' for flags)
+  media [args]   Music & Audio Controller (type 'media -h' for flags)
   settings       Open System Settings panel
   exit / quit    Close Puff terminal shell`;
             break;
@@ -302,6 +306,20 @@ function executePuffCommand(rawCmd) {
             const cliResult = handleNotesCLI(args);
             outputText = cliResult.output || '';
             if (cliResult.isError) isError = true;
+            break;
+
+        case 'todo':
+            const todoResult = handleTodoCLI(args);
+            outputText = todoResult.output || '';
+            if (todoResult.isError) isError = true;
+            break;
+
+        case 'media':
+        case 'music':
+        case 'audio':
+            const mediaResult = await handleMediaCLI(args);
+            outputText = mediaResult.output || '';
+            if (mediaResult.isError) isError = true;
             break;
 
         case 'settings':

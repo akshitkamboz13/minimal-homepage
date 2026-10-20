@@ -11,5 +11,7 @@
 @import url('./ui/panels/apps-grid.css');
 @import url('./puff/puff.css');
 @import url('./tracker/tracker.css');
+@import url('./todo/todo.css');
+@import url('./media/media.css');
 @import url('./ui/window-generator.css');
 @import url('./ui/grid-window.css');

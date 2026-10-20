@@ -17,6 +17,8 @@ import { initPanelsSettings, applyPanelsVisuals } from './panels/panels.js';
 import { initPuffSettings, applyPuffVisuals } from './panels/puff.js';
 import { initWidgetStudio } from './panels/widget-studio.js';
 import { initTrackerSettings } from './panels/tracker.js';
+import { initTodoSettings } from './panels/todo.js';
+import { initMediaSettings } from './panels/media.js';
 
 const CATEGORY_CONFIG = {
     'personalization': {
@@ -25,7 +27,7 @@ const CATEGORY_CONFIG = {
     },
     'widgets': {
         title: 'Widgets & Panels',
-        tabs: ['panels', 'widgets', 'notes', 'bookmarks', 'puff', 'tracker']
+        tabs: ['panels', 'widgets', 'notes', 'bookmarks', 'puff', 'tracker', 'todo', 'media']
     },
     'widget-studio': {
         title: 'Widget Studio',
@@ -315,6 +317,8 @@ export function initSettingsPanel() {
     initPuffSettings(modal);
     initPanelsSettings(modal);
     initTrackerSettings();
+    initTodoSettings();
+    initMediaSettings(modal);
     initWidgetStudio(modal);
     initAi(modal);
     initVoice(modal);
