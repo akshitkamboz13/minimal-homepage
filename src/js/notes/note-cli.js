@@ -1,6 +1,7 @@
 import { userSettings, saveSettings } from '../settings/index.js';
 import { createNoteWithData, deleteNoteById, deleteAllNotes, getNotesList, updateNoteData } from './notes.js';
 import { isMarkdownTitle } from './markdown.js';
+import { bringWindowToFront } from '../ui/window-generator.js';
 
 export function handleNotesCLI(rawTokens = []) {
     if (!rawTokens || rawTokens.length === 0) {
@@ -13,19 +14,62 @@ export function handleNotesCLI(rawTokens = []) {
         return {
             output: `Notes CLI Commands & Options:
   notes                             List all active sticky notes
-  notes -h, --help                  Show this help guide
+  notes new [title] [content]       Create and open a new sticky note
+  notes open [id]                   Bring a sticky note window to front
   notes "content text"              Create a new note with content
   notes -t "title" "content text"   Create a new note with title (end in .md for Markdown)
   notes -t "title"                  Create a blank note with title
   notes -d <id|all>                 Delete note by ID or delete all notes
   notes -c <id> <yellow|blue|green|pink> Change note color theme
   notes -m <id|all>                 Minimize note(s)
-  notes -u <id|all>                 Unminimize/restore note(s)`
+  notes -u <id|all>                 Unminimize/restore note(s)
+  notes -h, --help                  Show this help guide`
         };
     }
 
     if (first === 'list') {
         return listNotes();
+    }
+
+    if (first === 'new' || first === 'create' || first === 'add') {
+        const title = rawTokens[1] || '';
+        const text = rawTokens.slice(2).join(' ') || '';
+        const note = createNoteWithData({ title, text });
+        const noteEl = document.getElementById(`glass-note-${note.id}`);
+        if (noteEl && document.body.classList.contains('cli-mode')) {
+            noteEl.classList.add('cli-top-window');
+            bringWindowToFront(noteEl);
+        }
+        setTimeout(() => {
+            const el = document.getElementById(`glass-note-${note.id}`);
+            if (el) {
+                const ta = el.querySelector('textarea');
+                if (ta) ta.focus();
+            }
+        }, 80);
+        return {
+            output: `Created sticky note [${note.id}] ${title ? `'${title}'` : ''}.`
+        };
+    }
+
+    if (first === 'open' || first === 'focus' || first === 'show') {
+        const id = rawTokens[1];
+        const list = getNotesList();
+        const target = id ? list.find(n => n.id === id) : list[list.length - 1];
+        if (!target) {
+            if (!id && list.length === 0) {
+                const note = createNoteWithData({ title: '', text: '' });
+                return { output: `Created and opened new sticky note [${note.id}].` };
+            }
+            return { output: `Error: Note [${id}] not found.`, isError: true };
+        }
+        const noteEl = document.getElementById(`glass-note-${target.id}`);
+        if (noteEl) {
+            noteEl.classList.remove('is-minimized', 'hidden');
+            bringWindowToFront(noteEl);
+            return { output: `Brought sticky note [${target.id}] to front.` };
+        }
+        return { output: `Error: Note window [${target.id}] not found in DOM.`, isError: true };
     }
 
     if (first === '-d' || first === '--delete' || first === 'delete' || first === 'rm') {

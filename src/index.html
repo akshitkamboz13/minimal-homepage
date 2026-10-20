@@ -5,6 +5,10 @@
     <script>
         (function() {
             try {
+                var isCli = localStorage.getItem('startpage_cli_mode') === 'true';
+                if (isCli) {
+                    document.documentElement.classList.add('cli-mode');
+                }
                 var theme = 'dark';
                 var rawSettings = localStorage.getItem('startpage_settings');
                 if (rawSettings) {

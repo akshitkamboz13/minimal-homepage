@@ -22,7 +22,7 @@
     "128": "assets/icons/icon128.png"
   },
   "chrome_url_overrides": {
-    "newtab": "src/index.html"
+    "newtab": "src/newtab.html"
   },
   "background": {
     "scripts": ["src/background.js"]
@@ -37,6 +37,7 @@
     "scripting"
   ],
   "host_permissions": [
+    "<all_urls>",
     "*://suggestqueries.google.com/*",
     "*://*.yandex.com/*",
     "*://*.yandex.ru/*",

@@ -60,15 +60,22 @@ export async function refreshAudibleTabs() {
     }
 
     try {
-        // Query tabs currently playing audio
-        const audible = await chrome.tabs.query({ audible: true });
-
-        // Also check if user has a previously selected tab that is still open
         const allTabs = await chrome.tabs.query({});
-        const config = loadMediaConfig();
+        const audible = allTabs.filter(t => t.audible);
 
-        activeMediaTabs = audible || [];
-        isPlaybackPlaying = activeMediaTabs.length > 0;
+        // Find tabs that are playing or media candidates:
+        // 1. Currently audible
+        // 2. Muted tabs (a tab that was muted by the user is still a media tab!)
+        // 3. Known media domains (youtube, spotify, soundcloud, netflix, etc.)
+        const mediaRegex = /(youtube\.com|spotify\.com|soundcloud\.com|music\.youtube\.com|netflix\.com|pandora\.com|bandcamp\.com|deezer\.com|twitch\.tv|vimeo\.com|apple\.com\/apple-music|bilibili\.com|dailymotion\.com|tidal\.com|audiomack\.com)/i;
+        const mediaCandidates = allTabs.filter(t => t.audible || t.mutedInfo?.muted || (t.url && mediaRegex.test(t.url)));
+        const webTabs = allTabs.filter(t => t.url && (t.url.startsWith('http://') || t.url.startsWith('https://')));
+
+        const config = loadMediaConfig();
+        const validSelected = config.selectedTabId ? allTabs.find(t => t.id === config.selectedTabId) : null;
+
+        activeMediaTabs = audible.length > 0 ? audible : (mediaCandidates.length > 0 ? mediaCandidates : (validSelected ? [validSelected] : webTabs.slice(0, 5)));
+        isPlaybackPlaying = audible.length > 0;
 
         // Auto select tab
         if (config.selectedTabId) {
@@ -82,6 +89,11 @@ export async function refreshAudibleTabs() {
             currentTargetTab = activeMediaTabs[0] || null;
         }
 
+        if (currentTargetTab) {
+            config.selectedTabId = currentTargetTab.id;
+            saveMediaConfig(config);
+        }
+
         return activeMediaTabs;
     } catch (err) {
         console.warn('[MediaController] Query error:', err);
@@ -92,9 +104,12 @@ export async function refreshAudibleTabs() {
 // ─── Playback Control Actions ──────────────────────────────────────────────────
 
 export async function executeMediaAction(action, tabId = null) {
+    if (!currentTargetTab && activeMediaTabs.length === 0) {
+        await refreshAudibleTabs();
+    }
     const targetId = tabId || currentTargetTab?.id || activeMediaTabs[0]?.id;
     if (!targetId && action !== 'focus-tab') {
-        return { success: false, reason: 'No active tab' };
+        return { success: false, reason: 'No active media tab found.' };
     }
 
     // 1. First try chrome.runtime background message handler
@@ -112,6 +127,9 @@ export async function executeMediaAction(action, tabId = null) {
             if (resp && resp.success) {
                 setTimeout(updateMediaState, 200);
                 return resp;
+            }
+            if (resp && !resp.success) {
+                return { success: false, reason: resp.reason || resp.error || 'Failed to control media playback.' };
             }
         }
     } catch (e) {}
@@ -136,7 +154,7 @@ export async function executeMediaAction(action, tabId = null) {
         }
     } catch (err) {}
 
-    return { success: false };
+    return { success: false, reason: 'No active media tab found.' };
 }
 
 // ─── DOM Instances Registry & Multi-mount ──────────────────────────────────────
@@ -243,7 +261,6 @@ function getTabServiceName(url = '', title = '') {
 // ─── Component Markup & Event Binding ──────────────────────────────────────────
 
 export function renderMediaWidget(container) {
-    const config = loadMediaConfig();
     const isPlaying = activeMediaTabs.length > 0;
     const tab = currentTargetTab || activeMediaTabs[0];
 
@@ -254,160 +271,112 @@ export function renderMediaWidget(container) {
 
     container.innerHTML = `
         <div class="media-widget">
-            <!-- Header Row -->
-            <div class="media-header">
-                <div class="media-title-wrap">
-                    <svg class="media-header-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    <span class="media-title-text">Music & Audio</span>
-                    ${isPlaying ? `
-                        <span class="media-live-pill" title="Audio is playing">
-                            <span class="media-live-dot"></span> LIVE
-                        </span>
-                    ` : ''}
-                </div>
-
-                <!-- 2 Controls: Always vs When Playing + Location Select -->
-                <div class="media-controls-top">
-                    <div class="media-mode-toggle" title="Display mode: Always show or Only when playing">
-                        <button type="button" class="media-mode-btn ${config.displayMode === 'always' ? 'active' : ''}" data-mode="always" title="Always visible">Always</button>
-                        <button type="button" class="media-mode-btn ${config.displayMode === 'when_playing' ? 'active' : ''}" data-mode="when_playing" title="Only visible when audio/video is playing">Playing</button>
-                    </div>
-
-                    <select class="media-location-select" title="Change widget location">
-                        <option value="vertical" ${config.placement === 'vertical' ? 'selected' : ''}>Vertical</option>
-                        <option value="dashboard" ${config.placement === 'dashboard' ? 'selected' : ''}>Dashboard</option>
-                        <option value="app" ${config.placement === 'app' ? 'selected' : ''}>App</option>
-                        <option value="horizontal" ${config.placement === 'horizontal' ? 'selected' : ''}>Horizontal</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Body: Active Track or Idle State -->
-            <div class="media-card-body">
-                ${isPlaying && tab ? `
-                    <!-- Active Track Info -->
-                    <div class="media-track-info">
-                        <div class="media-track-icon-wrap">
-                            ${faviconUrl ? `
-                                <img class="media-track-favicon" src="${escapeHtml(faviconUrl)}" alt="${escapeHtml(serviceName)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-                                <svg style="display:none;" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                            ` : `
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                            `}
-                        </div>
-                        <div class="media-track-meta">
-                            <span class="media-track-title" title="${escapeHtml(trackTitle)}">${escapeHtml(trackTitle)}</span>
-                            <span class="media-track-subtitle">${escapeHtml(serviceName)}</span>
-                        </div>
-                        <!-- Animated equalizer soundwave -->
-                        <div class="media-soundwave is-playing" title="Equalizer visualizer">
-                            <span class="media-bar"></span>
-                            <span class="media-bar"></span>
-                            <span class="media-bar"></span>
-                            <span class="media-bar"></span>
-                        </div>
-                    </div>
-                ` : `
-                    <!-- Idle State -->
-                    <div class="media-idle-state ${isPlaying ? 'is-spinning' : ''}">
-                        <svg class="media-idle-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        <span>No media playing in browser</span>
-                        <div class="media-idle-links">
-                            <a href="https://www.youtube.com" target="_blank" class="media-quick-link">YouTube</a>
-                            <a href="https://open.spotify.com" target="_blank" class="media-quick-link">Spotify</a>
-                            <a href="https://soundcloud.com" target="_blank" class="media-quick-link">SoundCloud</a>
-                        </div>
-                    </div>
-                `}
-
-                <!-- Playback Controls Row -->
-                <div class="media-playback-row">
-                    <button type="button" class="media-ctrl-btn media-ctrl-prev" title="Previous / Seek -10s" aria-label="Previous">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="19 20 9 12 19 4 19 20"></polygon>
-                            <line x1="5" y1="19" x2="5" y2="5"></line>
-                        </svg>
-                    </button>
-
-                    <button type="button" class="media-ctrl-btn media-ctrl-playpause" title="${isPlaying ? 'Pause' : 'Play / Resume'}" aria-label="Play/Pause">
-                        ${isPlaying ? `
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <rect x="6" y="4" width="4" height="16" rx="1"></rect>
-                                <rect x="14" y="4" width="4" height="16" rx="1"></rect>
-                            </svg>
-                        ` : `
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-left: 2px;">
-                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                            </svg>
-                        `}
-                    </button>
-
-                    <button type="button" class="media-ctrl-btn media-ctrl-next" title="Next / Seek +10s" aria-label="Next">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 4 15 12 5 20 5 4"></polygon>
-                            <line x1="19" y1="5" x2="19" y2="19"></line>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Footer / Extra Row -->
-            <div class="media-extra-row">
-                <!-- Mute toggle button -->
-                <button type="button" class="media-ctrl-btn media-ctrl-small media-btn-mute" title="${isMuted ? 'Unmute Tab' : 'Mute Tab'}">
-                    ${isMuted ? `
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <!-- Main Track Row -->
+            <div class="media-main-row">
+                <div class="media-track-art-wrap ${isPlaying ? 'is-playing' : ''}">
+                    ${faviconUrl ? `
+                        <img class="media-track-art" src="${escapeHtml(faviconUrl)}" alt="${escapeHtml(serviceName)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                        <svg style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                     ` : `
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                    `}
+                </div>
+
+                <div class="media-track-details">
+                    <span class="media-track-title" title="${escapeHtml(trackTitle)}">${escapeHtml(trackTitle)}</span>
+                    <div class="media-track-sub">
+                        <span class="media-service-tag">${escapeHtml(serviceName)}</span>
+                        ${isPlaying ? `
+                            <span class="media-sub-dot">•</span>
+                            <span class="media-live-tag">LIVE</span>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="media-top-actions">
+                    <div class="media-mini-wave ${isPlaying ? 'is-playing' : ''}" title="${isPlaying ? 'Playing' : 'Paused'}">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transport Controls Row -->
+            <div class="media-controls-row">
+                <button type="button" class="media-ctrl-btn media-ctrl-prev" title="Previous / Seek -10s" aria-label="Previous">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                        <line x1="5" y1="19" x2="5" y2="5"></line>
+                    </svg>
+                </button>
+
+                <button type="button" class="media-ctrl-btn media-ctrl-playpause" title="${isPlaying ? 'Pause' : 'Play / Resume'}" aria-label="Play/Pause">
+                    ${isPlaying ? `
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                        </svg>
+                    ` : `
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="margin-left: 2px;">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
                     `}
                 </button>
 
-                <!-- Active tab badge or dropdown selector -->
-                ${activeMediaTabs.length > 1 ? `
-                    <select class="media-tab-selector" title="Select audio tab">
-                        ${activeMediaTabs.map(t => `
-                            <option value="${t.id}" ${t.id === tab?.id ? 'selected' : ''}>${escapeHtml(t.title || 'Tab')}</option>
-                        `).join('')}
-                    </select>
-                ` : `
-                    <div class="media-tab-badge media-btn-focus" title="Jump to tab in browser">
-                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        <span>${tab ? 'Jump to Tab' : 'Open Tab'}</span>
-                    </div>
-                `}
+                <button type="button" class="media-ctrl-btn media-ctrl-next" title="Next / Seek +10s" aria-label="Next">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                        <line x1="19" y1="5" x2="19" y2="19"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Bottom Row: Tab Selector / Jump, Mute, & Settings -->
+            <div class="media-bottom-row">
+                <div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;">
+                    <button type="button" class="media-btn-icon media-btn-mute ${isMuted ? 'is-muted' : ''}" title="${isMuted ? 'Unmute Tab' : 'Mute Tab'}">
+                        ${isMuted ? `
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        ` : `
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        `}
+                    </button>
+
+                    ${activeMediaTabs.length > 1 ? `
+                        <div class="media-tabs-pill-wrap">
+                            <select class="media-tab-selector" title="Select audio tab">
+                                ${activeMediaTabs.map(t => `
+                                    <option value="${t.id}" ${t.id === tab?.id ? 'selected' : ''}>${escapeHtml(t.title || 'Tab')}</option>
+                                `).join('')}
+                            </select>
+                            <svg class="media-select-arrow" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                    ` : (tab ? `
+                        <button type="button" class="media-btn-icon media-btn-focus" title="Jump to tab in browser">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </button>
+                    ` : `
+                        <div class="media-quick-links-row">
+                            <a href="https://www.youtube.com" target="_blank" class="media-quick-link" title="Open YouTube">YT</a>
+                            <a href="https://open.spotify.com" target="_blank" class="media-quick-link" title="Open Spotify">Spotify</a>
+                        </div>
+                    `)}
+                </div>
+
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <button type="button" class="media-btn-icon media-btn-settings" title="Media Settings">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     `;
 
     // ── Bind Interactive Events ──
-
-    // Mode Toggle Buttons ('always' vs 'when_playing')
-    container.querySelectorAll('.media-mode-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const mode = btn.dataset.mode;
-            updateMediaConfig({ displayMode: mode });
-            loadActiveMediaWidget();
-        });
-    });
-
-    // Location Change Dropdown
-    const locationSelect = container.querySelector('.media-location-select');
-    if (locationSelect) {
-        locationSelect.addEventListener('change', (e) => {
-            e.stopPropagation();
-            const newLoc = e.target.value;
-            updateMediaConfig({ placement: newLoc });
-            loadActiveMediaWidget();
-        });
-    }
 
     // Play / Pause
     const playPauseBtn = container.querySelector('.media-ctrl-playpause');
@@ -454,6 +423,22 @@ export function renderMediaWidget(container) {
                 await executeMediaAction('focus-tab', tab.id);
             } else {
                 window.open('https://www.youtube.com', '_blank');
+            }
+        });
+    }
+
+    // Settings Quick Link
+    const settingsBtn = container.querySelector('.media-btn-settings');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeAllMediaPopups();
+            if (typeof window.openSettingsCategory === 'function') {
+                window.openSettingsCategory('widgets', 'media');
+            }
+            const modal = document.getElementById('settings-modal');
+            if (modal) {
+                modal.classList.remove('hidden', 'is-minimized');
             }
         });
     }
@@ -556,13 +541,14 @@ function toggleMediaPopup(triggerBtn) {
     const panel = document.createElement('div');
     panel.id = 'media-popup-panel';
     panel.className = 'media-popup glass-panel';
-    panel.style.width = '360px';
-    panel.style.height = '230px';
+    panel.style.width = '310px';
+    panel.style.height = '155px';
 
     const header = document.createElement('div');
     header.className = 'media-popup-header';
     const titleEl = document.createElement('h3');
-    titleEl.textContent = 'Music & Audio';
+    titleEl.className = 'media-popup-title';
+    titleEl.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg> Now Playing`;
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'media-popup-close';
@@ -609,7 +595,7 @@ function closeAllMediaPopups() {
 
 function positionMediaPanel(panel, trigger) {
     const tRect = trigger.getBoundingClientRect();
-    const pW = 360, pH = 230, pad = 12;
+    const pW = 310, pH = 155, pad = 12;
     let top = tRect.bottom + pad <= window.innerHeight - pH ? tRect.bottom + pad : tRect.top - pH - pad;
     top = Math.max(pad, Math.min(top, window.innerHeight - pH - pad));
     let left = tRect.left + (tRect.width / 2) - (pW / 2);

@@ -20,8 +20,10 @@ export async function handleMediaCLI(rawTokens = []) {
         };
     }
 
+    const targetTabId = rawTokens[1] && !isNaN(parseInt(rawTokens[1], 10)) ? parseInt(rawTokens[1], 10) : null;
+
     if (cmd === 'play' || cmd === 'pause' || cmd === 'playpause' || cmd === 'toggle') {
-        const res = await executeMediaAction('play-pause');
+        const res = await executeMediaAction('play-pause', targetTabId);
         return {
             output: res?.success ? 'Playback toggled.' : `Failed: ${res?.reason || res?.error || 'No active media tab found.'}`,
             isError: !res?.success
@@ -29,7 +31,7 @@ export async function handleMediaCLI(rawTokens = []) {
     }
 
     if (cmd === 'next' || cmd === 'skip') {
-        const res = await executeMediaAction('next');
+        const res = await executeMediaAction('next', targetTabId);
         return {
             output: res?.success ? 'Skipped forward / next track.' : `Failed: ${res?.reason || res?.error || 'No active media tab found.'}`,
             isError: !res?.success
@@ -37,7 +39,7 @@ export async function handleMediaCLI(rawTokens = []) {
     }
 
     if (cmd === 'prev' || cmd === 'back') {
-        const res = await executeMediaAction('prev');
+        const res = await executeMediaAction('prev', targetTabId);
         return {
             output: res?.success ? 'Skipped backward / prev track.' : `Failed: ${res?.reason || res?.error || 'No active media tab found.'}`,
             isError: !res?.success
@@ -45,7 +47,7 @@ export async function handleMediaCLI(rawTokens = []) {
     }
 
     if (cmd === 'mute' || cmd === 'unmute') {
-        const res = await executeMediaAction('toggle-mute');
+        const res = await executeMediaAction('toggle-mute', targetTabId);
         return {
             output: res?.success ? `Mute toggled (${res.muted ? 'Muted' : 'Unmuted'}).` : `Failed: ${res?.reason || res?.error || 'No active media tab found.'}`,
             isError: !res?.success
@@ -53,7 +55,7 @@ export async function handleMediaCLI(rawTokens = []) {
     }
 
     if (cmd === 'focus') {
-        const tabId = rawTokens[1] ? parseInt(rawTokens[1], 10) : null;
+        const tabId = targetTabId || (rawTokens[1] ? parseInt(rawTokens[1], 10) : null);
         const res = await executeMediaAction('focus-tab', tabId);
         return {
             output: res?.success ? 'Tab focused.' : `Failed: ${res?.reason || res?.error || 'Could not focus tab.'}`,
@@ -63,7 +65,7 @@ export async function handleMediaCLI(rawTokens = []) {
 
     if (cmd === 'open' || cmd === 'app') {
         window.dispatchEvent(new CustomEvent('launch-media-app'));
-        return { output: 'Opening Media Controller window...' };
+        return { output: 'Opened Media Controller window.' };
     }
 
     return showMediaStatusCLI();

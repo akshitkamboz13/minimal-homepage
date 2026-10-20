@@ -5,6 +5,27 @@ import { handleNotesCLI } from '../notes/note-cli.js';
 import { handleSearchCLI } from '../search/search-cli.js';
 import { handleTodoCLI } from '../todo/todo-cli.js';
 import { handleMediaCLI } from '../media/media-cli.js';
+import { handleSettingsCLI } from '../settings/settings-cli.js';
+import { handleTrackerCLI } from '../tracker/tracker-cli.js';
+import { handleBookmarksCLI } from '../bookmarks/bookmarks-cli.js';
+import {
+    registerCommand,
+    unregisterCommand,
+    unregisterWidgetCommands,
+    getRegisteredCommands,
+    getCommandHandler,
+    isCommandReserved,
+    RESERVED_PUFF_COMMANDS
+} from './puff-registry.js';
+
+export {
+    registerCommand,
+    unregisterCommand,
+    unregisterWidgetCommands,
+    getRegisteredCommands,
+    isCommandReserved,
+    RESERVED_PUFF_COMMANDS
+};
 
 let puffInstance = null;
 let puffWindow = null;
@@ -14,9 +35,51 @@ let commandHistory = [];
 let historyIndex = -1;
 let isPuffInitialized = false;
 
+const HISTORY_STORAGE_KEY = 'startpage_cli_history';
+
+function loadCommandHistory() {
+    try {
+        const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed)) {
+                commandHistory = parsed;
+            }
+        }
+    } catch (e) {
+        commandHistory = [];
+    }
+    historyIndex = commandHistory.length;
+}
+
+function saveCommandHistory() {
+    try {
+        const slice = commandHistory.slice(-200);
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(slice));
+    } catch (e) {}
+}
+
 export function initPuff() {
+    if (typeof window !== 'undefined') {
+        window.puff = {
+            registerCommand,
+            unregisterCommand,
+            unregisterWidgetCommands,
+            getRegisteredCommands,
+            isCommandReserved,
+            executeCommand: (cmd) => executePuffCommand(cmd),
+            enterCliMode,
+            exitCliMode,
+            open: openPuffShell,
+            close: closePuffShell,
+            toggle: togglePuffShell
+        };
+    }
+
     if (isPuffInitialized) return;
     isPuffInitialized = true;
+
+    loadCommandHistory();
 
     puffWindow = document.getElementById('puff-window');
     if (!puffWindow) {
@@ -51,6 +114,9 @@ function createPuffDOM() {
             appRegistry.updateAppState('puff_shell', { isMinimized: isMin, isHidden: false });
         },
         onClose: () => {
+            if (document.body.classList.contains('cli-mode')) {
+                exitCliMode();
+            }
             closePuffShell();
         },
         onResize: () => {
@@ -66,8 +132,8 @@ function createPuffDOM() {
     puffInstance.bodyEl.innerHTML = `
         <div class="puff-body" id="puff-body" style="height: 100%; display: flex; flex-direction: column;">
             <div class="puff-banner">
-                <div class="puff-banner-title">Puff</div>
-                <div class="puff-banner-sub">Type 'help' to see available commands.</div>
+                <div class="puff-banner-title">Puff Terminal</div>
+                <div class="puff-banner-sub">Type 'help' to see available commands or 'gui' to return to graphical interface.</div>
             </div>
             <div class="puff-output-history" id="puff-output-history"></div>
             <div class="puff-prompt-line">
@@ -106,10 +172,16 @@ function restorePuffState() {
             }
         }
     } catch (e) {}
+
+    try {
+        if (localStorage.getItem('startpage_cli_mode') === 'true') {
+            enterCliMode();
+        }
+    } catch (e) {}
 }
 
 function savePuffState() {
-    if (!puffWindow) return;
+    if (!puffWindow || document.body.classList.contains('cli-mode')) return;
     try {
         const state = {
             x: parseInt(puffWindow.style.left, 10) || 140,
@@ -133,11 +205,22 @@ function setupPuffInputListeners() {
         }
     });
 
+    document.addEventListener('click', () => {
+        if (document.body.classList.contains('cli-mode')) {
+            if (puffInput && document.activeElement !== puffInput) {
+                puffInput.focus();
+            }
+        }
+    });
+
     puffInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const cmd = puffInput.value.trim();
             if (cmd.length > 0) {
-                commandHistory.push(cmd);
+                if (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== cmd) {
+                    commandHistory.push(cmd);
+                    saveCommandHistory();
+                }
                 historyIndex = commandHistory.length;
                 executePuffCommand(cmd);
             }
@@ -216,6 +299,42 @@ export function closePuffShell() {
     appRegistry.unregisterApp('puff_shell');
 }
 
+export function enterCliMode() {
+    document.body.classList.add('cli-mode');
+    try {
+        localStorage.setItem('startpage_cli_mode', 'true');
+    } catch(e) {}
+
+    if (!puffWindow) initPuff();
+    if (puffWindow) {
+        puffWindow.classList.remove('hidden', 'is-minimized');
+    }
+    if (puffInstance) puffInstance.bringToFront();
+    if (puffInput) {
+        setTimeout(() => puffInput.focus(), 50);
+    }
+}
+
+export function exitCliMode() {
+    document.body.classList.remove('cli-mode');
+    try {
+        localStorage.removeItem('startpage_cli_mode');
+    } catch(e) {}
+
+    if (puffWindow) {
+        try {
+            const savedState = JSON.parse(localStorage.getItem('startpage_puff_state')) || {};
+            if (savedState.w) puffWindow.style.width = savedState.w + 'px';
+            if (savedState.h) puffWindow.style.height = savedState.h + 'px';
+            if (savedState.x !== undefined) puffWindow.style.left = savedState.x + 'px';
+            if (savedState.y !== undefined) puffWindow.style.top = savedState.y + 'px';
+        } catch(e) {}
+    }
+    if (puffInput) {
+        setTimeout(() => puffInput.focus(), 50);
+    }
+}
+
 function notifyDockStateChanged() {
     window.dispatchEvent(new CustomEvent('dock-state-changed'));
 }
@@ -243,25 +362,121 @@ async function executePuffCommand(rawCmd) {
     let isError = false;
 
     switch (mainCmd) {
-        case 'help':
-            outputText = `Available Commands & Shortcuts:
-  help           Show this list of available commands
-  clear          Clear output screen
-  echo [text]    Display a line of text
-  time           Print current date and time
-  theme [mode]   Switch theme ('dark', 'light', or 'system')
-  search [args]  Web Search CLI (type 'search -h' for flags)
-  g "query"      Quick Google search (e.g. g "react hooks")
-  yt "query"     Quick YouTube search (e.g. yt "lofi music")
-  gh "query"     Quick GitHub search (e.g. gh "openai")
-  ddg "query"    Quick DuckDuckGo search (e.g. ddg "privacy")
-  gpt "query"    Quick ChatGPT AI search (e.g. gpt "HTTP/3 guide")
-  ai "query"     Quick AI search (e.g. ai "Explain CAP theorem")
-  notes [args]   Sticky Notes CLI (type 'notes -h' for flags)
-  todo [args]    Todo List CLI (type 'todo -h' for flags)
-  media [args]   Music & Audio Controller (type 'media -h' for flags)
-  settings       Open System Settings panel
-  exit / quit    Close Puff terminal shell`;
+        case 'help': {
+            const customCmds = getRegisteredCommands();
+            let customHelp = '';
+            if (customCmds.length > 0) {
+                customHelp = '\n\nCustom & Widget Commands:\n' + customCmds.map(c => {
+                    const pad = ' '.repeat(Math.max(2, 18 - c.name.length));
+                    return `  ${c.name}${pad}${c.description || 'Custom registered command'}`;
+                }).join('\n');
+            }
+
+            outputText = `Available Commands & Zero-GUI Apps:
+  help              Show this list of available commands
+  cli               Switch to full-screen CLI terminal mode
+  gui               Return to full graphical user interface (GUI)
+  run <app> [args]  Launch visual app on top (e.g. run settings, run notes new, run media)
+  clear             Clear output screen
+  echo [text]       Display a line of text
+  time              Print current date and time
+  theme [mode]      Switch theme ('dark', 'light', or 'system')
+  calc <math>       Math calculator (e.g. calc 14 * 25, calc sqrt(256))
+  settings [args]   System Settings CLI (type 'settings help' for usage)
+  tracker [args]    Habit Tracker CLI (type 'tracker help' for usage)
+  bookmarks [args]  Bookmarks CLI & search (type 'bookmarks help')
+  notes [args]      Sticky Notes CLI (type 'notes -h' for flags)
+  todo [args]       Todo List CLI (type 'todo -h' for flags)
+  media [args]      Music & Audio Controller (type 'media -h' for flags)
+  search [args]     Web Search CLI (type 'search -h' for flags)
+  apps              List available system apps & commands
+  exit / quit       Close Puff terminal shell${customHelp}`;
+            break;
+        }
+
+        case 'run':
+        case 'launch':
+        case 'open':
+            if (args.length === 0) {
+                outputText = `Usage: run <app> [subcommand]
+Examples:
+  run settings           Launch System Settings modal on top
+  run notes new [title]  Create and open a new sticky note
+  run media              Launch Music & Audio Controller window
+  run todo               Launch Todo List app
+  run tracker            Launch Habit Tracker app
+  run calc               Launch Calculator widget`;
+                break;
+            }
+            const targetApp = args[0].toLowerCase();
+            const subArgs = args.slice(1);
+
+            if (targetApp === 'settings' || targetApp === 'setting' || targetApp === 'prefs') {
+                const res = handleSettingsCLI(['open', ...subArgs]);
+                outputText = res.output || 'Opened System Settings on top.';
+                if (res.isError) isError = true;
+            } else if (targetApp === 'notes' || targetApp === 'note') {
+                const noteCmd = subArgs.length > 0 ? subArgs : ['new'];
+                const res = handleNotesCLI(noteCmd);
+                outputText = res.output || 'Opened Sticky Notes on top.';
+                if (res.isError) isError = true;
+            } else if (targetApp === 'media' || targetApp === 'music' || targetApp === 'audio') {
+                const res = await handleMediaCLI(['open', ...subArgs]);
+                outputText = res.output || 'Opened Media Controller on top.';
+                if (res.isError) isError = true;
+            } else if (targetApp === 'todo' || targetApp === 'tasks') {
+                const res = handleTodoCLI(['open', ...subArgs]);
+                outputText = res.output || 'Opened Todo List on top.';
+                if (res.isError) isError = true;
+            } else if (targetApp === 'tracker' || targetApp === 'habits' || targetApp === 'habit') {
+                const res = handleTrackerCLI(['open', ...subArgs]);
+                outputText = res.output || 'Opened Habit Tracker on top.';
+                if (res.isError) isError = true;
+            } else if (targetApp === 'bookmarks' || targetApp === 'bm') {
+                const res = await handleBookmarksCLI(subArgs);
+                outputText = res.output || '';
+                if (res.isError) isError = true;
+            } else {
+                let customLaunched = false;
+                try {
+                    const customWidgets = JSON.parse(localStorage.getItem('startpage_custom_widgets') || '[]');
+                    const matchedWidget = customWidgets.find(w =>
+                        w.id.toLowerCase() === targetApp ||
+                        w.name.toLowerCase() === targetApp ||
+                        (targetApp === 'calc' && (w.name.toLowerCase().includes('calc') || w.id.toLowerCase().includes('calc'))) ||
+                        (targetApp === 'calculator' && (w.name.toLowerCase().includes('calc') || w.id.toLowerCase().includes('calc')))
+                    );
+                    if (matchedWidget) {
+                        window.dispatchEvent(new CustomEvent('launch-custom-widget', { detail: { id: matchedWidget.id } }));
+                        outputText = `Launched custom app '${matchedWidget.name}' on top.`;
+                        customLaunched = true;
+                    }
+                } catch(e) {}
+
+                if (!customLaunched) {
+                    if (targetApp === 'calc' || targetApp === 'calculator') {
+                        if (subArgs.length > 0) {
+                            await executePuffCommand(`calc ${subArgs.join(' ')}`);
+                            return;
+                        } else {
+                            outputText = `Calculator: Usage: calc <expression> (e.g. calc 14 * 25). Install custom calculator widget from Studio or Webstore for visual calculator.`;
+                        }
+                    } else {
+                        isError = true;
+                        outputText = `Unknown application '${targetApp}'. Type 'apps' to see available applications.`;
+                    }
+                }
+            }
+            break;
+
+        case 'cli':
+            enterCliMode();
+            outputText = `Switched to CLI mode. Full page is now terminal-focused.\nType 'gui' to return to graphical interface.`;
+            break;
+
+        case 'gui':
+            exitCliMode();
+            outputText = `Exited CLI mode. Full graphical interface restored.`;
             break;
 
         case 'clear':
@@ -286,6 +501,59 @@ async function executePuffCommand(rawCmd) {
                 outputText = `Current theme: '${userSettings.theme || 'dark'}'. Usage: theme [dark|light|system]`;
             }
             break;
+
+        case 'calc':
+        case 'math':
+        case '=':
+            const expr = (mainCmd === '=' ? [args.join(' ')] : args).join(' ').trim();
+            if (!expr) {
+                outputText = 'Usage: calc <expression> (e.g. calc 24 * 60, calc sqrt(144))';
+            } else {
+                try {
+                    const sanitized = expr
+                        .replace(/sqrt\(/gi, 'Math.sqrt(')
+                        .replace(/pow\(/gi, 'Math.pow(')
+                        .replace(/sin\(/gi, 'Math.sin(')
+                        .replace(/cos\(/gi, 'Math.cos(')
+                        .replace(/tan\(/gi, 'Math.tan(')
+                        .replace(/log\(/gi, 'Math.log(')
+                        .replace(/abs\(/gi, 'Math.abs(')
+                        .replace(/round\(/gi, 'Math.round(')
+                        .replace(/floor\(/gi, 'Math.floor(')
+                        .replace(/ceil\(/gi, 'Math.ceil(')
+                        .replace(/\bpi\b/gi, 'Math.PI')
+                        .replace(/\be\b/gi, 'Math.E');
+
+                    if (!/^[0-9+\-*/().,%^ MathPIE]+$/.test(sanitized)) {
+                        throw new Error('Invalid characters');
+                    }
+                    const cleanExpr = sanitized.replace(/\^/g, '**');
+                    const result = Function(`"use strict"; return (${cleanExpr})`)();
+                    outputText = `${expr} = ${result}`;
+                } catch (e) {
+                    isError = true;
+                    outputText = `Math error: Could not evaluate '${expr}'.`;
+                }
+            }
+            break;
+
+        case 'apps': {
+            const registeredApps = getRegisteredCommands();
+            let customAppsList = '';
+            if (registeredApps.length > 0) {
+                customAppsList = '\n' + registeredApps.map(c => `  ${c.name} [args]       ${c.description}`).join('\n');
+            }
+            outputText = `System Applications & Commands:
+  notes [args]       Sticky notes manager
+  todo [args]        Todo task lists
+  tracker [args]     Habit tracker
+  media [args]       Audio/video player controller
+  bookmarks [args]   Browser bookmarks
+  settings [args]    System settings manager
+  search [args]      Multi-engine search
+  calc <expression>  Math calculator${customAppsList}`;
+            break;
+        }
 
         case 'search':
         case 'g':
@@ -322,21 +590,57 @@ async function executePuffCommand(rawCmd) {
             if (mediaResult.isError) isError = true;
             break;
 
+        case 'tracker':
+        case 'habit':
+            const trackerResult = handleTrackerCLI(args);
+            outputText = trackerResult.output || '';
+            if (trackerResult.isError) isError = true;
+            break;
+
+        case 'bookmarks':
+        case 'bm':
+            const bmResult = await handleBookmarksCLI(args);
+            outputText = bmResult.output || '';
+            if (bmResult.isError) isError = true;
+            break;
+
         case 'settings':
-            const modal = document.getElementById('settings-modal');
-            if (modal) modal.classList.remove('hidden', 'is-minimized');
-            outputText = `Opened System Settings.`;
+            const settingsResult = handleSettingsCLI(args);
+            outputText = settingsResult.output || '';
+            if (settingsResult.isError) isError = true;
             break;
 
         case 'exit':
         case 'quit':
+            if (document.body.classList.contains('cli-mode')) {
+                exitCliMode();
+            }
             closePuffShell();
             return;
 
-        default:
-            isError = true;
-            outputText = `Puff: command not found: '${mainCmd}'. Type 'help' to see available commands.`;
+        default: {
+            const customCmd = getCommandHandler(mainCmd);
+            if (customCmd) {
+                try {
+                    const handler = customCmd.execute;
+                    const rawArgs = rawCmd.trim().replace(/^\S+\s*/, '');
+                    const res = await handler(args, rawArgs);
+                    if (typeof res === 'object' && res !== null) {
+                        outputText = res.output !== undefined ? res.output : (res.text !== undefined ? res.text : '');
+                        isError = !!res.isError;
+                    } else {
+                        outputText = String(res ?? '');
+                    }
+                } catch (err) {
+                    isError = true;
+                    outputText = `Error executing '${mainCmd}': ${err.message || err}`;
+                }
+            } else {
+                isError = true;
+                outputText = `Puff: command not found: '${mainCmd}'. Type 'help' to see available commands.`;
+            }
             break;
+        }
     }
 
     // Append to terminal history

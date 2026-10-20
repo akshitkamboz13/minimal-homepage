@@ -24,6 +24,23 @@ export function handleTodoCLI(rawTokens = []) {
         return listTodosCLI();
     }
 
+    if (first === 'open' || first === 'gui') {
+        const listNameOrId = rawTokens.slice(1).join(' ').trim();
+        const lists = getTodoLists();
+        let targetList = null;
+        if (listNameOrId) {
+            targetList = lists.find(l => l.id === listNameOrId || l.name.toLowerCase() === listNameOrId.toLowerCase());
+        }
+        if (!targetList && lists.length > 0) {
+            targetList = lists[0];
+        }
+        if (targetList) {
+            window.dispatchEvent(new CustomEvent('launch-todo-app', { detail: { id: targetList.id } }));
+            return { output: `Opened Todo list window ['${targetList.name}'].` };
+        }
+        return { output: "No todo list found. Type 'todo \"task\"' to create a task.", isError: true };
+    }
+
     if (first === 'clear') {
         const lists = getTodoLists();
         if (lists.length > 0) {

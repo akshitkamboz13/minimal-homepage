@@ -4,9 +4,14 @@ import { createGlassCard } from '../ui/card-generator.js';
 import { applyDashboardOrder } from '../settings/panels/dashboard-layout.js';
 import { userSettings, onSettingsChanged } from '../settings/index.js';
 import { executeMediaAction, refreshAudibleTabs, getMediaControllerState } from '../media/media-controller.js';
+import { registerCommand, unregisterCommand, unregisterWidgetCommands } from '../puff/puff-registry.js';
 
 // Map to hold open custom app instances
 const openAppInstances = new Map();
+
+// Pending requests for widget commands executed by Puff
+const widgetCmdPendingRequests = new Map();
+let widgetCmdReqCounter = 0;
 
 // Helper to escape HTML characters
 function escapeHTML(str) {
@@ -24,6 +29,11 @@ function escapeHTML(str) {
 
 // Helper to load sandboxed iframe using sandbox.html and postMessage
 function setupSandboxIframe(iframe, widget) {
+    if (widget && widget.id) {
+        iframe.dataset.widgetId = widget.id;
+        iframe.dataset.widgetName = widget.name || '';
+    }
+
     const envObj = {};
     if (widget.env) {
         widget.env.split('\n').forEach(line => {
@@ -81,6 +91,7 @@ export function launchCustomApp(widget) {
         minHeight: minH,
         colorClass: 'color-transparent',
         onClose: () => {
+            unregisterWidgetCommands(widget.id);
             instance.destroy();
             appRegistry.unregisterApp(widget.id);
             openAppInstances.delete(widget.id);
@@ -318,6 +329,7 @@ window.addEventListener('message', (e) => {
                             instance.windowEl.style.width = `${targetW}px`;
                             instance.windowEl.style.height = `${targetH}px`;
                         } else if (data.type === 'close-widget') {
+                            unregisterWidgetCommands(widgetId);
                             instance.destroy();
                             appRegistry.unregisterApp(widgetId);
                             openAppInstances.delete(widgetId);
@@ -328,6 +340,70 @@ window.addEventListener('message', (e) => {
                         break;
                     }
                 }
+            }
+        } else if (data.type === 'register-widget-command' && data.name) {
+            const iframes = document.querySelectorAll('iframe');
+            let sourceIframe = null;
+            for (const iframe of iframes) {
+                if (iframe.contentWindow === e.source) {
+                    sourceIframe = iframe;
+                    break;
+                }
+            }
+            const widgetId = sourceIframe?.dataset?.widgetId || data.widgetId || 'widget';
+            const cleanName = data.name.trim().toLowerCase();
+
+            const regResult = registerCommand(cleanName, {
+                description: data.description || `Command registered by ${sourceIframe?.dataset?.widgetName || widgetId}`,
+                usage: data.usage || cleanName,
+                category: data.category || 'Widgets',
+                widgetId: widgetId,
+                execute: (args, rawArgs) => {
+                    return new Promise((resolve) => {
+                        if (!sourceIframe || !sourceIframe.contentWindow) {
+                            resolve({ output: `Widget '${widgetId}' is not active.`, isError: true });
+                            return;
+                        }
+                        const reqId = ++widgetCmdReqCounter;
+                        const timer = setTimeout(() => {
+                            widgetCmdPendingRequests.delete(reqId);
+                            resolve({ output: `Command '${cleanName}' timed out after 10 seconds.`, isError: true });
+                        }, 10000);
+
+                        widgetCmdPendingRequests.set(reqId, (result) => {
+                            clearTimeout(timer);
+                            resolve(result);
+                        });
+
+                        sourceIframe.contentWindow.postMessage({
+                            type: 'execute-widget-command',
+                            reqId,
+                            name: cleanName,
+                            args,
+                            rawArgs
+                        }, '*');
+                    });
+                }
+            });
+
+            if (e.source) {
+                e.source.postMessage({
+                    type: 'register-widget-command-result',
+                    name: cleanName,
+                    success: regResult.success,
+                    error: regResult.error
+                }, '*');
+            }
+        } else if (data.type === 'unregister-widget-command' && data.name) {
+            unregisterCommand(data.name);
+        } else if (data.type === 'widget-command-response') {
+            const resolver = widgetCmdPendingRequests.get(data.reqId);
+            if (resolver) {
+                resolver({
+                    output: data.output || '',
+                    isError: !!data.isError
+                });
+                widgetCmdPendingRequests.delete(data.reqId);
             }
         } else if (data.type === 'open-external-url' && data.url) {
             if (window.chrome && chrome.tabs && chrome.tabs.create) {

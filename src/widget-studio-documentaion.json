@@ -17,6 +17,14 @@
       {
         "title": "Vertical / Horizontal Panel Shortcuts",
         "content": "Adds shortcut launcher icons inside the sidebar panel or top header bar. Clicking these launches the sandboxed widget flyout dynamically."
+      },
+      {
+        "title": "CLI-based Extensions (cli)",
+        "content": "Keyboard-driven terminal extensions operating natively inside Puff Terminal or full-screen CLI mode with zero-GUI overhead."
+      },
+      {
+        "title": "GUI + CLI Hybrid Extensions (hybrid)",
+        "content": "Combines graphical desktop windows or dashboard cards with companion commands registered directly into Puff Terminal."
       }
     ]
   },
@@ -45,23 +53,27 @@
     "content": "Control browser audio and video playback safely from your custom widgets across YouTube, Spotify, SoundCloud, Netflix, and HTML5 media players without requiring raw extension privileges:<br/><br/><ul><li><code>widget.media.getAudibleTabs()</code>: Returns a Promise resolving to an array of tabs currently playing sound with <code>{ id, title, url, favIconUrl, audible, muted }</code>.</li><li><code>widget.media.getState()</code>: Returns a Promise resolving to the current aggregate media state object: <code>{ isPlaying, audibleTabsCount, currentTab, tabs }</code>.</li><li><code>widget.media.togglePlayPause(tabId)</code>: Toggles playback on the specified tab (or the active playing tab if omitted).</li><li><code>widget.media.nextTrack(tabId)</code>: Skips forward / plays next track (+10s for video/audio).</li><li><code>widget.media.prevTrack(tabId)</code>: Skips back / plays previous track (-10s for video/audio).</li><li><code>widget.media.toggleMute(tabId)</code>: Toggles audio mute on the specified tab.</li><li><code>widget.media.focusTab(tabId)</code>: Activates and focuses the tab and browser window.</li><li><code>widget.media.onMediaChanged(callback)</code>: Subscribes to real-time media state changes broadcast by the browser.</li></ul><br/><b>Example:</b><pre class='code-block'>// Check playing state and toggle playback\nconst state = await widget.media.getState();\nif (state.isPlaying) {\n    await widget.media.togglePlayPause();\n}\n\n// Subscribe to live audio state changes\nwidget.media.onMediaChanged((state) => {\n    console.log('Active media changed:', state);\n    document.getElementById('track-name').textContent = state.currentTab?.title || 'Idle';\n});</pre>"
   },
   {
-    "title": "9. Widget Lifecycle",
+    "title": "9. CLI & Terminal Commands API (widget.cli / registerCommand)",
+    "content": "Integrate custom commands directly into Puff Terminal and full-screen CLI mode. Third-party extensions can register, handle, and unregister commands dynamically:<br/><br/><ul><li><code>widget.registerCommand(name, handlerOrConfig)</code>: Registers a terminal command. <code>handlerOrConfig</code> can be a handler function <code>(args, rawArgs) => string | { output, isError }</code> or an object with <code>{ description, usage, category, execute }</code>.</li><li><code>widget.unregisterCommand(name)</code>: Unregisters a previously registered command.</li><li><code>widget.cli.registerCommand(name, config)</code>: Helper namespace alias for registering commands.</li><li><code>widget.cli.unregisterCommand(name)</code>: Helper namespace alias for unregistering commands.</li><li><code>widget.cli.listCommands()</code>: Returns an array of command names registered by this widget.</li></ul><br/><b>Reserved System Keywords:</b><br/>Collision checks prevent overwriting core system commands: <code>help</code>, <code>cli</code>, <code>gui</code>, <code>run</code>, <code>launch</code>, <code>open</code>, <code>clear</code>, <code>echo</code>, <code>time</code>, <code>date</code>, <code>theme</code>, <code>calc</code>, <code>apps</code>, <code>search</code>, <code>notes</code>, <code>todo</code>, <code>media</code>, <code>tracker</code>, <code>bookmarks</code>, <code>settings</code>, <code>exit</code>, <code>quit</code>.<br/><br/><b>Hybrid GUI + CLI Example:</b><pre class='code-block'>// Register companion command for visual widget\nif (window.widget && window.widget.registerCommand) {\n    window.widget.registerCommand('quote', {\n        description: 'Display an inspirational quote in terminal',\n        usage: 'quote [today|random]',\n        execute: async (args) => {\n            const type = args[0] || 'random';\n            const quote = await fetchQuote(type);\n            // Update GUI element if widget is open\n            const el = document.getElementById('quote-box');\n            if (el) el.textContent = quote.text;\n            return `\"${quote.text}\" — ${quote.author}`;\n        }\n    });\n}</pre>"
+  },
+  {
+    "title": "10. Widget Lifecycle",
     "content": "Understanding the execution sequence helps you structure initialization correctly:<ol><li><b>HTML Injected:</b> The layout templates are injected into the DOM tree.</li><li><b>CSS Loaded:</b> Modular styles and reset variables are parsed.</li><li><b>Environment Variables Injected:</b> The <code>ENV</code> object is initialized.</li><li><b>JavaScript Executed:</b> Sandboxed scripts run, binding event hooks.</li><li><b>Widget Interactive:</b> Ready for user interactions.</li></ol>"
   },
   {
-    "title": "10. Supported Web APIs",
+    "title": "11. Supported Web APIs",
     "content": "Use native web features directly inside your JavaScript code:<ul><li><code>✓ fetch()</code> (for API requests)</li><li><code>✓ WebSocket</code> (for live updates)</li><li><code>✓ URL</code> & <code>URLSearchParams</code></li><li><code>✓ localStorage</code> & <code>sessionStorage</code></li><li><code>✓ IndexedDB</code></li><li><code>✓ Clipboard API</code></li><li><code>✓ HTML5 Canvas</code></li><li><code>✓ Web Audio API</code></li></ul>"
   },
   {
-    "title": "11. Environment Variables (.env)",
+    "title": "12. Environment Variables (.env)",
     "content": "Avoid hardcoding credentials inside your JavaScript files. Write your secrets line-by-line using standard key-value assignments in the Environment Variables input field:<pre class='code-block'>API_KEY=wx_a4b9c1d680\nDEFAULT_CITY=Tokyo</pre>These parameters are parsed and injected securely. Access them directly in your JavaScript using:<pre class='code-block'>const key = ENV.API_KEY;\nconst city = ENV.DEFAULT_CITY;</pre>"
   },
   {
-    "title": "12. Sandbox Limitations",
+    "title": "13. Sandbox Limitations",
     "content": "To protect the user's browser, the following security constraints are enforced:<ul><li><b>No chrome.* APIs:</b> Access to extensions APIs is disabled.</li><li><b>No parent window access:</b> Accessing parent frames throws security exceptions.</li><li><b>No eval() / dynamic scripts:</b> Dynamic injection is blocked.</li><li><b>No filesystem access:</b> Direct file writes are disallowed.</li></ul>"
   },
   {
-    "title": "13. Example Widgets",
-    "content": "Draw inspiration from these popular widget implementations:<ul><li><b>GitHub Profile Viewer:</b> Fetches public repositories using API keys.</li><li><b>Weather Widget:</b> Renders hourly mock forecasts and icons.</li><li><b>Pomodoro Timer:</b> Uses requestAnimationFrame and sound effects.</li><li><b>Todo List:</b> Saves tasks locally using localStorage.</li><li><b>Music Controller:</b> Manages YouTube/Spotify tabs via widget.media.</li></ul>"
+    "title": "14. Example Widgets",
+    "content": "Draw inspiration from these popular widget implementations:<ul><li><b>GitHub Profile Viewer:</b> Fetches public repositories using API keys.</li><li><b>Weather Widget:</b> Renders hourly mock forecasts and icons.</li><li><b>Pomodoro Timer:</b> Uses requestAnimationFrame and sound effects.</li><li><b>Todo List:</b> Saves tasks locally using localStorage.</li><li><b>Music Controller:</b> Manages YouTube/Spotify tabs via widget.media.</li><li><b>CLI Utility Extension:</b> Extends Puff Terminal using widget.cli.registerCommand.</li></ul>"
   }
 ]

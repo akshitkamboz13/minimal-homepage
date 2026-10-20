@@ -23,17 +23,27 @@ export function initKeyboard(modal) {
     
     // Focus search input automatically on load if enabled
     if (searchInput && userSettings.kbdAutofocus) {
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                searchInput.focus();
-                searchInput.dispatchEvent(new Event('focus'));
-            }, 60);
-        });
+        const isCliMode = document.body.classList.contains('cli-mode') ||
+                          document.documentElement.classList.contains('cli-mode') ||
+                          localStorage.getItem('startpage_cli_mode') === 'true';
+        if (!isCliMode) {
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    searchInput.focus();
+                    searchInput.dispatchEvent(new Event('focus'));
+                }, 60);
+            });
+        }
     }
 
     // Register global keyboard listener for shortcuts
     window.addEventListener('keydown', (e) => {
-        const isEditing = e.target.tagName === 'INPUT' || 
+        const isCliMode = document.body.classList.contains('cli-mode') ||
+                          document.documentElement.classList.contains('cli-mode') ||
+                          localStorage.getItem('startpage_cli_mode') === 'true';
+        if (isCliMode) return;
+
+        const isEditing = e.target.tagName === 'INPUT' ||
                           e.target.tagName === 'TEXTAREA' || 
                           e.target.tagName === 'SELECT' || 
                           e.target.isContentEditable;

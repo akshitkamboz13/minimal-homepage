@@ -72,7 +72,7 @@ export function syncManifestFromForm() {
     const inputMaxH     = document.getElementById('widget-max-h');
 
     const type  = selectType?.value || 'app';
-    const sized = type === 'app' || type === 'widget';
+    const sized = type === 'app' || type === 'widget' || type === 'hybrid';
 
     const props = {
         name:        inputName?.value.trim()    || 'Untitled Widget',
@@ -139,7 +139,7 @@ export function syncFormFromManifest() {
     if (selectType && manifest.type) {
         selectType.value = manifest.type;
         const dimensionsGrp = document.getElementById('dimensions-group');
-        dimensionsGrp?.classList.toggle('active', manifest.type === 'app' || manifest.type === 'widget');
+        dimensionsGrp?.classList.toggle('active', manifest.type === 'app' || manifest.type === 'widget' || manifest.type === 'hybrid');
     }
 
     const d = manifest.dimensions || {};

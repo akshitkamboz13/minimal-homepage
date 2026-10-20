@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (textareaIcon) textareaIcon.value = widget.icon        || '';
         if (selectType) {
             selectType.value = widget.type || 'app';
-            dimensionsGrp?.classList.toggle('active', widget.type === 'app' || widget.type === 'widget');
+            dimensionsGrp?.classList.toggle('active', widget.type === 'app' || widget.type === 'widget' || widget.type === 'hybrid');
         }
         if (inputDefW) inputDefW.value = widget.defaultW || 400;
         if (inputDefH) inputDefH.value = widget.defaultH || 300;
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     selectType?.addEventListener('change', e => {
-        dimensionsGrp?.classList.toggle('active', e.target.value === 'app' || e.target.value === 'widget');
+        dimensionsGrp?.classList.toggle('active', e.target.value === 'app' || e.target.value === 'widget' || e.target.value === 'hybrid');
     });
 
     // ── 4. Initialise Sub-Modules ─────────────────────────────────────────────

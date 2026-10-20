@@ -15,6 +15,7 @@ import { dismissPageLoader } from './animations/index.js';
 import { initTracker } from './tracker/tracker.js';
 import { initTodo } from './todo/todo.js';
 import { initMediaController } from './media/media-controller.js';
+import { initFocusManager } from './ui/focus-manager.js';
 
 export function initApp() {
     initTheme();
@@ -33,6 +34,9 @@ export function initApp() {
     initTracker();
     initTodo();
     initMediaController();
+
+    // Reclaim focus from browser address bar to CLI input or Search input
+    initFocusManager();
 
     // Smoothly dismiss page loader veil after initial components render
     dismissPageLoader();

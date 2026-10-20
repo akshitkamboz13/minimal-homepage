@@ -77,7 +77,8 @@ export function initTopPanel() {
     const closeSettings = () => {
         if (settingsModal) {
             settingsModal.classList.add('hidden');
-            settingsModal.classList.remove('is-minimized');
+            settingsModal.classList.remove('is-minimized', 'cli-top-window');
+            settingsModal.style.zIndex = '';
             localStorage.setItem('startpage_settings_minimized', 'false');
             localStorage.removeItem('startpage_settings_last_tab'); // Erase last tab state on explicit close
         }

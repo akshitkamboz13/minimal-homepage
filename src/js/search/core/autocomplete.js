@@ -17,6 +17,10 @@ export function initAutocomplete() {
     // Auto-focus search on global type
     document.addEventListener('keydown', (e) => {
         if (!userSettings.kbdAutofocus) return;
+        const isCliMode = document.body.classList.contains('cli-mode') ||
+                          document.documentElement.classList.contains('cli-mode') ||
+                          localStorage.getItem('startpage_cli_mode') === 'true';
+        if (isCliMode) return;
         if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
         if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) return;
         if (searchInput) searchInput.focus();

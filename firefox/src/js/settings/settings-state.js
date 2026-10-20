@@ -138,6 +138,13 @@ if (!userSettings.puffDockInitialized) {
     localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
 }
 
+// Enable autofocus on first load migration so address bar override is active by default
+if (!localStorage.getItem('startpage_autofocus_init')) {
+    localStorage.setItem('startpage_autofocus_init', 'true');
+    userSettings.kbdAutofocus = true;
+    localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
+}
+
 
 const changeCallbacks = [];
 

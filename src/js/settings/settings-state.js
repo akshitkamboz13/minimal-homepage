@@ -72,7 +72,7 @@ const defaults = {
     voiceLang: 'en-US',
     voiceAutoSubmit: true,
     visualProvider: 'google', // 'google' | 'bing' | 'yandex'
-    kbdAutofocus: false,
+    kbdAutofocus: true,
     kbdEscClear: true,
     historyCount: 5,
     suggestionsLimit: 5,
@@ -135,6 +135,13 @@ if (!userSettings.puffDockInitialized) {
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`
         });
     }
+    localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
+}
+
+// Enable autofocus on first load migration so address bar override is active by default
+if (!localStorage.getItem('startpage_autofocus_init')) {
+    localStorage.setItem('startpage_autofocus_init', 'true');
+    userSettings.kbdAutofocus = true;
     localStorage.setItem('startpage_settings', JSON.stringify(userSettings));
 }
 

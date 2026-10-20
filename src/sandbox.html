@@ -285,11 +285,53 @@
         const mediaPendingRequests = new Map();
         let mediaReqCounter = 0;
         const mediaChangeListeners = new Set();
+        const cliRegisteredCommands = new Map();
 
         // Listen for initialization parameters
         window.addEventListener('message', (e) => {
             const data = e.data;
             if (!data) return;
+
+            if (data.type === 'execute-widget-command') {
+                const cmdEntry = cliRegisteredCommands.get(data.name);
+                if (!cmdEntry) {
+                    window.parent.postMessage({
+                        type: 'widget-command-response',
+                        reqId: data.reqId,
+                        output: `Command '${data.name}' handler not found in widget sandbox.`,
+                        isError: true
+                    }, '*');
+                    return;
+                }
+                (async () => {
+                    try {
+                        const handler = typeof cmdEntry === 'function' ? cmdEntry : cmdEntry.execute;
+                        const res = await handler(data.args, data.rawArgs);
+                        let outText = '';
+                        let isErr = false;
+                        if (typeof res === 'object' && res !== null) {
+                            outText = res.output !== undefined ? res.output : (res.text !== undefined ? res.text : '');
+                            isErr = !!res.isError;
+                        } else {
+                            outText = String(res ?? '');
+                        }
+                        window.parent.postMessage({
+                            type: 'widget-command-response',
+                            reqId: data.reqId,
+                            output: outText,
+                            isError: isErr
+                        }, '*');
+                    } catch (err) {
+                        window.parent.postMessage({
+                            type: 'widget-command-response',
+                            reqId: data.reqId,
+                            output: `Error in '${data.name}': ${err.message || err}`,
+                            isError: true
+                        }, '*');
+                    }
+                })();
+                return;
+            }
 
             if (data.type === 'media-api-response') {
                 const resolver = mediaPendingRequests.get(data.reqId);
@@ -417,6 +459,44 @@
                         onMediaChanged: (callback) => {
                             if (typeof callback === 'function') mediaChangeListeners.add(callback);
                         }
+                    },
+                    // CLI & Terminal Commands API (Puff Terminal integration)
+                    registerCommand: (name, handlerOrConfig) => {
+                        if (!name || typeof name !== 'string') {
+                            throw new Error('Command name must be a non-empty string.');
+                        }
+                        const cleanName = name.trim().toLowerCase();
+                        cliRegisteredCommands.set(cleanName, handlerOrConfig);
+
+                        const desc = typeof handlerOrConfig === 'object' && handlerOrConfig !== null ? handlerOrConfig.description : '';
+                        const usage = typeof handlerOrConfig === 'object' && handlerOrConfig !== null ? handlerOrConfig.usage : cleanName;
+                        const cat = typeof handlerOrConfig === 'object' && handlerOrConfig !== null ? handlerOrConfig.category : 'Widget';
+
+                        window.parent.postMessage({
+                            type: 'register-widget-command',
+                            name: cleanName,
+                            description: desc,
+                            usage: usage,
+                            category: cat
+                        }, '*');
+                    },
+                    unregisterCommand: (name) => {
+                        if (!name) return;
+                        const cleanName = name.trim().toLowerCase();
+                        cliRegisteredCommands.delete(cleanName);
+                        window.parent.postMessage({
+                            type: 'unregister-widget-command',
+                            name: cleanName
+                        }, '*');
+                    },
+                    cli: {
+                        registerCommand: (name, handlerOrConfig) => {
+                            window.widget.registerCommand(name, handlerOrConfig);
+                        },
+                        unregisterCommand: (name) => {
+                            window.widget.unregisterCommand(name);
+                        },
+                        listCommands: () => Array.from(cliRegisteredCommands.keys())
                     }
                 };
 

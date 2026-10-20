@@ -1,6 +1,15 @@
 let highestWindowZIndex = 9005;
+let highestCliTopZIndex = 1000010;
 
 export function bringWindowToFront(windowEl) {
+    if (document.body.classList.contains('cli-mode')) {
+        highestCliTopZIndex++;
+        if (windowEl) {
+            windowEl.classList.add('cli-top-window');
+            windowEl.style.zIndex = highestCliTopZIndex;
+        }
+        return;
+    }
     highestWindowZIndex++;
     if (highestWindowZIndex > 9490) highestWindowZIndex = 9005;
     if (windowEl) windowEl.style.zIndex = highestWindowZIndex;

@@ -32,11 +32,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 async function handleMediaControl(action, targetTabId) {
     let tabId = targetTabId;
     if (!tabId) {
-        // Find first audible or active media tab
-        const audibleTabs = await chrome.tabs.query({ audible: true });
-        if (audibleTabs && audibleTabs.length > 0) {
-            tabId = audibleTabs[0].id;
-        }
+        // Query all tabs to find currently audible, muted, or known streaming tabs
+        const allTabs = await chrome.tabs.query({});
+        const audibleTabs = allTabs.filter(t => t.audible);
+        const mutedTabs = allTabs.filter(t => t.mutedInfo && t.mutedInfo.muted);
+        const mediaRegex = /(youtube\.com|spotify\.com|soundcloud\.com|music\.youtube\.com|netflix\.com|pandora\.com|bandcamp\.com|deezer\.com|twitch\.tv|vimeo\.com|apple\.com\/apple-music|bilibili\.com|dailymotion\.com|tidal\.com|audiomack\.com)/i;
+        const mediaCandidates = allTabs.filter(t => t.url && mediaRegex.test(t.url));
+        const webTabs = allTabs.filter(t => t.url && (t.url.startsWith('http://') || t.url.startsWith('https://')));
+
+        tabId = audibleTabs[0]?.id || mutedTabs[0]?.id || mediaCandidates[0]?.id || webTabs[0]?.id;
     }
     if (!tabId) return { success: false, reason: 'No active media tab found' };
 
@@ -60,22 +64,24 @@ async function handleMediaControl(action, targetTabId) {
             const results = await chrome.scripting.executeScript({
                 target: { tabId },
                 func: (act) => {
-                    // 1. YouTube specific
-                    if (location.hostname.includes('youtube.com')) {
+                    const host = location.hostname.toLowerCase();
+
+                    // 1. YouTube & YouTube Music
+                    if (host.includes('youtube.com')) {
                         if (act === 'play-pause') {
-                            const btn = document.querySelector('.ytp-play-button');
+                            const btn = document.querySelector('.ytp-play-button') || document.querySelector('#play-pause-button');
                             if (btn) { btn.click(); return { handled: true }; }
                         } else if (act === 'next') {
-                            const btn = document.querySelector('.ytp-next-button');
+                            const btn = document.querySelector('.ytp-next-button') || document.querySelector('.next-button');
                             if (btn) { btn.click(); return { handled: true }; }
                         } else if (act === 'prev') {
-                            const btn = document.querySelector('.ytp-prev-button');
+                            const btn = document.querySelector('.ytp-prev-button') || document.querySelector('.previous-button');
                             if (btn) { btn.click(); return { handled: true }; }
                         }
                     }
 
-                    // 2. Spotify Web specific
-                    if (location.hostname.includes('spotify.com')) {
+                    // 2. Spotify Web
+                    if (host.includes('spotify.com')) {
                         if (act === 'play-pause') {
                             const btn = document.querySelector('[data-testid="control-button-playpause"]');
                             if (btn) { btn.click(); return { handled: true }; }
@@ -88,10 +94,37 @@ async function handleMediaControl(action, targetTabId) {
                         }
                     }
 
-                    // 3. Generic HTML5 Video / Audio
+                    // 3. SoundCloud
+                    if (host.includes('soundcloud.com')) {
+                        if (act === 'play-pause') {
+                            const btn = document.querySelector('.playControl') || document.querySelector('[title="Play current track"]') || document.querySelector('[title="Pause current track"]');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'next') {
+                            const btn = document.querySelector('.skipControl__next');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'prev') {
+                            const btn = document.querySelector('.skipControl__previous');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        }
+                    }
+
+                    // 4. Bandcamp
+                    if (host.includes('bandcamp.com')) {
+                        if (act === 'play-pause') {
+                            const btn = document.querySelector('.playbutton') || document.querySelector('.play-btn');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'next') {
+                            const btn = document.querySelector('.nextbutton');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        } else if (act === 'prev') {
+                            const btn = document.querySelector('.prevbutton');
+                            if (btn) { btn.click(); return { handled: true }; }
+                        }
+                    }
+
+                    // 5. Generic HTML5 Video / Audio
                     const mediaEls = Array.from(document.querySelectorAll('video, audio'));
                     if (mediaEls.length > 0) {
-                        // Pick first playing or first available
                         const playing = mediaEls.find(m => !m.paused);
                         const target = playing || mediaEls[0];
 
@@ -103,7 +136,7 @@ async function handleMediaControl(action, targetTabId) {
                             }
                             return { handled: true, paused: target.paused };
                         } else if (act === 'next') {
-                            target.currentTime = Math.min(target.duration || target.currentTime + 10, target.currentTime + 10);
+                            target.currentTime = Math.min(target.duration || (target.currentTime + 10), target.currentTime + 10);
                             return { handled: true };
                         } else if (act === 'prev') {
                             target.currentTime = Math.max(0, target.currentTime - 10);
@@ -115,9 +148,10 @@ async function handleMediaControl(action, targetTabId) {
                 },
                 args: [action]
             });
-            return { success: true, result: results?.[0]?.result };
+            const scriptRes = results?.[0]?.result;
+            return { success: true, result: scriptRes };
         } catch (e) {
-            return { success: false, error: e.message };
+            return { success: false, reason: e.message };
         }
     }
 

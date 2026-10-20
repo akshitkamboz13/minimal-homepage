@@ -76,4 +76,21 @@ if (btn && text) {
         count++;
         text.textContent = \`Clicked \${count} time\${count !== 1 ? 's' : ''}!\`;
     });
+}
+
+// Optional: Register a companion terminal command with Puff Terminal
+if (window.widget && window.widget.registerCommand) {
+    window.widget.registerCommand('mywidget', {
+        description: 'Interacts with My Widget',
+        usage: 'mywidget [click|status]',
+        execute: (args) => {
+            const sub = args[0] ? args[0].toLowerCase() : '';
+            if (sub === 'click') {
+                count++;
+                if (text) text.textContent = \`Clicked \${count} time\${count !== 1 ? 's' : ''}!\`;
+                return \`Incremented count to \${count}.\`;
+            }
+            return \`My Widget count is currently \${count}.\`;
+        }
+    });
 }`;

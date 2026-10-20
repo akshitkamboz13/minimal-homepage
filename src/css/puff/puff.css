@@ -127,3 +127,167 @@ body.light-mode .puff-window:not(.color-transparent) {
     padding: 0;
     caret-color: var(--puff-caret);
 }
+
+/* ==========================================================================
+   Full Page CLI Mode Styling (Toggled via 'cli' & 'gui' in Puff)
+   ========================================================================== */
+
+body.cli-mode {
+    overflow: hidden !important;
+    background-color: #0c0e14 !important;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) !important;
+    background-size: 24px 24px !important;
+}
+
+/* CLI Full Page Terminal Appearance - Light Theme */
+body.cli-mode:not([data-theme="dark"]),
+body.cli-mode[data-theme="light"],
+body.cli-mode.light-mode {
+    background-color: #f8fafc !important;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px) !important;
+    background-size: 24px 24px !important;
+}
+
+/* Hide GUI element backdrops and containers in CLI mode, unless explicitly opened on top */
+body.cli-mode .background-mesh,
+body.cli-mode .background-image-layer,
+body.cli-mode .container,
+body.cli-mode #main-header,
+body.cli-mode .hero-section,
+body.cli-mode #search-form,
+body.cli-mode #dashboard-widgets-container,
+body.cli-mode #bookmarks-container,
+body.cli-mode .fab-container,
+body.cli-mode .side-panel-btn-container,
+body.cli-mode .right-side-panel,
+body.cli-mode .top-nav-panel,
+body.cli-mode #glass-dock,
+body.cli-mode .glass-dock,
+body.cli-mode .dock-container,
+body.cli-mode .apps-grid-overlay,
+body.cli-mode #apps-grid-overlay,
+body.cli-mode #settings-modal:not(.cli-top-window),
+body.cli-mode .modal-overlay:not(.cli-top-window),
+body.cli-mode #google-apps-panel,
+body.cli-mode #visual-search-panel,
+body.cli-mode #add-site-modal,
+body.cli-mode .media-popup:not(.cli-top-window),
+body.cli-mode .media-controller-window:not(.cli-top-window),
+body.cli-mode .app-window:not(#puff-window):not(.cli-top-window),
+body.cli-mode .glass-window:not(#puff-window):not(.cli-top-window),
+body.cli-mode .sticky-note:not(.cli-top-window),
+body.cli-mode .glass-note:not(.cli-top-window) {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+
+/* Allow visual apps explicitly invoked from CLI to appear floating on top of Puff */
+body.cli-mode .app-window.cli-top-window:not(.hidden):not(.is-minimized),
+body.cli-mode .glass-window.cli-top-window:not(.hidden):not(.is-minimized),
+body.cli-mode .glass-note.cli-top-window:not(.hidden):not(.is-minimized),
+body.cli-mode .sticky-note.cli-top-window:not(.hidden):not(.is-minimized),
+body.cli-mode #settings-modal.cli-top-window:not(.hidden):not(.is-minimized),
+body.cli-mode .media-controller-window.cli-top-window:not(.hidden):not(.is-minimized),
+body.cli-mode .cli-top-window:not(.hidden):not(.is-minimized) {
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    z-index: 1000010 !important;
+}
+
+body.cli-mode #settings-modal.cli-top-window {
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Native Whole-Screen CLI Window (Borderless, Titleless Shell) */
+body.cli-mode #puff-window {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    z-index: 999999 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Strip all window headers, controls, and borders - native terminal look */
+body.cli-mode #puff-window .glass-window-header,
+body.cli-mode #puff-window .window-header,
+body.cli-mode #puff-window .glass-window-controls,
+body.cli-mode #puff-window .window-controls,
+body.cli-mode #puff-window .glass-window-footer,
+body.cli-mode #puff-window .window-footer,
+body.cli-mode #puff-window .window-resize-handle,
+body.cli-mode #puff-window .resize-handle,
+body.cli-mode #puff-window .glass-window-resize-handle {
+    display: none !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+body.cli-mode #puff-window .glass-window-body,
+body.cli-mode #puff-window .window-body {
+    flex: 1 1 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: transparent !important;
+}
+
+body.cli-mode #puff-window .puff-body {
+    flex: 1 1 100% !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 2.25rem 3.5rem !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+}
+
+body.cli-mode #puff-window .puff-banner {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+body.cli-mode:not([data-theme="dark"]) #puff-window .puff-banner,
+body.cli-mode[data-theme="light"] #puff-window .puff-banner,
+body.cli-mode.light-mode #puff-window .puff-banner {
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.12) !important;
+}
+
