@@ -8,6 +8,7 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    min-height: var(--dashboard-card-height, 244px);
     position: relative;
     box-sizing: border-box;
     
@@ -226,6 +227,7 @@ body[data-tile-width="auto"] .bookmark-link span {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    min-height: calc(var(--dashboard-card-height) + 1.5rem);
     margin-top: 0.5rem;
     margin-bottom: 2rem;
     padding-top: 1rem; /* Provide spacing for hover translates */

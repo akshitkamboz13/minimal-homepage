@@ -17,11 +17,14 @@ export function dismissPageLoader() {
     if (!loaderEl) return;
 
     requestAnimationFrame(() => {
+        loaderEl.classList.add('is-loaded');
         setTimeout(() => {
-            loaderEl.classList.add('is-loaded');
-            setTimeout(() => {
-                loaderEl.style.display = 'none';
-            }, 450);
-        }, 80);
+            loaderEl.style.display = 'none';
+        }, 250);
     });
+}
+
+// Auto-dismiss safety fallback: ensure loader overlay never stays longer than 200ms
+if (typeof window !== 'undefined') {
+    setTimeout(dismissPageLoader, 200);
 }

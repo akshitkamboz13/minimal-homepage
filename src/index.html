@@ -2,38 +2,19 @@
 <html lang="en">
 
 <head>
-    <script>
-        (function() {
-            try {
-                var isCli = localStorage.getItem('startpage_cli_mode') === 'true';
-                if (isCli) {
-                    document.documentElement.classList.add('cli-mode');
-                }
-                var theme = 'dark';
-                var rawSettings = localStorage.getItem('startpage_settings');
-                if (rawSettings) {
-                    var parsed = JSON.parse(rawSettings);
-                    if (parsed && parsed.theme) {
-                        theme = parsed.theme;
-                    }
-                }
-                if (!theme || theme === 'system') {
-                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                }
-                document.documentElement.setAttribute('data-theme', theme);
-                document.documentElement.classList.remove('theme-dark', 'theme-light');
-                document.documentElement.classList.add(theme === 'dark' ? 'theme-dark' : 'theme-light');
-            } catch (e) {}
-        })();
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home by si4k</title>
+    <script src="js/early-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="../assets/icons/icon.svg">
     <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
+    </noscript>
 </head>
 
 <body>
@@ -106,6 +87,7 @@
             <section class="hero-section">
                 <time class="clock" id="clock">00:00</time>
                 <h1 class="greeting" id="greeting">Hello.</h1>
+                <div id="date-display" class="date-display" style="display: none;"></div>
             </section>
 
             <!-- ===================================== -->

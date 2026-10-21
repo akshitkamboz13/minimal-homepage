@@ -74,7 +74,7 @@ fieldset {
     align-items: center;
     justify-content: center;
     background: #0f172a;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease, visibility 0.4s ease;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s ease, visibility 0.25s ease;
     pointer-events: auto;
 }
 
@@ -124,7 +124,7 @@ body.theme-light .page-loader-spinner {
 }
 
 body {
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: var(--text-color);
     background-color: var(--bg-base);
     min-height: 100vh;
@@ -251,12 +251,12 @@ body {
 }
 
 .fade-in {
-    animation: fadeInSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes fadeInSlideUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: none; }
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 /* Glassmorphism Utilities */
