@@ -144,8 +144,12 @@ body {
     height: 100vh;
     z-index: -1;
     overflow: hidden;
-    filter: blur(100px);
+    filter: blur(60px);
     opacity: 0.8;
+    contain: strict;
+    transform: translate3d(0, 0, 0);
+    pointer-events: none;
+    backface-visibility: hidden;
 }
 
 /* Background Image Layer */
@@ -188,10 +192,18 @@ body {
     position: absolute;
     border-radius: 50%;
     mix-blend-mode: multiply;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
 }
 
 [data-theme="dark"] .blob {
     mix-blend-mode: screen;
+}
+
+/* Pause background animations when tab is hidden to release CPU & compositor memory */
+.is-tab-hidden .blob {
+    animation-play-state: paused !important;
 }
 
 .blob-1 {

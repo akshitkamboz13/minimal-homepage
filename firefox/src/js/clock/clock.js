@@ -100,6 +100,17 @@ export function initClock() {
 
     startUpdateLoop();
 
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        } else {
+            startUpdateLoop();
+        }
+    });
+
     onSettingsChanged(() => {
         startUpdateLoop();
     });

@@ -47,6 +47,86 @@
 <body>
     <div id="widget-root"></div>
     <script>
+        // Sandbox timer and resource tracking to prevent detached iframe memory leaks
+        const activeIntervals = new Set();
+        const activeTimeouts = new Set();
+        const activeAnimationFrames = new Set();
+
+        const rawSetInterval = window.setInterval.bind(window);
+        const rawClearInterval = window.clearInterval.bind(window);
+        window.setInterval = function(fn, delay, ...args) {
+            const id = rawSetInterval((...callArgs) => {
+                try { fn(...callArgs); } catch(err) { console.error(err); }
+            }, delay, ...args);
+            activeIntervals.add(id);
+            return id;
+        };
+        window.clearInterval = function(id) {
+            activeIntervals.delete(id);
+            return rawClearInterval(id);
+        };
+
+        const rawSetTimeout = window.setTimeout.bind(window);
+        const rawClearTimeout = window.clearTimeout.bind(window);
+        window.setTimeout = function(fn, delay, ...args) {
+            let id;
+            id = rawSetTimeout((...callArgs) => {
+                activeTimeouts.delete(id);
+                try { fn(...callArgs); } catch(err) { console.error(err); }
+            }, delay, ...args);
+            activeTimeouts.add(id);
+            return id;
+        };
+        window.clearTimeout = function(id) {
+            activeTimeouts.delete(id);
+            return rawClearTimeout(id);
+        };
+
+        const rawRAF = window.requestAnimationFrame.bind(window);
+        const rawCancelRAF = window.cancelAnimationFrame.bind(window);
+        window.requestAnimationFrame = function(cb) {
+            let id;
+            id = rawRAF((timestamp) => {
+                activeAnimationFrames.delete(id);
+                try { cb(timestamp); } catch(err) { console.error(err); }
+            });
+            activeAnimationFrames.add(id);
+            return id;
+        };
+        window.cancelAnimationFrame = function(id) {
+            activeAnimationFrames.delete(id);
+            return rawCancelRAF(id);
+        };
+
+        function cleanupSandbox() {
+            activeIntervals.forEach(id => rawClearInterval(id));
+            activeIntervals.clear();
+            activeTimeouts.forEach(id => rawClearTimeout(id));
+            activeTimeouts.clear();
+            activeAnimationFrames.forEach(id => rawCancelRAF(id));
+            activeAnimationFrames.clear();
+
+            if (typeof mediaPendingRequests !== 'undefined') mediaPendingRequests.clear();
+            if (typeof mediaChangeListeners !== 'undefined') mediaChangeListeners.clear();
+            if (typeof cliRegisteredCommands !== 'undefined') cliRegisteredCommands.clear();
+
+            const root = document.getElementById('widget-root');
+            if (root) root.innerHTML = '';
+            const styleEl = document.getElementById('widget-style');
+            if (styleEl) styleEl.textContent = '';
+            const virtStyle = document.getElementById('virtual-injected-style');
+            if (virtStyle) virtStyle.remove();
+
+            window.__VIRTUAL_FILES__ = null;
+            window.__WIDGET_STORAGE__ = null;
+            window.widget = null;
+            window.ENV = null;
+            window.process = null;
+        }
+
+        window.addEventListener('beforeunload', cleanupSandbox);
+        window.addEventListener('unload', cleanupSandbox);
+
         let activeAccentColor = '#3b82f6';
         window.__VIRTUAL_FILES__ = {};
 
@@ -312,6 +392,11 @@
         window.addEventListener('message', (e) => {
             const data = e.data;
             if (!data) return;
+
+            if (data.type === 'destroy') {
+                cleanupSandbox();
+                return;
+            }
 
             if (data.type === 'execute-widget-command') {
                 const cmdEntry = cliRegisteredCommands.get(data.name);

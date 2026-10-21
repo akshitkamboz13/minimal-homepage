@@ -268,6 +268,14 @@ export function renderMediaWidget(container) {
     const trackTitle = tab && tab.title ? tab.title : 'No Media Playing';
     const isMuted = tab?.mutedInfo?.muted || false;
     const faviconUrl = tab?.favIconUrl || '';
+    const tabsCount = activeMediaTabs.length;
+    const tabId = tab?.id || 0;
+
+    const signature = `${isPlaying}_${tabId}_${trackTitle}_${serviceName}_${isMuted}_${faviconUrl}_${tabsCount}`;
+    if (container._mediaSig === signature && container.firstElementChild) {
+        return;
+    }
+    container._mediaSig = signature;
 
     container.innerHTML = `
         <div class="media-widget">
@@ -720,12 +728,29 @@ export function initMediaController() {
         }
     }
 
-    // Polling backup every 2.5s for audio detection
-    setInterval(updateMediaState, 2500);
+    // Polling backup every 8s for audio detection (skips when tab is hidden)
+    setInterval(() => {
+        if (!document.hidden) {
+            updateMediaState();
+        }
+    }, 8000);
+
+    // Refresh audio detection when user switches back to this tab
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            updateMediaState();
+        }
+    });
 
     window.addEventListener('launch-media-app', () => {
         launchMediaWindow();
     });
 
-    onSettingsChanged(() => loadActiveMediaWidget());
+    let lastShowDashboard = userSettings.showDashboardWidgets;
+    onSettingsChanged((settings) => {
+        if (settings.showDashboardWidgets !== lastShowDashboard) {
+            lastShowDashboard = settings.showDashboardWidgets;
+            loadActiveMediaWidget();
+        }
+    });
 }

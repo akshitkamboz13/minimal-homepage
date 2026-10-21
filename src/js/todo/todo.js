@@ -626,7 +626,13 @@ export function initTodo() {
         if (e.key === TODOS_KEY) loadActiveTodos();
     });
 
-    onSettingsChanged(() => loadActiveTodos());
+    let lastShowDashboard = userSettings.showDashboardWidgets;
+    onSettingsChanged((settings) => {
+        if (settings.showDashboardWidgets !== lastShowDashboard) {
+            lastShowDashboard = settings.showDashboardWidgets;
+            loadActiveTodos();
+        }
+    });
 
     window.addEventListener('launch-todo-app', (e) => {
         const listId = e.detail?.id;

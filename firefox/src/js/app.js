@@ -38,6 +38,15 @@ export function initApp() {
     // Reclaim focus from browser address bar to CLI input or Search input
     initFocusManager();
 
+    // Idle & background tab memory management
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            document.body.classList.add('is-tab-hidden');
+        } else {
+            document.body.classList.remove('is-tab-hidden');
+        }
+    });
+
     // Smoothly dismiss page loader veil after initial components render
     dismissPageLoader();
 }

@@ -27,6 +27,50 @@ function escapeHTML(str) {
     );
 }
 
+// WeakMap to associate iframes with their init config without leaking references
+const pendingIframeConfigs = new WeakMap();
+
+// Centralized helper to send init payload to an iframe
+function sendInitToIframe(iframe) {
+    if (!iframe || !iframe.contentWindow) return;
+    const config = pendingIframeConfigs.get(iframe);
+    if (!config) return;
+
+    const accent = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#3b82f6';
+    try {
+        iframe.contentWindow.postMessage({
+            type: 'init',
+            html: config.widget.html || '',
+            css: config.widget.css || '',
+            js: config.widget.js || '',
+            files: config.widget.files || [],
+            env: config.envObj || {},
+            theme: document.body.getAttribute('data-theme') || 'dark',
+            accentColor: accent
+        }, '*');
+    } catch (e) {}
+}
+
+// Cleanly tear down an iframe to release V8 context, active timers, and DOM references
+export function teardownIframe(iframe) {
+    if (!iframe) return;
+    try {
+        if (iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'destroy' }, '*');
+        }
+    } catch (e) {}
+    iframe.onload = null;
+    iframe.onerror = null;
+    pendingIframeConfigs.delete(iframe);
+    iframe.src = 'about:blank';
+    try {
+        if (iframe.contentDocument) {
+            iframe.contentDocument.textContent = '';
+        }
+    } catch (e) {}
+    iframe.remove();
+}
+
 // Helper to load sandboxed iframe using sandbox.html and postMessage
 function setupSandboxIframe(iframe, widget) {
     if (widget && widget.id) {
@@ -46,35 +90,20 @@ function setupSandboxIframe(iframe, widget) {
         });
     }
 
-    const sendInit = () => {
-        if (!iframe.contentWindow) return;
-        const accent = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#3b82f6';
-        iframe.contentWindow.postMessage({
-            type: 'init',
-            html: widget.html || '',
-            css: widget.css || '',
-            js: widget.js || '',
-            files: widget.files || [],
-            env: envObj,
-            theme: document.body.getAttribute('data-theme') || 'dark',
-            accentColor: accent
-        }, '*');
-    };
+    pendingIframeConfigs.set(iframe, { widget, envObj });
 
     // 1. Send data when iframe element fires load event
-    iframe.onload = sendInit;
-
-    // 2. Send data when sandbox signals it has evaluated and is ready
-    const handleSandboxReady = (e) => {
-        if (e.source === iframe.contentWindow && e.data?.type === 'sandbox-ready') {
-            sendInit();
-        }
+    iframe.onload = () => {
+        sendInitToIframe(iframe);
     };
-    window.addEventListener('message', handleSandboxReady);
 
-    // 3. Fallback delayed retry in case iframe loaded before listeners registered
-    setTimeout(sendInit, 200);
-    setTimeout(sendInit, 600);
+    // 2. Fallback delayed retry in case iframe loaded before listeners registered
+    setTimeout(() => {
+        if (iframe.isConnected) sendInitToIframe(iframe);
+    }, 200);
+    setTimeout(() => {
+        if (iframe.isConnected) sendInitToIframe(iframe);
+    }, 600);
 
     iframe.src = 'sandbox.html';
 }
@@ -109,6 +138,10 @@ export function launchCustomApp(widget) {
         colorClass: 'color-transparent',
         onClose: () => {
             unregisterWidgetCommands(widget.id);
+            if (instance.bodyEl) {
+                const iframes = instance.bodyEl.querySelectorAll('iframe');
+                iframes.forEach(teardownIframe);
+            }
             instance.destroy();
             appRegistry.unregisterApp(widget.id);
             openAppInstances.delete(widget.id);
@@ -150,6 +183,10 @@ export function launchCustomApp(widget) {
             appRegistry.updateAppState(widget.id, { isMinimized: isMin });
         },
         close: () => {
+            if (instance.bodyEl) {
+                const iframes = instance.bodyEl.querySelectorAll('iframe');
+                iframes.forEach(teardownIframe);
+            }
             instance.destroy();
             appRegistry.unregisterApp(widget.id);
             openAppInstances.delete(widget.id);
@@ -159,15 +196,33 @@ export function launchCustomApp(widget) {
 
 // Main loader function
 export function loadActiveWidgets() {
-    // 1. Cleanup previously active custom studio widgets
+    // 1. Cleanup previously active custom studio widgets and popup panels
     const oldWidgets = document.querySelectorAll('.studio-custom-widget, [id^="layout_widget_"]');
-    oldWidgets.forEach(el => el.remove());
+    oldWidgets.forEach(card => {
+        const iframes = card.querySelectorAll('iframe');
+        iframes.forEach(teardownIframe);
+        card.remove();
+    });
+
+    const oldPopups = document.querySelectorAll('.custom-popup-panel');
+    oldPopups.forEach(panel => {
+        const iframes = panel.querySelectorAll('iframe');
+        iframes.forEach(teardownIframe);
+        panel.remove();
+    });
 
     const oldPanelBtns = document.querySelectorAll('.custom-panel-btn');
     oldPanelBtns.forEach(el => el.remove());
 
     // Close any open custom app windows
-    openAppInstances.forEach(instance => instance.destroy());
+    openAppInstances.forEach((instance, widgetId) => {
+        unregisterWidgetCommands(widgetId);
+        if (instance.bodyEl) {
+            const iframes = instance.bodyEl.querySelectorAll('iframe');
+            iframes.forEach(teardownIframe);
+        }
+        instance.destroy();
+    });
     openAppInstances.clear();
 
     if (userSettings.showDashboardWidgets === false) {
@@ -301,8 +356,12 @@ export function initWidgetRuntime() {
 }
 
 // Register theme change listener to update active widgets inside iframe sandboxes dynamically
+let lastShowDashboardWidgets = userSettings.showDashboardWidgets;
 onSettingsChanged((settings) => {
-    loadActiveWidgets();
+    if (settings.showDashboardWidgets !== lastShowDashboardWidgets) {
+        lastShowDashboardWidgets = settings.showDashboardWidgets;
+        loadActiveWidgets();
+    }
 
     let resolvedTheme = settings.theme;
     if (resolvedTheme === 'system') {
@@ -312,19 +371,32 @@ onSettingsChanged((settings) => {
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach(iframe => {
         try {
-            iframe.contentWindow.postMessage({ 
-                type: 'theme-changed', 
-                theme: resolvedTheme,
-                accentColor: accent
-            }, '*');
+            if (iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ 
+                    type: 'theme-changed', 
+                    theme: resolvedTheme,
+                    accentColor: accent
+                }, '*');
+            }
         } catch(e) {}
     });
 });
 
-// Listen for custom widget requests from the sandbox (resize, close, minimize)
+// Listen for custom widget requests from the sandbox (resize, close, minimize, commands, sandbox-ready)
 window.addEventListener('message', (e) => {
     const data = e.data;
     if (data) {
+        if (data.type === 'sandbox-ready') {
+            const iframes = document.querySelectorAll('iframe');
+            for (const iframe of iframes) {
+                if (iframe.contentWindow === e.source) {
+                    sendInitToIframe(iframe);
+                    break;
+                }
+            }
+            return;
+        }
+
         if (data.type === 'resize-widget' || data.type === 'close-widget' || data.type === 'minimize-widget') {
             const iframes = document.querySelectorAll('iframe');
             let targetIframe = null;
@@ -348,6 +420,7 @@ window.addEventListener('message', (e) => {
                             instance.windowEl.style.height = `${targetH}px`;
                         } else if (data.type === 'close-widget') {
                             unregisterWidgetCommands(widgetId);
+                            teardownIframe(targetIframe);
                             instance.destroy();
                             appRegistry.unregisterApp(widgetId);
                             openAppInstances.delete(widgetId);
@@ -487,6 +560,28 @@ window.addEventListener('media-state-updated', (e) => {
     });
 });
 
+function closeCustomPopupPanel(panel, triggerBtn) {
+    if (!panel) return;
+    panel.classList.remove('active');
+    if (triggerBtn) triggerBtn.classList.remove('active');
+    setTimeout(() => {
+        if (!panel.classList.contains('active')) {
+            const iframes = panel.querySelectorAll('iframe');
+            iframes.forEach(teardownIframe);
+            panel.remove();
+        }
+    }, 200);
+}
+
+function closeAllCustomPopupPanels() {
+    document.querySelectorAll('.custom-popup-panel').forEach(p => {
+        closeCustomPopupPanel(p);
+    });
+    document.querySelectorAll('.custom-panel-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+}
+
 function toggleCustomPopupPanel(widget, triggerBtn) {
     const panelId = `custom-popup-panel-${widget.id}`;
     let panel = document.getElementById(panelId);
@@ -529,8 +624,7 @@ function toggleCustomPopupPanel(widget, triggerBtn) {
     `;
     closeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        panel.classList.remove('active');
-        triggerBtn.classList.remove('active');
+        closeCustomPopupPanel(panel, triggerBtn);
     });
     header.appendChild(closeBtn);
     panel.appendChild(header);
@@ -559,23 +653,13 @@ function toggleCustomPopupPanel(widget, triggerBtn) {
     
     const outsideClickListener = (e) => {
         if (!panel.contains(e.target) && !triggerBtn.contains(e.target)) {
-            panel.classList.remove('active');
-            triggerBtn.classList.remove('active');
+            closeCustomPopupPanel(panel, triggerBtn);
             document.removeEventListener('click', outsideClickListener);
         }
     };
     setTimeout(() => {
         document.addEventListener('click', outsideClickListener);
     }, 50);
-}
-
-function closeAllCustomPopupPanels() {
-    document.querySelectorAll('.custom-popup-panel').forEach(p => {
-        p.classList.remove('active');
-    });
-    document.querySelectorAll('.custom-panel-btn').forEach(b => {
-        b.classList.remove('active');
-    });
 }
 
 function positionCustomPanel(panel, trigger, widget) {

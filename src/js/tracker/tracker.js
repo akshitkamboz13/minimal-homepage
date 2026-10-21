@@ -1063,7 +1063,13 @@ export function initTracker() {
         if (e.key === TRACKERS_KEY || e.key === LOG_KEY) loadActiveTrackers();
     });
 
-    onSettingsChanged(() => loadActiveTrackers());
+    let lastShowDashboard = userSettings.showDashboardWidgets;
+    onSettingsChanged((settings) => {
+        if (settings.showDashboardWidgets !== lastShowDashboard) {
+            lastShowDashboard = settings.showDashboardWidgets;
+            loadActiveTrackers();
+        }
+    });
 
     window.addEventListener('launch-tracker-app', (e) => {
         const tid = e.detail?.id;
