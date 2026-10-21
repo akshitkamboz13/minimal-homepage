@@ -36,20 +36,22 @@ header {
 }
 
 .clock {
+    font-family: var(--clock-font, var(--font-display, inherit));
     font-size: 1.5rem;
-    font-weight: 500;
+    font-weight: var(--clock-font-weight, var(--font-weight-clock, 500));
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--clock-letter-spacing, 0.05em);
     font-variant-numeric: tabular-nums;
     min-height: 1.5rem;
     line-height: 1.5rem;
 }
 
 .greeting {
+    font-family: var(--font-display, inherit);
     font-size: 4rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: var(--font-weight-display, 700);
+    letter-spacing: var(--greeting-letter-spacing, -0.02em);
     background: linear-gradient(135deg, var(--text-color), var(--text-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

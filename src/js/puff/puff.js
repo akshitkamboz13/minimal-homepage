@@ -1,4 +1,4 @@
-import { userSettings, saveSettings } from '../settings/index.js';
+import { userSettings, saveSettings, applySettingsVisuals } from '../settings/index.js';
 import { appRegistry } from '../ui/app-registry.js';
 import { createGlassWindow } from '../ui/window-generator.js';
 import { handleNotesCLI } from '../notes/note-cli.js';
@@ -381,6 +381,8 @@ async function executePuffCommand(rawCmd) {
   echo [text]       Display a line of text
   time              Print current date and time
   theme [mode]      Switch theme ('dark', 'light', or 'system')
+  font [pack]       Switch font pack ('default', 'thick', 'black', 'poster', 'cyber', etc.)
+  clock [font|12|24] Clock typography font & time format ('syne', 'anton', 'orbitron', etc.)
   calc <math>       Math calculator (e.g. calc 14 * 25, calc sqrt(256))
   settings [args]   System Settings CLI (type 'settings help' for usage)
   tracker [args]    Habit Tracker CLI (type 'tracker help' for usage)
@@ -497,9 +499,53 @@ Examples:
             if (args[0] === 'light' || args[0] === 'dark' || args[0] === 'system') {
                 userSettings.theme = args[0];
                 saveSettings();
+                applySettingsVisuals();
                 outputText = `Theme updated to '${args[0]}'.`;
             } else {
                 outputText = `Current theme: '${userSettings.theme || 'dark'}'. Usage: theme [dark|light|system]`;
+            }
+            break;
+
+        case 'font':
+        case 'fontpack':
+            if (args.length > 0) {
+                const requested = args[0].toLowerCase();
+                const validFonts = ['default', 'thick', 'googlesans', 'commissioner', 'neon', 'poster', 'cyber', 'black', 'editorial', 'retro', 'playful', 'peralta', 'mono'];
+                if (validFonts.includes(requested)) {
+                    userSettings.fontPack = requested;
+                    saveSettings();
+                    applySettingsVisuals();
+                    outputText = `Font pack updated to '${requested}'.`;
+                } else {
+                    outputText = `Unknown font pack '${args[0]}'. Available: ${validFonts.join(', ')}`;
+                    isError = true;
+                }
+            } else {
+                outputText = `Current font pack: '${userSettings.fontPack || 'default'}'. Available: default, thick, googlesans, commissioner, neon, poster, cyber, black, editorial, retro, playful, peralta, mono. Usage: font [name]`;
+            }
+            break;
+
+        case 'clock':
+        case 'clockfont':
+            if (args.length > 0) {
+                const sub = args[0].toLowerCase();
+                const validClockFonts = ['inherit', 'syne', 'monoton', 'googlesans', 'commissioner', 'anton', 'orbitron', 'righteous', 'bricolage', 'fraunces', 'moolahlah', 'peralta', 'space', 'outfit', 'mono'];
+                let targetFont = sub === 'font' && args[1] ? args[1].toLowerCase() : sub;
+                if (validClockFonts.includes(targetFont)) {
+                    userSettings.clockFont = targetFont;
+                    saveSettings();
+                    applySettingsVisuals();
+                    outputText = `Clock font updated to '${targetFont}'.`;
+                } else if (sub === 'format' && (args[1] === '12' || args[1] === '24')) {
+                    userSettings.clockFormat = args[1];
+                    saveSettings();
+                    outputText = `Clock format set to ${args[1]}-hour.`;
+                } else {
+                    outputText = `Usage: clock [font <name> | format 12/24]\nAvailable clock fonts: ${validClockFonts.join(', ')}`;
+                    isError = true;
+                }
+            } else {
+                outputText = `Current clock font: '${userSettings.clockFont || 'inherit'}', format: ${userSettings.clockFormat || '12'}h.\nAvailable clock fonts: inherit, syne, monoton, googlesans, commissioner, anton, orbitron, righteous, bricolage, fraunces, moolahlah, peralta, space, outfit, mono.`;
             }
             break;
 

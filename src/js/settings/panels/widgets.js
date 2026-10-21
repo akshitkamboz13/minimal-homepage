@@ -1,6 +1,7 @@
 import { userSettings, saveSettings } from '../settings-state.js';
 import { applyLayoutSettings } from '../../ui/panels/top-panel.js';
 import { initCustomDropdown } from '../custom-dropdown.js';
+import { applyAppearanceVisuals } from './appearance.js';
 
 export function initWidgets(modal) {
     const dropdownClockFormat = initCustomDropdown('clock-format', (val) => {
@@ -9,6 +10,15 @@ export function initWidgets(modal) {
     });
     if (dropdownClockFormat) {
         dropdownClockFormat.setValue(userSettings.clockFormat);
+    }
+
+    const dropdownClockFont = initCustomDropdown('clock-font', (val) => {
+        userSettings.clockFont = val;
+        saveSettings();
+        applyAppearanceVisuals();
+    });
+    if (dropdownClockFont) {
+        dropdownClockFont.setValue(userSettings.clockFont || 'inherit');
     }
 
     const toggleClockSeconds = document.getElementById('toggle-clock-seconds');

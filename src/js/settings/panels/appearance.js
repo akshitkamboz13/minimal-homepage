@@ -4,6 +4,14 @@ import { getCustomBackground, saveCustomBackground, deleteCustomBackground } fro
 import { initCustomDropdown } from '../custom-dropdown.js';
 
 export function applyAppearanceVisuals() {
+    // 0. Font Pack & Clock Font
+    const fontPack = userSettings.fontPack || 'default';
+    const clockFont = userSettings.clockFont || 'inherit';
+    document.documentElement.setAttribute('data-font-pack', fontPack);
+    document.body.setAttribute('data-font-pack', fontPack);
+    document.documentElement.setAttribute('data-clock-font', clockFont);
+    document.body.setAttribute('data-clock-font', clockFont);
+
     // 1. Accent Color
     if (userSettings.accentColor === 'custom') {
         document.body.setAttribute('data-accent', 'custom');
@@ -110,6 +118,16 @@ export function initAppearance(modal) {
     });
     if (dropdownTheme) {
         dropdownTheme.setValue(userSettings.theme);
+    }
+
+    // Initialize Custom Dropdown for Font Pack
+    const dropdownFontPack = initCustomDropdown('font-pack', (val) => {
+        userSettings.fontPack = val;
+        saveSettings();
+        applyAppearanceVisuals();
+    });
+    if (dropdownFontPack) {
+        dropdownFontPack.setValue(userSettings.fontPack || 'default');
     }
 
     const toggleWidth = document.getElementById('toggle-container-width');

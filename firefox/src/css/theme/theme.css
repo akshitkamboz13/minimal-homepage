@@ -17,6 +17,18 @@
     
     --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     
+    /* Typography Tokens */
+    --font-base: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-weight-display: 700;
+    --font-weight-clock: 500;
+    --font-weight-card-header: 600;
+    --font-weight-button: 600;
+    --clock-font: var(--font-display, inherit);
+    --clock-font-weight: var(--font-weight-clock, 500);
+    --clock-letter-spacing: 0.05em;
+    --greeting-letter-spacing: -0.02em;
+    
     /* Scrollbar Design Tokens (Light Theme) */
     --scrollbar-thumb: rgba(100, 116, 139, 0.28);
     --scrollbar-thumb-hover: rgba(100, 116, 139, 0.55);
@@ -105,4 +117,240 @@ body.reduce-motion * {
     transition-duration: 0.01s !important;
     animation-duration: 0.01s !important;
     animation-iteration-count: 1 !important;
+}
+
+/* ==========================================================================
+   Typography Font Packs
+   ========================================================================== */
+
+/* Thick Font Pack (Syne 800 Display + Plus Jakarta Sans Thick Body) */
+[data-font-pack="thick"] {
+    --font-base: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-weight-display: 800;
+    --font-weight-clock: 800;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.06em;
+    --greeting-letter-spacing: -0.035em;
+}
+
+/* Ultra Black Display Pack (Bricolage Grotesque 800 + Outfit Black 900) */
+[data-font-pack="black"] {
+    --font-base: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Bricolage Grotesque', 'Outfit', system-ui, sans-serif;
+    --font-weight-display: 800;
+    --font-weight-clock: 800;
+    --font-weight-card-header: 800;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.04em;
+    --greeting-letter-spacing: -0.04em;
+}
+
+/* Poster Ultra Pack (Anton Display + Plus Jakarta Sans Thick Body) */
+[data-font-pack="poster"] {
+    --font-base: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Anton', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-weight-display: 400;
+    --font-weight-clock: 400;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.08em;
+    --greeting-letter-spacing: 0.02em;
+}
+
+/* Cyberpunk HUD Pack (Orbitron 800 + Space Grotesk) */
+[data-font-pack="cyber"] {
+    --font-base: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Orbitron', 'Space Grotesk', system-ui, sans-serif;
+    --font-weight-display: 800;
+    --font-weight-clock: 800;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.1em;
+    --greeting-letter-spacing: 0.04em;
+}
+
+/* Chunky Editorial Serif (Fraunces 900 + Plus Jakarta Sans) */
+[data-font-pack="editorial"] {
+    --font-base: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-weight-display: 900;
+    --font-weight-clock: 900;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.02em;
+    --greeting-letter-spacing: -0.03em;
+}
+
+/* Retro Wave Pack (Righteous + Plus Jakarta Sans) */
+[data-font-pack="retro"] {
+    --font-base: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Righteous', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-weight-display: 400;
+    --font-weight-clock: 400;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.06em;
+    --greeting-letter-spacing: 0.01em;
+}
+
+/* Monospace Heavy Pack (JetBrains Mono / Consolas Thick) */
+[data-font-pack="mono"] {
+    --font-base: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-display: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-weight-display: 700;
+    --font-weight-clock: 700;
+    --font-weight-card-header: 700;
+    --font-weight-button: 600;
+    --clock-letter-spacing: 0.02em;
+    --greeting-letter-spacing: -0.03em;
+}
+
+/* Google Material Pack (Google Sans + Plus Jakarta Sans) */
+[data-font-pack="googlesans"] {
+    --font-base: 'Google Sans', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-display: 'Google Sans', system-ui, sans-serif;
+    --font-weight-display: 700;
+    --font-weight-clock: 700;
+    --font-weight-card-header: 700;
+    --font-weight-button: 600;
+    --clock-letter-spacing: -0.01em;
+    --greeting-letter-spacing: -0.025em;
+}
+
+/* Commissioner Clean Pack */
+[data-font-pack="commissioner"] {
+    --font-base: 'Commissioner', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-display: 'Commissioner', system-ui, sans-serif;
+    --font-weight-display: 800;
+    --font-weight-clock: 800;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.04em;
+    --greeting-letter-spacing: -0.02em;
+}
+
+/* Monoton Neon Disco Pack */
+[data-font-pack="neon"] {
+    --font-base: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-display: 'Monoton', cursive;
+    --font-weight-display: 400;
+    --font-weight-clock: 400;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.08em;
+    --greeting-letter-spacing: 0.05em;
+}
+
+/* Moo Lah Lah Playful Pack */
+[data-font-pack="playful"] {
+    --font-base: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+    --font-display: 'Moo Lah Lah', cursive;
+    --font-weight-display: 400;
+    --font-weight-clock: 400;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.04em;
+    --greeting-letter-spacing: 0.02em;
+}
+
+/* Peralta Wild Slab Pack */
+[data-font-pack="peralta"] {
+    --font-base: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+    --font-display: 'Peralta', serif;
+    --font-weight-display: 400;
+    --font-weight-clock: 400;
+    --font-weight-card-header: 700;
+    --font-weight-button: 700;
+    --clock-letter-spacing: 0.03em;
+    --greeting-letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Dedicated Clock Font Overrides
+   ========================================================================== */
+
+[data-clock-font="syne"] {
+    --clock-font: 'Syne', sans-serif;
+    --clock-font-weight: 800;
+    --clock-letter-spacing: 0.06em;
+}
+
+[data-clock-font="monoton"] {
+    --clock-font: 'Monoton', cursive;
+    --clock-font-weight: 400;
+    --clock-letter-spacing: 0.08em;
+}
+
+[data-clock-font="googlesans"] {
+    --clock-font: 'Google Sans', sans-serif;
+    --clock-font-weight: 700;
+    --clock-letter-spacing: -0.01em;
+}
+
+[data-clock-font="commissioner"] {
+    --clock-font: 'Commissioner', sans-serif;
+    --clock-font-weight: 800;
+    --clock-letter-spacing: 0.04em;
+}
+
+[data-clock-font="moolahlah"] {
+    --clock-font: 'Moo Lah Lah', cursive;
+    --clock-font-weight: 400;
+    --clock-letter-spacing: 0.04em;
+}
+
+[data-clock-font="peralta"] {
+    --clock-font: 'Peralta', serif;
+    --clock-font-weight: 400;
+    --clock-letter-spacing: 0.03em;
+}
+
+[data-clock-font="anton"] {
+    --clock-font: 'Anton', sans-serif;
+    --clock-font-weight: 400;
+    --clock-letter-spacing: 0.08em;
+}
+
+[data-clock-font="orbitron"] {
+    --clock-font: 'Orbitron', sans-serif;
+    --clock-font-weight: 800;
+    --clock-letter-spacing: 0.1em;
+}
+
+[data-clock-font="righteous"] {
+    --clock-font: 'Righteous', sans-serif;
+    --clock-font-weight: 400;
+    --clock-letter-spacing: 0.06em;
+}
+
+[data-clock-font="bricolage"] {
+    --clock-font: 'Bricolage Grotesque', sans-serif;
+    --clock-font-weight: 800;
+    --clock-letter-spacing: 0.04em;
+}
+
+[data-clock-font="fraunces"] {
+    --clock-font: 'Fraunces', serif;
+    --clock-font-weight: 900;
+    --clock-letter-spacing: 0.02em;
+}
+
+[data-clock-font="space"] {
+    --clock-font: 'Space Grotesk', sans-serif;
+    --clock-font-weight: 700;
+    --clock-letter-spacing: 0.05em;
+}
+
+[data-clock-font="outfit"] {
+    --clock-font: 'Outfit', sans-serif;
+    --clock-font-weight: 900;
+    --clock-letter-spacing: 0.05em;
+}
+
+[data-clock-font="mono"] {
+    --clock-font: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --clock-font-weight: 700;
+    --clock-letter-spacing: 0.02em;
 }

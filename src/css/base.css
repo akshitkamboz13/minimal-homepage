@@ -124,7 +124,7 @@ body.theme-light .page-loader-spinner {
 }
 
 body {
-    font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-base);
     color: var(--text-color);
     background-color: var(--bg-base);
     min-height: 100vh;

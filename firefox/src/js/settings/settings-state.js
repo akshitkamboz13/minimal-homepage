@@ -41,6 +41,8 @@ const defaults = {
 
     // New configuration settings
     theme: 'system', // 'system' | 'light' | 'dark'
+    fontPack: 'default', // 'default' | 'thick' | 'googlesans' | 'commissioner' | 'neon' | 'poster' | 'cyber' | 'black' | 'editorial' | 'retro' | 'playful' | 'peralta' | 'mono'
+    clockFont: 'inherit', // 'inherit' | 'syne' | 'monoton' | 'googlesans' | 'commissioner' | 'anton' | 'orbitron' | 'righteous' | 'bricolage' | 'fraunces' | 'moolahlah' | 'peralta' | 'space' | 'outfit' | 'mono'
     accentColor: 'blue', // 'blue' | 'purple' | 'emerald' | 'amber' | 'rose'
     notesFont: 'sans', // 'sans' | 'serif' | 'mono'
     notesAutosave: 2,

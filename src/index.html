@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Commissioner:wght@300..900&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Google+Sans:wght@400..700&family=Monoton&family=Moo+Lah+Lah&family=Orbitron:wght@600..900&family=Outfit:wght@300..900&family=Peralta&family=Plus+Jakarta+Sans:wght@600..800&family=Righteous&family=Space+Grotesk:wght@600..700&family=Syne:wght@700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Commissioner:wght@300..900&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Google+Sans:wght@400..700&family=Monoton&family=Moo+Lah+Lah&family=Orbitron:wght@600..900&family=Outfit:wght@300..900&family=Peralta&family=Plus+Jakarta+Sans:wght@600..800&family=Righteous&family=Space+Grotesk:wght@600..700&family=Syne:wght@700;800&display=swap" media="print" onload="this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Commissioner:wght@300..900&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Google+Sans:wght@400..700&family=Monoton&family=Moo+Lah+Lah&family=Orbitron:wght@600..900&family=Outfit:wght@300..900&family=Peralta&family=Plus+Jakarta+Sans:wght@600..800&family=Righteous&family=Space+Grotesk:wght@600..700&family=Syne:wght@700;800&display=swap">
     </noscript>
 </head>
 
@@ -685,6 +685,41 @@
                                         </li>
                                         <li class="dropdown-item" data-value="light" role="option">Light Theme</li>
                                         <li class="dropdown-item" data-value="dark" role="option">Dark Theme</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Font Pack</label>
+                                <span class="setting-desc">Choose typography style & display weight.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="custom-dropdown" id="dropdown-font-pack">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
+                                        <span class="dropdown-selected-label">Default (Outfit Clean)</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="default" role="option">Default (Outfit Clean)</li>
+                                        <li class="dropdown-item" data-value="thick" role="option">Thick Pack (Syne Heavy 800)</li>
+                                        <li class="dropdown-item" data-value="googlesans" role="option">Google Sans (Pixel Material)</li>
+                                        <li class="dropdown-item" data-value="commissioner" role="option">Commissioner (Modern Grotesque)</li>
+                                        <li class="dropdown-item" data-value="neon" role="option">Monoton (Disco Neon)</li>
+                                        <li class="dropdown-item" data-value="poster" role="option">Poster Ultra (Anton Impact)</li>
+                                        <li class="dropdown-item" data-value="cyber" role="option">Cyberpunk HUD (Orbitron)</li>
+                                        <li class="dropdown-item" data-value="black" role="option">Ultra Black (Bricolage Grotesque)</li>
+                                        <li class="dropdown-item" data-value="editorial" role="option">Chunky Serif (Fraunces 900)</li>
+                                        <li class="dropdown-item" data-value="retro" role="option">Retro Wave (Righteous)</li>
+                                        <li class="dropdown-item" data-value="playful" role="option">Moo Lah Lah (Quirky Cartoon)</li>
+                                        <li class="dropdown-item" data-value="peralta" role="option">Peralta (Bouncy Slab Serif)</li>
+                                        <li class="dropdown-item" data-value="mono" role="option">Mono Heavy (Code & Terminal)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -1551,6 +1586,43 @@
                                         <li class="dropdown-item active" data-value="12" role="option">12-Hour (AM/PM)
                                         </li>
                                         <li class="dropdown-item" data-value="24" role="option">24-Hour</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <label>Clock Font</label>
+                                <span class="setting-desc">Choose typography style specifically for the clock display.</span>
+                            </div>
+                            <div class="setting-control">
+                                <div class="custom-dropdown" id="dropdown-clock-font">
+                                    <button class="dropdown-trigger" type="button" aria-haspopup="listbox"
+                                        aria-expanded="false">
+                                        <span class="dropdown-selected-label">Match Theme Font Pack</span>
+                                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12"
+                                            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu" role="listbox">
+                                        <li class="dropdown-item active" data-value="inherit" role="option">Match Theme Font Pack</li>
+                                        <li class="dropdown-item" data-value="syne" role="option">Syne Heavy (Bold Geometric)</li>
+                                        <li class="dropdown-item" data-value="monoton" role="option">Monoton (Retro Neon Disco)</li>
+                                        <li class="dropdown-item" data-value="googlesans" role="option">Google Sans (Pixel Material)</li>
+                                        <li class="dropdown-item" data-value="commissioner" role="option">Commissioner (Modern Grotesque)</li>
+                                        <li class="dropdown-item" data-value="anton" role="option">Anton (Ultra Thick Poster)</li>
+                                        <li class="dropdown-item" data-value="orbitron" role="option">Orbitron (Cyberpunk HUD)</li>
+                                        <li class="dropdown-item" data-value="righteous" role="option">Righteous (Chunky Retro)</li>
+                                        <li class="dropdown-item" data-value="bricolage" role="option">Bricolage (Brutalist Black)</li>
+                                        <li class="dropdown-item" data-value="fraunces" role="option">Fraunces (Heavy Editorial Serif)</li>
+                                        <li class="dropdown-item" data-value="moolahlah" role="option">Moo Lah Lah (Quirky Cartoon)</li>
+                                        <li class="dropdown-item" data-value="peralta" role="option">Peralta (Bouncy Slab Serif)</li>
+                                        <li class="dropdown-item" data-value="space" role="option">Space Grotesk (Modern Tech)</li>
+                                        <li class="dropdown-item" data-value="outfit" role="option">Outfit Black (Clean Heavy)</li>
+                                        <li class="dropdown-item" data-value="mono" role="option">Mono Tabular (Terminal Digits)</li>
                                     </ul>
                                 </div>
                             </div>

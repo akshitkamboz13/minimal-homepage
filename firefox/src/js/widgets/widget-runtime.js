@@ -253,8 +253,7 @@ export function loadActiveWidgets() {
                 id: `layout_widget_${widget.id}`,
                 title: widget.name,
                 width: widget.defaultW || 400,
-                className: 'custom-dashboard-widget studio-custom-widget',
-                editUrl: `widget-studio.html?edit=${encodeURIComponent(widget.id)}`
+                className: 'custom-dashboard-widget studio-custom-widget'
             });
 
             const iframe = document.createElement('iframe');
