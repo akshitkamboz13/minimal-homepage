@@ -89,11 +89,6 @@ export async function refreshAudibleTabs() {
             currentTargetTab = activeMediaTabs[0] || null;
         }
 
-        if (currentTargetTab) {
-            config.selectedTabId = currentTargetTab.id;
-            saveMediaConfig(config);
-        }
-
         return activeMediaTabs;
     } catch (err) {
         console.warn('[MediaController] Query error:', err);
@@ -200,11 +195,19 @@ export function getMediaControllerState() {
     };
 }
 
+let lastBroadcastMediaSig = '';
+
 export async function updateMediaState() {
     await refreshAudibleTabs();
     handleVisibilityByMode();
     renderAllMediaInstances();
-    window.dispatchEvent(new CustomEvent('media-state-updated', { detail: getMediaControllerState() }));
+
+    const state = getMediaControllerState();
+    const sig = `${state.isPlaying}_${state.audibleTabsCount}_${state.currentTab?.id}_${state.currentTab?.title}_${state.currentTab?.muted}`;
+    if (sig !== lastBroadcastMediaSig) {
+        lastBroadcastMediaSig = sig;
+        window.dispatchEvent(new CustomEvent('media-state-updated', { detail: state }));
+    }
 }
 
 function handleVisibilityByMode() {
@@ -712,28 +715,39 @@ export function loadActiveMediaWidget() {
 export function initMediaController() {
     loadActiveMediaWidget();
 
+    // Debounce media updates to avoid burst IPC thrashing during tab browsing
+    let mediaDebounceTimer = null;
+    const scheduleMediaUpdate = (delay = 300) => {
+        if (mediaDebounceTimer) clearTimeout(mediaDebounceTimer);
+        mediaDebounceTimer = setTimeout(() => {
+            if (!document.hidden) {
+                updateMediaState();
+            }
+        }, delay);
+    };
+
     // Listen for tab audio updates via chrome.tabs if available
     if (window.chrome && chrome.tabs) {
         if (chrome.tabs.onUpdated) {
             chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                 if (changeInfo.audible !== undefined || changeInfo.title || changeInfo.status === 'complete') {
-                    updateMediaState();
+                    scheduleMediaUpdate(300);
                 }
             });
         }
         if (chrome.tabs.onRemoved) {
             chrome.tabs.onRemoved.addListener(() => {
-                updateMediaState();
+                scheduleMediaUpdate(300);
             });
         }
     }
 
-    // Polling backup every 8s for audio detection (skips when tab is hidden)
+    // Polling backup every 15s for audio detection (skips completely when tab is hidden)
     setInterval(() => {
         if (!document.hidden) {
             updateMediaState();
         }
-    }, 8000);
+    }, 15000);
 
     // Refresh audio detection when user switches back to this tab
     document.addEventListener('visibilitychange', () => {

@@ -122,11 +122,13 @@
             window.widget = null;
             window.ENV = null;
             window.process = null;
+            isSandboxInitialized = false;
         }
 
         window.addEventListener('beforeunload', cleanupSandbox);
         window.addEventListener('unload', cleanupSandbox);
 
+        let isSandboxInitialized = false;
         let activeAccentColor = '#3b82f6';
         window.__VIRTUAL_FILES__ = {};
 
@@ -456,6 +458,11 @@
             }
 
             if (data && data.type === 'init') {
+                if (isSandboxInitialized) {
+                    return; // Prevent duplicate script evaluations & interval leaks
+                }
+                isSandboxInitialized = true;
+
                 // Initialize virtual file system lookup map
                 window.__VIRTUAL_FILES__ = buildVirtualFiles(data.files || []);
 

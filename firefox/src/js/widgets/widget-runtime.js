@@ -34,7 +34,8 @@ const pendingIframeConfigs = new WeakMap();
 function sendInitToIframe(iframe) {
     if (!iframe || !iframe.contentWindow) return;
     const config = pendingIframeConfigs.get(iframe);
-    if (!config) return;
+    if (!config || config.initialized) return;
+    config.initialized = true;
 
     const accent = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#3b82f6';
     try {

@@ -1,4 +1,4 @@
-import { loadMediaConfig, updateMediaConfig, refreshAudibleTabs } from '../../media/media-controller.js';
+import { loadMediaConfig, updateMediaConfig, getMediaControllerState } from '../../media/media-controller.js';
 
 export function initMediaSettings() {
     const container = document.getElementById('tab-media');
@@ -10,8 +10,8 @@ export function initMediaSettings() {
         renderMediaSettings();
     });
 
-    window.addEventListener('media-state-updated', () => {
-        updateMediaLiveStatus();
+    window.addEventListener('media-state-updated', (e) => {
+        updateMediaLiveStatus(e.detail);
     });
 }
 
@@ -46,13 +46,14 @@ function renderMediaSettings() {
     updateMediaLiveStatus();
 }
 
-async function updateMediaLiveStatus() {
+function updateMediaLiveStatus(currentState = null) {
     const statusEl = document.getElementById('media-live-status-desc');
     if (!statusEl) return;
 
-    const tabs = await refreshAudibleTabs();
-    if (tabs && tabs.length > 0) {
-        statusEl.innerHTML = `<span style="color:#22c55e;font-weight:600;">● Active</span> — ${tabs.length} tab(s) playing sound: <em>${escapeHtml(tabs[0].title || 'Audio')}</em>`;
+    const state = currentState || getMediaControllerState();
+    if (state && state.isPlaying && state.tabs && state.tabs.length > 0) {
+        const title = state.tabs[0]?.title || 'Audio';
+        statusEl.innerHTML = `<span style="color:#22c55e;font-weight:600;">● Active</span> — ${state.tabs.length} tab(s) playing sound: <em>${escapeHtml(title)}</em>`;
     } else {
         statusEl.innerHTML = `<span style="color:var(--text-secondary);opacity:0.7;">○ Idle</span> — No audio or video currently playing in browser`;
     }

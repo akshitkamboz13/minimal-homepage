@@ -8,6 +8,10 @@ export function initClock() {
     let dateElement = document.getElementById('date-display');
     let intervalId = null;
 
+    let lastDateDay = -1;
+    let cachedDateStr = '';
+    const dateOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+
     const updateTimeAndGreeting = () => {
         if (!clockElement || !greetingElement) return;
 
@@ -42,7 +46,9 @@ export function initClock() {
         }
         timeStr += ampm;
         
-        clockElement.textContent = timeStr;
+        if (clockElement.textContent !== timeStr) {
+            clockElement.textContent = timeStr;
+        }
 
         // 2. Greeting calculation
         let greeting = 'Good evening.';
@@ -71,9 +77,11 @@ export function initClock() {
                 greeting = 'Good night.';
             }
         }
-        greetingElement.textContent = greeting;
+        if (greetingElement.textContent !== greeting) {
+            greetingElement.textContent = greeting;
+        }
 
-        // 3. Date display calculation
+        // 3. Date display calculation (cached daily to avoid C++ Intl instance allocation in loop)
         if (userSettings.clockShowDate) {
             if (!dateElement && heroSection) {
                 dateElement = document.createElement('div');
@@ -82,11 +90,19 @@ export function initClock() {
                 heroSection.appendChild(dateElement);
             }
             if (dateElement) {
-                const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-                dateElement.textContent = now.toLocaleDateString(undefined, options);
-                dateElement.style.display = 'block';
+                const currentDay = now.getDate();
+                if (currentDay !== lastDateDay) {
+                    lastDateDay = currentDay;
+                    cachedDateStr = now.toLocaleDateString(undefined, dateOptions);
+                }
+                if (dateElement.textContent !== cachedDateStr) {
+                    dateElement.textContent = cachedDateStr;
+                }
+                if (dateElement.style.display !== 'block') {
+                    dateElement.style.display = 'block';
+                }
             }
-        } else if (dateElement) {
+        } else if (dateElement && dateElement.style.display !== 'none') {
             dateElement.style.display = 'none';
         }
     };
