@@ -281,7 +281,6 @@
             return xhr;
         };
 
-        let activeAccentColor = '#3b82f6';
         const mediaPendingRequests = new Map();
         let mediaReqCounter = 0;
         const mediaChangeListeners = new Set();
@@ -497,6 +496,25 @@
                             window.widget.unregisterCommand(name);
                         },
                         listCommands: () => Array.from(cliRegisteredCommands.keys())
+                    },
+                    // Storage & Notification mock fallback for sandbox
+                    storage: {
+                        get: async (key, defaultVal = null) => {
+                            if (!window.__WIDGET_STORAGE__) window.__WIDGET_STORAGE__ = new Map();
+                            return window.__WIDGET_STORAGE__.has(key) ? window.__WIDGET_STORAGE__.get(key) : defaultVal;
+                        },
+                        set: async (key, val) => {
+                            if (!window.__WIDGET_STORAGE__) window.__WIDGET_STORAGE__ = new Map();
+                            window.__WIDGET_STORAGE__.set(key, val);
+                        },
+                        remove: async (key) => {
+                            if (window.__WIDGET_STORAGE__) window.__WIDGET_STORAGE__.delete(key);
+                        }
+                    },
+                    notifications: {
+                        show: (title, opts) => {
+                            console.log(`[Widget Notification] ${title}`, opts);
+                        }
                     }
                 };
 
@@ -523,6 +541,11 @@
                 }
             }
         });
+
+        // Notify parent that sandbox is initialized and ready for 'init' postMessage
+        try {
+            window.parent.postMessage({ type: 'sandbox-ready' }, '*');
+        } catch(e) {}
     </script>
 </body>
 </html>

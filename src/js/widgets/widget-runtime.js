@@ -46,7 +46,8 @@ function setupSandboxIframe(iframe, widget) {
         });
     }
 
-    iframe.onload = () => {
+    const sendInit = () => {
+        if (!iframe.contentWindow) return;
         const accent = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#3b82f6';
         iframe.contentWindow.postMessage({
             type: 'init',
@@ -59,6 +60,22 @@ function setupSandboxIframe(iframe, widget) {
             accentColor: accent
         }, '*');
     };
+
+    // 1. Send data when iframe element fires load event
+    iframe.onload = sendInit;
+
+    // 2. Send data when sandbox signals it has evaluated and is ready
+    const handleSandboxReady = (e) => {
+        if (e.source === iframe.contentWindow && e.data?.type === 'sandbox-ready') {
+            sendInit();
+        }
+    };
+    window.addEventListener('message', handleSandboxReady);
+
+    // 3. Fallback delayed retry in case iframe loaded before listeners registered
+    setTimeout(sendInit, 200);
+    setTimeout(sendInit, 600);
+
     iframe.src = 'sandbox.html';
 }
 
