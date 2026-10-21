@@ -135,14 +135,15 @@ export function applyLayoutPositions() {
                 if (limit > 0) {
                     el.style.setProperty('--bookmark-folders-visible', limit);
                     el.setAttribute('data-folders-visible', 'true');
-                    el.style.width = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
-                    el.style.maxWidth = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                    el.style.width = `min(calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem), calc(100vw - 2rem))`;
+                    el.style.maxWidth = `min(calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem), calc(100vw - 2rem))`;
                     el.style.overflowX = 'auto';
                 } else {
                     el.style.removeProperty('--bookmark-folders-visible');
                     el.removeAttribute('data-folders-visible');
-                    el.style.removeProperty('width');
-                    el.style.removeProperty('max-width');
+                    el.style.width = '100%';
+                    el.style.maxWidth = 'calc(100vw - 2rem)';
+                    el.style.overflowX = 'auto';
                 }
             }
 
@@ -379,14 +380,15 @@ function setupDragHandlers() {
             if (limit > 0) {
                 el.style.setProperty('--bookmark-folders-visible', limit);
                 el.setAttribute('data-folders-visible', 'true');
-                el.style.width = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
-                el.style.maxWidth = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                el.style.width = `min(calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem), calc(100vw - 2rem))`;
+                el.style.maxWidth = `min(calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem), calc(100vw - 2rem))`;
                 el.style.overflowX = 'auto';
             } else {
                 el.style.removeProperty('--bookmark-folders-visible');
                 el.removeAttribute('data-folders-visible');
-                el.style.removeProperty('width');
-                el.style.removeProperty('max-width');
+                el.style.width = '100%';
+                el.style.maxWidth = 'calc(100vw - 2rem)';
+                el.style.overflowX = 'auto';
             }
         }
 

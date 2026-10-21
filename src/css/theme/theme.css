@@ -16,6 +16,13 @@
     --bg-base: #f8fafc;
     
     --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Scrollbar Design Tokens (Light Theme) */
+    --scrollbar-thumb: rgba(100, 116, 139, 0.28);
+    --scrollbar-thumb-hover: rgba(100, 116, 139, 0.55);
+    --scrollbar-thumb-active: var(--accent-color);
+    --scrollbar-track: transparent;
+    --scrollbar-track-hover: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] {
@@ -33,6 +40,13 @@
     --blob-2: #1e3a8a;
     --blob-3: #831843;
     --bg-base: #0f172a;
+
+    /* Scrollbar Design Tokens (Dark Theme) */
+    --scrollbar-thumb: rgba(255, 255, 255, 0.22);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
+    --scrollbar-thumb-active: var(--accent-color);
+    --scrollbar-track: transparent;
+    --scrollbar-track-hover: rgba(255, 255, 255, 0.04);
 }
 
 /* Accent Color Mappings */

@@ -7,16 +7,17 @@ export function renderBookmarksGrid(folders, bookmarksContainer) {
             bookmarksContainer.style.setProperty('--bookmark-folders-visible', limit);
             bookmarksContainer.setAttribute('data-folders-visible', 'true');
             if (userSettings.freeformLayout || bookmarksContainer.classList.contains('freeform-placed') || bookmarksContainer.classList.contains('draggable-layout-item')) {
-                bookmarksContainer.style.width = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
-                bookmarksContainer.style.maxWidth = `calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem)`;
+                bookmarksContainer.style.width = `min(calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem), calc(100vw - 2rem))`;
+                bookmarksContainer.style.maxWidth = `min(calc(${limit} * 260px + (${limit} - 1) * 1.5rem + 1rem), calc(100vw - 2rem))`;
                 bookmarksContainer.style.overflowX = 'auto';
             }
         } else {
             bookmarksContainer.style.removeProperty('--bookmark-folders-visible');
             bookmarksContainer.removeAttribute('data-folders-visible');
             if (userSettings.freeformLayout || bookmarksContainer.classList.contains('freeform-placed') || bookmarksContainer.classList.contains('draggable-layout-item')) {
-                bookmarksContainer.style.width = 'auto';
-                bookmarksContainer.style.maxWidth = '95vw';
+                bookmarksContainer.style.width = '100%';
+                bookmarksContainer.style.maxWidth = 'calc(100vw - 2rem)';
+                bookmarksContainer.style.overflowX = 'auto';
             }
         }
     }

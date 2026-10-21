@@ -6,19 +6,41 @@
     <style id="widget-style"></style>
     <style>
         /* Unified sandboxed widget custom scrollbar matching bookmarks links scroll */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+        }
+        .widget.light * {
+            scrollbar-color: rgba(0, 0, 0, 0.22) transparent;
+        }
         ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.22);
+            background-clip: padding-box;
+            border: 1px solid transparent;
+            border-radius: 9999px;
+            transition: background-color 0.2s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.45);
+        }
+        ::-webkit-scrollbar-thumb:active {
+            background: var(--accent-color, #60a5fa);
         }
         .widget.light ::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(0, 0, 0, 0.22);
+        }
+        .widget.light ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.45);
+        }
+        .widget.light ::-webkit-scrollbar-thumb:active {
+            background: var(--accent-color, #3b82f6);
         }
     </style>
 </head>
