@@ -390,6 +390,7 @@ async function executePuffCommand(rawCmd) {
   media [args]      Music & Audio Controller (type 'media -h' for flags)
   search [args]     Web Search CLI (type 'search -h' for flags)
   apps              List available system apps & commands
+  install <widget>  Install widget from Hub or URL (e.g. install weather)
   exit / quit       Close Puff terminal shell${customHelp}`;
             break;
         }
@@ -609,6 +610,36 @@ Examples:
             outputText = settingsResult.output || '';
             if (settingsResult.isError) isError = true;
             break;
+
+        case 'install':
+        case 'pkg': {
+            if (args.length === 0) {
+                outputText = `Usage: install <widget-id | url | uri>
+Examples:
+  install github-profile    Install GitHub Profile Viewer
+  install open-weather      Install Live Weather (Open-Meteo)
+  install pomodoro-timer    Install Pomodoro Focus Timer
+  install https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/github-profile.homewidget
+  install homewidget:install?url=...`;
+                break;
+            }
+
+            const target = args[0];
+            try {
+                const { installWidgetFromUrl } = await import('../settings/panels/widget-studio.js');
+                const res = await installWidgetFromUrl(target);
+                if (res.success) {
+                    outputText = `Successfully installed widget "${res.widget.name}" (v${res.widget.version})!\nType '${res.widget.id}' or check dock/dashboard to use it.`;
+                } else {
+                    isError = true;
+                    outputText = `Failed to install widget: ${res.error || (res.cancelled ? 'Cancelled' : 'Unknown error')}`;
+                }
+            } catch (err) {
+                isError = true;
+                outputText = `Install error: ${err.message || err}`;
+            }
+            break;
+        }
 
         case 'exit':
         case 'quit':

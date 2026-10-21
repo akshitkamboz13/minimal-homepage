@@ -1,0 +1,67 @@
+{
+  "repository": "https://github.com/akshitkamboz13/minimal-homepage/tree/main/widgetstore",
+  "rawBase": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets",
+  "count": 3,
+  "widgets": [
+    {
+      "id": "github-profile",
+      "name": "GitHub Profile Viewer",
+      "version": "1.0.0",
+      "author": "si4k",
+      "category": "Developer",
+      "description": "Live GitHub profile stats, bio, followers, repositories, and direct links.",
+      "type": "widget",
+      "icon": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"#a855f7\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22\"/></svg>",
+      "downloadUrl": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/github-profile.homewidget",
+      "jsonUrl": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/github-profile.json",
+      "installUri": "homewidget:install?url=https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/github-profile.homewidget",
+      "cliCommands": [
+        {
+          "name": "gh",
+          "description": "View or switch GitHub profile in widget",
+          "usage": "gh [username]"
+        }
+      ]
+    },
+    {
+      "id": "open-weather",
+      "name": "Live Weather (Open-Meteo)",
+      "version": "1.0.0",
+      "author": "si4k",
+      "category": "Weather",
+      "description": "Free open-API weather forecast powered by Open-Meteo. No API keys required.",
+      "type": "widget",
+      "icon": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z\"/></svg>",
+      "downloadUrl": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/open-weather.homewidget",
+      "jsonUrl": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/open-weather.json",
+      "installUri": "homewidget:install?url=https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/open-weather.homewidget",
+      "cliCommands": [
+        {
+          "name": "weather",
+          "description": "Search city weather via Open-Meteo",
+          "usage": "weather [city]"
+        }
+      ]
+    },
+    {
+      "id": "pomodoro-timer",
+      "name": "Pomodoro Focus Timer",
+      "version": "1.0.0",
+      "author": "si4k",
+      "category": "Productivity",
+      "description": "Tactile Pomodoro focus timer with Focus, Short Break, and Long Break presets.",
+      "type": "widget",
+      "icon": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"#f43f5e\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>",
+      "downloadUrl": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/pomodoro-timer.homewidget",
+      "jsonUrl": "https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/pomodoro-timer.json",
+      "installUri": "homewidget:install?url=https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets/pomodoro-timer.homewidget",
+      "cliCommands": [
+        {
+          "name": "pomodoro",
+          "description": "Control Pomodoro timer [start|pause|reset]",
+          "usage": "pomodoro [start|pause|reset]"
+        }
+      ]
+    }
+  ]
+}

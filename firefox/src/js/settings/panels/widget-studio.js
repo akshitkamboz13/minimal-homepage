@@ -32,7 +32,7 @@ function getWidgetIconMarkup(icon, name, size = 22) {
 }
 
 // Get custom widgets from localStorage
-function getCustomWidgets() {
+export function getCustomWidgets() {
     try {
         return JSON.parse(localStorage.getItem('startpage_custom_widgets')) || [];
     } catch (e) {
@@ -41,10 +41,149 @@ function getCustomWidgets() {
 }
 
 // Save custom widgets to localStorage
-function saveCustomWidgets(widgets) {
+export function saveCustomWidgets(widgets) {
     localStorage.setItem('startpage_custom_widgets', JSON.stringify(widgets));
     // Dispatch event to reload runtime widgets immediately
     window.dispatchEvent(new CustomEvent('widgets-reloaded'));
+}
+
+export const GITHUB_WIDGETSTORE_RAW_BASE = 'https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets';
+export const GITHUB_WIDGETSTORE_CATALOG_URL = 'https://raw.githubusercontent.com/akshitkamboz13/minimal-homepage/main/widgetstore/widgets.json';
+export const GITHUB_WIDGETSTORE_REPO_URL = 'https://github.com/akshitkamboz13/minimal-homepage/tree/main/widgetstore';
+
+const FALLBACK_STORE_WIDGETS = [
+    {
+        id: 'github-profile',
+        name: 'GitHub Profile Viewer',
+        version: '1.0.0',
+        author: 'si4k',
+        category: 'Developer',
+        description: 'Live profile stats, bio, followers, repositories, and direct links.',
+        icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>',
+        downloadUrl: `${GITHUB_WIDGETSTORE_RAW_BASE}/github-profile.homewidget`,
+        jsonUrl: `${GITHUB_WIDGETSTORE_RAW_BASE}/github-profile.json`
+    },
+    {
+        id: 'open-weather',
+        name: 'Live Weather (Open-Meteo)',
+        version: '1.0.0',
+        author: 'si4k',
+        category: 'Weather',
+        description: 'Free open-API weather forecast powered by Open-Meteo. No API keys required.',
+        icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>',
+        downloadUrl: `${GITHUB_WIDGETSTORE_RAW_BASE}/open-weather.homewidget`,
+        jsonUrl: `${GITHUB_WIDGETSTORE_RAW_BASE}/open-weather.json`
+    },
+    {
+        id: 'pomodoro-timer',
+        name: 'Pomodoro Focus Timer',
+        version: '1.0.0',
+        author: 'si4k',
+        category: 'Productivity',
+        description: 'Tactile Pomodoro focus timer with Focus, Short Break, and Long Break presets.',
+        icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+        downloadUrl: `${GITHUB_WIDGETSTORE_RAW_BASE}/pomodoro-timer.homewidget`,
+        jsonUrl: `${GITHUB_WIDGETSTORE_RAW_BASE}/pomodoro-timer.json`
+    }
+];
+
+// Install widget from URL or shorthand identifier
+export async function installWidgetFromUrl(rawTarget, statusElement = null, successCallback = null) {
+    let url = (rawTarget || '').trim();
+    if (!url) {
+        showStatus(statusElement, 'Error: Please enter a widget URL or ID.', 'error');
+        return { success: false, error: 'Empty URL' };
+    }
+
+    // 1. Handle homewidget:install?url=... URI or deep links
+    if (url.startsWith('homewidget:')) {
+        try {
+            const queryIdx = url.indexOf('?');
+            if (queryIdx !== -1) {
+                const searchParams = new URLSearchParams(url.substring(queryIdx));
+                const paramUrl = searchParams.get('url');
+                if (paramUrl) {
+                    url = paramUrl;
+                }
+            } else {
+                url = url.replace(/^homewidget:(install\?)?/, '');
+            }
+        } catch (e) {
+            url = url.replace(/^homewidget:(install\?)?(url=)?/, '');
+        }
+    }
+
+    // 2. Handle shorthand IDs (e.g. "github-profile", "open-weather", "weather")
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        let cleanId = url.replace(/\.homewidget$/, '').replace(/\.json$/, '').trim();
+        // Helpful aliases
+        if (cleanId === 'weather') cleanId = 'open-weather';
+        if (cleanId === 'github' || cleanId === 'gh') cleanId = 'github-profile';
+        if (cleanId === 'pomodoro') cleanId = 'pomodoro-timer';
+        url = `${GITHUB_WIDGETSTORE_RAW_BASE}/${cleanId}.homewidget`;
+    }
+
+    showStatus(statusElement, `Fetching widget package from ${url}...`, 'info');
+
+    try {
+        let response = await fetch(url);
+        // Fallback to uncompressed .json if .homewidget fails or returns 404
+        if (!response.ok && url.endsWith('.homewidget')) {
+            const fallbackJsonUrl = url.replace(/\.homewidget$/, '.json');
+            try {
+                const fallbackRes = await fetch(fallbackJsonUrl);
+                if (fallbackRes.ok) {
+                    response = fallbackRes;
+                }
+            } catch (err) {}
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        showStatus(statusElement, 'Decompressing and validating package...', 'info');
+
+        const decompressedText = await decompressBlob(blob);
+        const widget = JSON.parse(decompressedText);
+
+        if (!widget.id || !widget.name || !widget.type || (widget.html === undefined && (!Array.isArray(widget.files) || widget.files.length === 0))) {
+            showStatus(statusElement, 'Error: Invalid widget package metadata format.', 'error');
+            return { success: false, error: 'Invalid format' };
+        }
+
+        const list = getCustomWidgets();
+        const existingIdx = list.findIndex(item => item.id === widget.id);
+
+        if (existingIdx !== -1) {
+            const confirmed = typeof confirm !== 'undefined'
+                ? confirm(`A widget named "${list[existingIdx].name}" (${widget.id}) already exists. Overwrite with this version?`)
+                : true;
+            if (confirmed) {
+                list[existingIdx] = widget;
+                saveCustomWidgets(list);
+                showStatus(statusElement, `Successfully updated "${widget.name}"!`, 'success');
+            } else {
+                showStatus(statusElement, 'Installation cancelled.', 'info');
+                return { success: false, cancelled: true };
+            }
+        } else {
+            list.push(widget);
+            saveCustomWidgets(list);
+            showStatus(statusElement, `Successfully installed "${widget.name}"!`, 'success');
+        }
+
+        if (typeof successCallback === 'function') {
+            successCallback(widget);
+        }
+
+        return { success: true, widget };
+    } catch (err) {
+        console.error('Widget installation failed:', err);
+        showStatus(statusElement, `Error: Failed to install widget (${err.message || 'Network error'})`, 'error');
+        return { success: false, error: err.message };
+    }
 }
 
 export function initWidgetStudio(modal) {
@@ -76,10 +215,56 @@ export function initWidgetStudio(modal) {
             const tab = item.getAttribute('data-tab');
             if (tab === 'widget-manage' || tab === 'widget-export') {
                 renderAllLists();
+            } else if (tab === 'widget-import') {
+                renderHubFeaturedWidgets(modal, renderAllLists);
             } else if (tab === 'widget-docs') {
                 initWidgetDocs(modal);
             }
         });
+    });
+
+    // Setup URL / URI Import Section
+    const btnImportUrl = modal.querySelector('#btn-import-url');
+    const urlInput = modal.querySelector('#widget-import-url-input');
+    const statusMsgUrl = modal.querySelector('#import-url-status-msg') || statusMsg;
+
+    if (btnImportUrl && urlInput) {
+        const doImportUrl = async () => {
+            const val = urlInput.value.trim();
+            if (!val) return;
+            btnImportUrl.disabled = true;
+            btnImportUrl.textContent = 'Fetching...';
+            await installWidgetFromUrl(val, statusMsgUrl, () => {
+                renderAllLists();
+                renderHubFeaturedWidgets(modal, renderAllLists);
+                urlInput.value = '';
+            });
+            btnImportUrl.disabled = false;
+            btnImportUrl.textContent = 'Fetch & Install';
+        };
+
+        btnImportUrl.addEventListener('click', doImportUrl);
+        urlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                doImportUrl();
+            }
+        });
+    }
+
+    // Support window postMessage for 1-click install from Hub
+    window.addEventListener('message', async (e) => {
+        if (e.data && (e.data.type === 'INSTALL_HOMEWIDGET' || e.data.action === 'install-widget') && e.data.url) {
+            modal.classList.remove('hidden', 'is-minimized');
+            if (typeof window.openSettingsCategory === 'function') {
+                window.openSettingsCategory('widget-studio', 'widget-import');
+            }
+            const statusElement = modal.querySelector('#import-url-status-msg') || statusMsg;
+            await installWidgetFromUrl(e.data.url, statusElement, () => {
+                renderAllLists();
+                renderHubFeaturedWidgets(modal, renderAllLists);
+            });
+        }
     });
 
     // Setup Import Drag & Drop & File Input
@@ -115,13 +300,109 @@ export function initWidgetStudio(modal) {
 
     // Initial render
     renderAllLists();
+    renderHubFeaturedWidgets(modal, renderAllLists);
+    handleInitialUrlInstall(modal, renderAllLists);
 
     // Listen for updates from builder tab
     window.addEventListener('storage', (e) => {
         if (e.key === 'startpage_custom_widgets') {
             renderAllLists();
+            renderHubFeaturedWidgets(modal, renderAllLists);
         }
     });
+}
+
+// Render GitHub WidgetStore Featured Widgets in the Install & Store tab
+async function renderHubFeaturedWidgets(modal, renderAllLists) {
+    const container = modal.querySelector('#hub-featured-widgets-list');
+    if (!container) return;
+
+    let widgets = FALLBACK_STORE_WIDGETS;
+    try {
+        const res = await fetch(GITHUB_WIDGETSTORE_CATALOG_URL);
+        if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.widgets) && data.widgets.length > 0) {
+                widgets = data.widgets;
+            }
+        }
+    } catch (e) {
+        // Fallback to offline catalog
+    }
+
+    const installed = getCustomWidgets();
+    const installedIds = new Set(installed.map(w => w.id));
+
+    container.innerHTML = '';
+    widgets.forEach(w => {
+        const isInstalled = installedIds.has(w.id);
+        const card = document.createElement('div');
+        card.className = 'widget-item-card hub-featured-card';
+        card.innerHTML = `
+            <div class="widget-item-info">
+                <div class="widget-item-icon">
+                    ${getWidgetIconMarkup(w.icon, w.name, 22)}
+                </div>
+                <div class="widget-item-meta">
+                    <span class="widget-item-name">${escapeHTML(w.name)}</span>
+                    <span class="widget-item-details">v${escapeHTML(w.version)} • by ${escapeHTML(w.author || 'si4k')} • ${escapeHTML(w.category || 'Utilities')}</span>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 3px;">${escapeHTML(w.description || '')}</div>
+                </div>
+            </div>
+            <div class="widget-item-actions">
+                <button type="button" class="action-btn ${isInstalled ? 'secondary-btn' : 'primary-btn'} btn-install-hub-item" data-url="${escapeHTML(w.downloadUrl || `${GITHUB_WIDGETSTORE_RAW_BASE}/${w.id}.homewidget`)}">
+                    ${isInstalled ? 'Reinstall' : 'Install'}
+                </button>
+            </div>
+        `;
+
+        const btn = card.querySelector('.btn-install-hub-item');
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                const url = btn.getAttribute('data-url');
+                const statusElement = modal.querySelector('#import-url-status-msg') || modal.querySelector('#import-status-msg');
+                btn.disabled = true;
+                btn.textContent = 'Installing...';
+                await installWidgetFromUrl(url, statusElement, () => {
+                    renderAllLists();
+                    renderHubFeaturedWidgets(modal, renderAllLists);
+                });
+                btn.disabled = false;
+                btn.textContent = 'Installed';
+            });
+        }
+
+        container.appendChild(card);
+    });
+}
+
+// Handle deep-link query parameter installation (e.g. ?install_widget=https://... or ?install=weather)
+function handleInitialUrlInstall(modal, renderAllLists) {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const installTarget = params.get('install_widget') || params.get('install');
+        if (installTarget) {
+            modal.classList.remove('hidden', 'is-minimized');
+            if (typeof window.openSettingsCategory === 'function') {
+                window.openSettingsCategory('widget-studio', 'widget-import');
+            }
+
+            const urlInput = modal.querySelector('#widget-import-url-input');
+            if (urlInput) urlInput.value = installTarget;
+
+            const statusElement = modal.querySelector('#import-url-status-msg') || modal.querySelector('#import-status-msg');
+            installWidgetFromUrl(installTarget, statusElement, () => {
+                renderAllLists();
+                renderHubFeaturedWidgets(modal, renderAllLists);
+            });
+
+            // Clean query param from URL without reloading
+            const cleanUrl = window.location.pathname + window.location.hash;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+    } catch (e) {
+        console.error('Error handling URL install param:', e);
+    }
 }
 
 // Render Manage custom widgets tab panel

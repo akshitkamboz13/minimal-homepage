@@ -6,7 +6,7 @@
 
 export const RESERVED_PUFF_COMMANDS = new Set([
     'help', 'cli', 'gui', 'run', 'launch', 'open', 'clear', 'echo',
-    'time', 'date', 'theme', 'calc', 'math', '=', 'apps',
+    'time', 'date', 'theme', 'calc', 'math', '=', 'apps', 'install', 'pkg',
     'search', 'g', 'yt', 'gh', 'ddg', 'br', 'gpt', 'claude', 'gemini', 'ai',
     'notes', 'todo', 'media', 'music', 'audio', 'tracker', 'habit',
     'bookmarks', 'bm', 'settings', 'exit', 'quit'

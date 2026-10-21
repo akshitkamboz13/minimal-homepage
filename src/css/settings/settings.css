@@ -1129,6 +1129,73 @@
     color: #f87171;
 }
 
+.import-status.info {
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+}
+
+/* Hub Promo Banner Card */
+.hub-promo-card {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.08));
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(12px);
+}
+
+.hub-promo-info {
+    flex: 1;
+}
+
+.hub-promo-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 4px;
+}
+
+.hub-badge-pill {
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-color);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.hub-promo-info p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.hub-promo-card .action-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* URL Import Row */
+.url-import-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 0.5rem;
+}
+
+.url-import-row input {
+    flex: 1;
+}
+
 .studio-promo-card {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);

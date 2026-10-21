@@ -435,7 +435,7 @@
                                     <polyline points="17 8 12 3 7 8" />
                                     <line x1="12" y1="3" x2="12" y2="15" />
                                 </svg>
-                                Import Widget
+                                Install &amp; Store
                             </li>
                             <li class="menu-item" data-tab="widget-export">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -1340,12 +1340,52 @@
                         </div>
                     </section>
 
-                    <!-- Widget Studio Import -->
+                    <!-- Widget Studio Import & GitHub WidgetStore -->
                     <section id="tab-widget-import" class="settings-pane">
-                        <h3>Import Custom Widget</h3>
-                        <p class="setting-desc">Upload a zipped widget file with the <code>.homewidget</code> extension.</p>
-                        
-                        <div class="setting-group-section">
+                        <h3>Install &amp; Discover Widgets</h3>
+                        <p class="setting-desc">Install custom widgets directly from the official <a href="https://github.com/akshitkamboz13/minimal-homepage/tree/main/widgetstore" target="_blank" rel="noopener">GitHub WidgetStore</a>, a direct URL, or a local <code>.homewidget</code> package.</p>
+
+                        <!-- GitHub WidgetStore Promo Banner -->
+                        <div class="hub-promo-card">
+                            <div class="hub-promo-info">
+                                <div class="hub-promo-title">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                                    <strong>GitHub WidgetStore</strong>
+                                    <span class="hub-badge-pill">Community Extension Hub</span>
+                                </div>
+                                <p>Browse open-source widgets on GitHub, inspect code before installing, or publish your own widgets via Pull Request.</p>
+                            </div>
+                            <a href="https://github.com/akshitkamboz13/minimal-homepage/tree/main/widgetstore" target="_blank" rel="noopener" class="action-btn primary-btn" id="btn-browse-hub">
+                                Browse on GitHub
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                            </a>
+                        </div>
+
+                        <!-- URL / URI Install Section -->
+                        <div class="setting-group-section" style="margin-top: 1.25rem;">
+                            <h4 class="section-title">Install via Widget ID or URL</h4>
+                            <p class="setting-desc">Enter a widget ID (e.g. <code>github-profile</code>, <code>open-weather</code>, <code>pomodoro-timer</code>), raw GitHub URL, or <code>homewidget:install?url=...</code> deep link.</p>
+                            <div class="url-import-row">
+                                <input type="text" id="widget-import-url-input" class="text-input" placeholder="github-profile, open-weather, or raw GitHub URL..." />
+                                <button type="button" id="btn-import-url" class="action-btn primary-btn" style="white-space: nowrap;">Fetch &amp; Install</button>
+                            </div>
+                            <div id="import-url-status-msg" class="import-status hidden"></div>
+                        </div>
+
+                        <!-- Featured Widgets Quick Install -->
+                        <div class="setting-group-section" style="margin-top: 1.25rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <h4 class="section-title" style="margin: 0;">Featured Widgets from Store</h4>
+                                <button type="button" id="btn-refresh-hub-widgets" class="action-btn" style="padding: 4px 10px; font-size: 0.75rem;">↻ Refresh</button>
+                            </div>
+                            <div id="hub-featured-widgets-list" class="widget-list-container">
+                                <div class="empty-state">Loading widgets from GitHub WidgetStore...</div>
+                            </div>
+                        </div>
+
+                        <!-- Drag and Drop Local Import -->
+                        <div class="setting-group-section" style="margin-top: 1.25rem;">
+                            <h4 class="section-title">Manual Offline Package Import</h4>
                             <div class="import-drag-zone" id="widget-import-dragzone">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem; opacity: 0.7;">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
